@@ -1,0 +1,7 @@
+*/*.o
+*/obj
+*.qmake.stash
+*.qmake.cache
+*/*.pro.user*
+*/MakeFile
+*/Makefile
