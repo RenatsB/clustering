@@ -9,11 +9,11 @@
 class Gen
 {
 public:
-    float generate(uint w, uint h, bool _output=false);
+    float generate(uint w, uint h, uint format=3, bool _output=false);
 private:
     void outputImage();
 
-    std::vector<std::vector<std::vector<uint>>> rawData;
+    std::vector<uint> rawData;
     Ran m_rand;
 };
 
