@@ -1,16 +1,15 @@
 #ifndef GEN_GEN_H_
 #define GEN_GEN_H_
 
-#include "ran.h"
 #include <vector>
 #include <QImage>
 #include <string>
+#include "ran.h"
+
 class Gen
 {
 public:
-    Gen()=default;
-    ~Gen()=default;
-    float generate(uint w, uint h);
+    float generate(uint w, uint h, bool _output=false);
 private:
     void outputImage();
 

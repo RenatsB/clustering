@@ -14,6 +14,10 @@ int Ran::randi(int r_low, int r_high, uint _t)
         {
             return SimpleRandI(r_low, r_high);
         }
+        case 1:
+        {
+            return UniformRandI(r_low, r_high);
+        }
         default:
         {
             return 0.f;
@@ -28,6 +32,10 @@ float Ran::randf(float r_low, float r_high, uint _t)
         case 0:
         {
             return SimpleRandF(r_low, r_high);
+        }
+        case 1:
+        {
+            return UniformRandF(r_low, r_high);
         }
         default:
         {
