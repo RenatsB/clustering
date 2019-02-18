@@ -1,28 +1,28 @@
 #include "img.h"
 
 img::~img()
-[
-
-]
+{
+    closeFile();
+}
 
 bool img::openFile(std::string filename)
 {
     if(image!=nullptr)
         closeFile();
-    ImageInput *in = ImageInput::open (filename);
-    if (! in)
+    image = ImageInput::open (filename);
+    if (! image)
         return false;
-    const ImageSpec &spec = in->spec();
+    const ImageSpec &spec = image->spec();
     int xres = spec.width;
     int yres = spec.height;
     int channels = spec.nchannels;
     std::vector<unsigned char> pixels (xres*yres*channels);
-    in->read_image (TypeDesc::UINT8, &pixels[0]);
-
+    image->read_image (TypeDesc::UINT8, &pixels[0]);
+    return true;
 }
 
-bool img::closeFile()
+void img::closeFile()
 {
-    in->close ();
-    ImageInput::destroy (in);
+    image->close ();
+    ImageInput::destroy (image.get());
 }
