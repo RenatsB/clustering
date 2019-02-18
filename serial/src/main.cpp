@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include "gen.h"
+
 int main(int argc, char* argv[])
 {
     Gen m_gen;

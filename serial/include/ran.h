@@ -1,5 +1,5 @@
-#ifndef GEN_RANDOMFN_H_
-#define GEN_RANDOMFN_H_
+#ifndef CLUSTERING_RANDOMFN_H_
+#define CLUSTERING_RANDOMFN_H_
 
 #include <random>
 #include <cstdlib>
@@ -18,4 +18,4 @@ private:
     std::default_random_engine m_generator;
 };
 
-#endif //GEN_RANDOMFN_H_
+#endif //CLUSTERING_RANDOMFN_H_

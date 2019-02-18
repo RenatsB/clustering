@@ -1,5 +1,5 @@
-#ifndef GEN_GEN_H_
-#define GEN_GEN_H_
+#ifndef CLUSTERING_GEN_H_
+#define CLUSTERING_GEN_H_
 
 #include <vector>
 #include <QImage>
@@ -17,4 +17,4 @@ private:
     Ran m_rand;
 };
 
-#endif //GEN_GEN_H_
+#endif //CLUSTERING_GEN_H_
