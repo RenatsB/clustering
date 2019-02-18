@@ -1,4 +1,4 @@
-# noiseGen
+# K-Means Clustering
 
 references:
 
