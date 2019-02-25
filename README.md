@@ -10,3 +10,4 @@ https://stackoverflow.com/questions/1008019/c-singleton-design-pattern
 https://stackoverflow.com/questions/22387586/measuring-execution-time-of-a-function-in-c
 https://devtalk.nvidia.com/default/topic/1014332/jetson-tx2/data-sharing-between-c-and-cuda-programs/
 https://github.com/OpenImageIO/oiio/blob/release/src/doc/openimageio.pdf
+https://github.com/marcoscastro/kmeans/blob/master/kmeans.cpp
