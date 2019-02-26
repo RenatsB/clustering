@@ -1,4 +1,4 @@
-#include "ran.h"
+#include "ran.hpp"
 #include <time.h>
 
 Ran::Ran()
@@ -44,6 +44,24 @@ float Ran::randf(float r_low, float r_high, uint _t)
     }
 }
 
+double Ran::randd(double r_low, double r_high, uint _t)
+{
+    switch(_t)
+    {
+        case 0:
+        {
+            return SimpleRandD(r_low, r_high);
+        }
+        case 1:
+        {
+            return UniformRandD(r_low, r_high);
+        }
+        default:
+        {
+            return 0.f;
+        }
+    }
+}
 
 int Ran::SimpleRandI(int r_low, int r_high)
 {
@@ -59,6 +77,12 @@ float Ran::SimpleRandF(float r_low, float r_high)
     return r;
 }
 
+double Ran::SimpleRandD(double r_low, double r_high)
+{
+    double r = r_low + (rand()/(RAND_MAX / (r_high-r_low)));
+    return r;
+}
+
 int Ran::UniformRandI(int r_low, int r_high)
 {
     std::uniform_int_distribution distribution(r_low,r_high);
@@ -68,5 +92,11 @@ int Ran::UniformRandI(int r_low, int r_high)
 float Ran::UniformRandF(float r_low, float r_high)
 {
     std::uniform_real_distribution<float> distribution(r_low,r_high);
+    return distribution(m_generator);
+}
+
+double Ran::UniformRandD(double r_low, double r_high)
+{
+    std::uniform_real_distribution<double> distribution(r_low,r_high);
     return distribution(m_generator);
 }

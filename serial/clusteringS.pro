@@ -19,7 +19,7 @@ CONFIG-=app_bundle
 # Auto include all .cpp files in the project src directory (can specifiy individually if required)
 INCLUDEPATH += $$PWD/include
 
-HEADERS += $$files($$PWD/include/*.h)
+HEADERS += $$files($$PWD/include/*.hpp)
 SOURCES += $$files($$PWD/src/*.cpp)
 
 OTHER_FILES += $$files(../README.md)
