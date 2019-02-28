@@ -18,6 +18,10 @@ int Ran::randi(int r_low, int r_high, uint _t)
         {
             return UniformRandI(r_low, r_high);
         }
+        case 2:
+        {
+            return MT19937RandI(r_low, r_high);
+        }
         default:
         {
             return 0.f;
@@ -37,6 +41,10 @@ float Ran::randf(float r_low, float r_high, uint _t)
         {
             return UniformRandF(r_low, r_high);
         }
+        case 2:
+        {
+            return MT19937RandF(r_low, r_high);
+        }
         default:
         {
             return 0.f;
@@ -55,6 +63,10 @@ double Ran::randd(double r_low, double r_high, uint _t)
         case 1:
         {
             return UniformRandD(r_low, r_high);
+        }
+        case 2:
+        {
+            return MT19937RandD(r_low, r_high);
         }
         default:
         {
@@ -99,4 +111,25 @@ double Ran::UniformRandD(double r_low, double r_high)
 {
     std::uniform_real_distribution<double> distribution(r_low,r_high);
     return distribution(m_generator);
+}
+
+size_t Ran::MT19937RandI(int r_low, int r_high)
+{
+    std::mt19937 random_number_generator(seed());
+    std::uniform_int_distribution<size_t> distribution(r_low, r_high);
+    return distribution(random_number_generator);
+}
+
+float Ran::MT19937RandF(float r_low, float r_high)
+{
+    std::mt19937 random_number_generator(seed());
+    std::uniform_real_distribution<float> distribution(r_low, r_high);
+    return distribution(random_number_generator);
+}
+
+double Ran::MT19937RandD(double r_low, double r_high)
+{
+    std::mt19937 random_number_generator(seed());
+    std::uniform_real_distribution<double> distribution(r_low, r_high);
+    return distribution(random_number_generator);
 }

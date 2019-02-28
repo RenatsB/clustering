@@ -18,7 +18,12 @@ private:
     int UniformRandI(int r_low, int r_high);
     float UniformRandF(float r_low, float r_high);
     double UniformRandD(double r_low, double r_high);
+    size_t MT19937RandI(int r_low, int r_high);
+    float MT19937RandF(float r_low, float r_high);
+    double MT19937RandD(double r_low, double r_high);
+
     std::default_random_engine m_generator;
+    std::random_device seed;
 };
 
 #endif //CLUSTERING_RANDOMFN_HPP_
