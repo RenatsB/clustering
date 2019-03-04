@@ -13,6 +13,13 @@ struct Color
     {
         return std::array{m_r,m_g,m_b,m_a};
     }
+    void setData(double _r, double _g, double _b, double _a=1.0)
+    {
+        m_r = _r;
+        m_g = _g;
+        m_b = _b;
+        m_a = _a;
+    }
 };
 
 using DataFrame = std::vector<Color>;

@@ -47,7 +47,7 @@ public:
     }
     void setNumericLimits(T r_low, T r_high)
     {
-        distro(r_low,r_high);
+        distroU=std::uniform_real_distribution<T>(r_low,r_high);
     }
     void setNumericLimitsI(int r_low, int r_high)
     {

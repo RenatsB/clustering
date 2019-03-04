@@ -11,16 +11,17 @@ double kmeans::squared_l2_distance(Point first, Point second) {
 */
 double kmeans::squared_Colour_l2_Distance(Color first, Color second)
 {
-  return square(first.m_r - second.m_r) + square(first.m_g - second.m_g)
-       + square(first.m_b - second.m_b) + square(first.m_a - second.m_a);
+  return square(first.m_r*first.m_a - second.m_r*second.m_a)
+       + square(first.m_g*first.m_a - second.m_g*second.m_a)
+       + square(first.m_b*first.m_a - second.m_b*second.m_a);
 }
 
 DataFrame kmeans::k_means(const DataFrame& data,
                           size_t k,
                           size_t number_of_iterations) {
-  static std::random_device seed;
-  static std::mt19937 random_number_generator(seed());
-  std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
+  //static std::random_device seed;
+  //static std::mt19937 random_number_generator(seed());
+  //std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
   rfunc.setNumericLimitsL(0, data.size() - 1);
 
   // Pick centroids as random points from the dataset.
