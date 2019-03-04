@@ -12,7 +12,7 @@ public:
     std::vector<double> generate(uint w, uint h, uint format=3);
 private:
     std::vector<double> rawData;
-    Ran m_rand;
+    Ran<double> m_rand;
 };
 
 #endif //CLUSTERING_GEN_HPP_

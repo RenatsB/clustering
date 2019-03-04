@@ -11,15 +11,15 @@ std::vector<double> Gen::generate(uint w, uint h, uint format)
     {
         for(uint x; x<w; ++x)
         {
-            rawData.at(y*w+x) = m_rand.randd(0.0,256.0,1);
-            rawData.at(y*w+x+1) = m_rand.randd(0.0,256.0,1);
-            rawData.at(y*w+x+2) = m_rand.randd(0.0,256.0,1);
-            rawData.at(y*w+x+3) = 1.0;
+            //rawData.at(y*w+x) = m_rand.randd(0.0,256.0,1);
+            //rawData.at(y*w+x+1) = m_rand.randd(0.0,256.0,1);
+            //rawData.at(y*w+x+2) = m_rand.randd(0.0,256.0,1);
+            //rawData.at(y*w+x+3) = 1.0;
         }
     }
     for(auto &c : rawData)
     {
-        c = m_rand.randi(0,256,1);
+        //c = m_rand.randi(0,256,1);
     }
     //end of map generation
 

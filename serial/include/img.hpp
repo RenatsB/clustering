@@ -3,6 +3,7 @@
 #include <OpenImageIO/imageio.h>
 #include <string>
 #include <memory>
+#include "utilTypes.hpp"
 template <typename T>
 auto readImage(const std::string filename)
 {
