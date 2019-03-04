@@ -13,8 +13,8 @@ private:
     double turbulence(double x, double y, double size);
     void generateNoise();
 private:
-    size_t m_noiseWidth;
-    size_t m_noiseHeight;
+    size_t m_noiseWidth=1;
+    size_t m_noiseHeight=1;
     std::vector<std::vector<double>> m_noise;
     Ran<double> m_rand;
 };

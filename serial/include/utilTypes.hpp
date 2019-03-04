@@ -23,5 +23,10 @@ struct Color
 };
 
 using DataFrame = std::vector<Color>;
+struct uinteger2
+{
+    uint x;
+    uint y;
+};
 
 #endif //CLUSTERING_UTILTYPES_HPP_

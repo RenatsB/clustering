@@ -16,6 +16,8 @@ MOC_DIR=moc
 # on a mac we don't create a .app bundle file ( for ease of multiplatform use)
 CONFIG += console c++17
 CONFIG-=app_bundle
+
+LIBS += -lOpenImageIO
 # Auto include all .cpp files in the project src directory (can specifiy individually if required)
 INCLUDEPATH += $$PWD/include
 

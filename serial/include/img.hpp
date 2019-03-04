@@ -31,12 +31,12 @@ auto readImage(const std::string filename)
       input->read_image(
         TypeDesc::UINT8, data.data(), sizeof(T), AutoStride, AutoStride);
 
-      // return an owning span
       struct OwningSpan
       {
         std::vector<T> m_data;
         uinteger2 m_imageDim;
       };
+
     return OwningSpan{std::move(data), std::move(dim)};
 }
 
@@ -59,9 +59,17 @@ void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint
         });
       ImageSpec is(dimX,
                    dimY,
-                   sizeof(T) / sizeof(std::declval<T>()[0]),
-                   TypeDesc::UINT8);
+                   4,
+                   TypeDesc::FLOAT);
       output->open(filename, is);
     output->write_image(TypeDesc::UINT8, data.data());
+
+    /*std::unique_ptr<ImageOutput> out = ImageOutput::create (filename);
+    if (! out)
+    return;
+    ImageSpec spec (dimX, dimY, 4, TypeDesc::UINT8);
+    out->open (filename, spec);
+    out->write_image (TypeDesc::UINT8, data.data());
+    out->close ();*/
 }
 #endif //CLUSTERING_IMG_HPP_

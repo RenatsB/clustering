@@ -2,13 +2,15 @@
 
 DataFrame Gen::generate(uint w, uint h)
 {
+    m_noiseWidth=w;
+    m_noiseHeight=h;
     DataFrame rawData(w*h);
     m_noise.resize(h);
-    for (auto vert : m_noise )
+    for (auto &vert : m_noise )
         vert.resize(w);
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.0,256.0);
     //generate the per-pixel noise
     generateNoise();
 
@@ -17,9 +19,9 @@ DataFrame Gen::generate(uint w, uint h)
 
     //generate 4 different random colors
     Color L1,L2,L3,L4;
-    L1.setData(m_rand.MT19937RandU(),
-               m_rand.MT19937RandU(),
-               m_rand.MT19937RandU());
+    L1.setData(m_rand.UniformRandU(),
+               m_rand.UniformRandU(),
+               m_rand.UniformRandU());
     L2.setData(m_rand.MT19937RandU(),
                m_rand.MT19937RandU(),
                m_rand.MT19937RandU());
@@ -39,7 +41,10 @@ DataFrame Gen::generate(uint w, uint h)
         for(uint x; x<w; ++x)
         {
             double pwr = 192 + turbulence(x, y, 64) / 4;
-            pixelColor.setData(pwr*L1.m_r,pwr*L1.m_g,pwr*L1.m_b);
+            //pixelColor.setData(pwr*L1.m_r,pwr*L1.m_g,pwr*L1.m_b);
+            //pixelColor.setData(pwr,pwr,pwr);
+            rawData.at(y*w+x).setData(pwr*L1.m_r,pwr*L1.m_g,pwr*L1.m_b);
+            rawData.at(y*w+x).setData(pwr,pwr,pwr);
         }
     }
     //end of map generation
@@ -86,9 +91,12 @@ double Gen::turbulence(double x, double y, double size)
 
 void Gen::generateNoise()
 {
-  for (int y = 0; y < m_noiseHeight; y++)
-  for (int x = 0; x < m_noiseWidth; x++)
-  {
-    m_noise.at(y).at(x) = m_rand.MT19937RandU();
-  }
+  m_noise.resize(m_noiseHeight);
+  for(auto &l : m_noise)
+      l.resize(m_noiseWidth);
+  for (uint y = 0; y < m_noiseHeight; y++)
+    for (uint x = 0; x < m_noiseWidth; x++)
+    {
+        m_noise.at(y).at(x) = m_rand.MT19937RandU();
+    }
 }
