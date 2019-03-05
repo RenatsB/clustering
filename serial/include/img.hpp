@@ -60,16 +60,8 @@ void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint
       ImageSpec is(dimX,
                    dimY,
                    4,
-                   TypeDesc::FLOAT);
+                   TypeDesc::DOUBLE);
       output->open(filename, is);
-    output->write_image(TypeDesc::UINT8, data.data());
-
-    /*std::unique_ptr<ImageOutput> out = ImageOutput::create (filename);
-    if (! out)
-    return;
-    ImageSpec spec (dimX, dimY, 4, TypeDesc::UINT8);
-    out->open (filename, spec);
-    out->write_image (TypeDesc::UINT8, data.data());
-    out->close ();*/
+    output->write_image(TypeDesc::DOUBLE, data.data());
 }
 #endif //CLUSTERING_IMG_HPP_

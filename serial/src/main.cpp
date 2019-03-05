@@ -10,17 +10,17 @@ int main(int argc, char* argv[])
 
     uint x = 512;
     uint y = 512;
-    DataFrame ret = m_gen.generate(x,y);
+    DataFrame ret = m_gen.generate(x,y, 128);
     const char* name = "Test.jpg";
 
     std::vector<double> outp;
     outp.resize(ret.size()*4);
     for(uint i=0; i<ret.size(); ++i)
     {
-        outp.at(i) = ret.at(i).m_r;
-        outp.at(i+1) = ret.at(i).m_g;
-        outp.at(i+2) = ret.at(i).m_b;
-        outp.at(i+3) = ret.at(i).m_a;
+        outp.at(i*4) = ret.at(i).m_r;
+        outp.at(i*4+1) = ret.at(i).m_g;
+        outp.at(i*4+2) = ret.at(i).m_b;
+        outp.at(i*4+3) = ret.at(i).m_a;
     }
     //std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     //float time1 = m_gen.generate(512,512,true);

@@ -7,7 +7,7 @@
 class Gen
 {
 public:
-    DataFrame generate(uint w, uint h);
+    DataFrame generate(uint w, uint h, uint size);
 private:
     double smoothNoise(double x, double y);
     double turbulence(double x, double y, double size);

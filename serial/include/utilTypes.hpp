@@ -20,6 +20,13 @@ struct Color
         m_b = _b;
         m_a = _a;
     }
+    void setData(double _v)
+    {
+        m_r = _v;
+        m_g = _v;
+        m_b = _v;
+        m_a = 1.0;
+    }
 };
 
 using DataFrame = std::vector<Color>;
