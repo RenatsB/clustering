@@ -42,20 +42,25 @@ DataFrame Gen::generate(uint w, uint h, uint size)
         for(uint x=0; x<w; ++x)
         {
             double pwr1 = turbulence(x, y, size);
-            pixelColor.setData(pwr1*L1.m_r,pwr1*L1.m_g,pwr1*L1.m_b);
 
-            double pwr2 = turbulence(x, y, size/2);
+
+            /*double pwr2 = turbulence(x, y, size/2);
             a1.setData(pwr2*L1.m_r,pwr2*L1.m_g,pwr2*L1.m_b);
 
             double pwr3 = turbulence(x, y, size/4);
             a2.setData(pwr3*L1.m_r,pwr3*L1.m_g,pwr3*L1.m_b);
 
             double pwr4 = turbulence(x, y, size/8);
-            a3.setData(pwr4*L1.m_r,pwr4*L1.m_g,pwr4*L1.m_b);
+            a3.setData(pwr4*L1.m_r,pwr4*L1.m_g,pwr4*L1.m_b);*/
 
-            pixelColor.m_r*=a1.m_r*a2.m_r*a3.m_r;
-            pixelColor.m_g*=a1.m_g*a2.m_g*a3.m_g;
-            pixelColor.m_b*=a1.m_b*a2.m_b*a3.m_b;
+            /*pixelColor.m_r+=a1.m_r*pwr2;
+            pixelColor.m_g+=a1.m_g*pwr2;
+            pixelColor.m_b+=a1.m_b*pwr2;*/
+
+            double pwr2 = turbulence(x, y+m_noiseHeight, size/2);
+            double pwr3 = turbulence(x, y+m_noiseHeight*2, size/2);
+
+            pixelColor.setData(pwr1,pwr2,pwr3);
 
             rawData.at(y*w+x).setData(pixelColor.m_r,pixelColor.m_g,pixelColor.m_b);
         }
@@ -104,10 +109,10 @@ double Gen::turbulence(double x, double y, double size)
 
 void Gen::generateNoise()
 {
-  m_noise.resize(m_noiseHeight);
+  m_noise.resize(m_noiseHeight*3);
   for(auto &l : m_noise)
       l.resize(m_noiseWidth);
-  for (uint y = 0; y < m_noiseHeight; y++)
+  for (uint y = 0; y < m_noise.size(); y++)
     for (uint x = 0; x < m_noiseWidth; x++)
     {
         m_noise.at(y).at(x) = m_rand.MT19937RandU();

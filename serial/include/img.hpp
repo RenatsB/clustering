@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include "utilTypes.hpp"
+#include <iostream>
 template <typename T>
 auto readImage(const std::string filename)
 {
@@ -57,11 +58,14 @@ void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint
           ptr->close();
           delete ptr;
         });
+      if(!output)
+          std::cout<<"error";
       ImageSpec is(dimX,
                    dimY,
                    4,
                    TypeDesc::DOUBLE);
-      output->open(filename, is);
-    output->write_image(TypeDesc::DOUBLE, data.data());
+      std::cout<<output->open(filename, is);
+    std::cout<<output->write_image(TypeDesc::DOUBLE, data.data());
+    std::cout<<output->geterror();
 }
 #endif //CLUSTERING_IMG_HPP_

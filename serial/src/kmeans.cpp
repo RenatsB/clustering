@@ -19,12 +19,14 @@ double kmeans::squared_Colour_l2_Distance(Color first, Color second)
 DataFrame kmeans::k_means(const DataFrame& data,
                           size_t k,
                           size_t number_of_iterations) {
-  //static std::random_device seed;
-  //static std::mt19937 random_number_generator(seed());
-  //std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
-  rfunc.setNumericLimitsL(0, data.size() - 1);
+    //static std::random_device seed;
+    //static std::mt19937 random_number_generator(seed());
+    //std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
+    rfunc.setNumericLimitsL(0, data.size() - 1);
 
-  // Pick centroids as random points from the dataset.
+    DataFrame correctedImage(data.size());
+
+    // Pick centroids as random points from the dataset.
     DataFrame means(k);
     for (auto& cluster : means) {
       cluster = data[rfunc.MT19937RandL()];
@@ -70,5 +72,13 @@ DataFrame kmeans::k_means(const DataFrame& data,
       }
     }
 
-    return means;
+    for(uint i=0; i<correctedImage.size(); ++i)
+    {
+        correctedImage.at(i).setData(means[assignments[i]].m_r,
+                                     means[assignments[i]].m_g,
+                                     means[assignments[i]].m_b,
+                                     means[assignments[i]].m_a);
+    }
+
+    return correctedImage;
 }
