@@ -1,9 +1,10 @@
-*/*.o
+*.o
+*/moc
 */obj
+*.jpg
 *.qmake.stash
 *.qmake.cache
-*/*.pro.user*
-*/MakeFile
-*/Makefile
-*/serial/ClusteringSerial
-*/serial/*.jpg
+*.pro.user
+*MakeFile*
+*Makefile*
+serial/ClusteringSerial

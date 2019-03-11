@@ -24,7 +24,6 @@ INCLUDEPATH += $$PWD/include
 HEADERS += $$files($$PWD/include/*.hpp)
 SOURCES += $$files($$PWD/src/*.cpp)
 
-OTHER_FILES += $$files(../README.md)
 # where our exe is going to live (root of project)
 DESTDIR=./
 

@@ -1,4 +1,4 @@
-# K-Means Clustering
+# Image based K-Means Clustering
 
 references:
 

@@ -84,11 +84,11 @@ int main(int argc, const char* argv[]) {
 	Ran<size_t> rfunc;
 	Gen picGen;
 	size_t k = 4;
-thrust::host_vector<float> h_x;
-thrust::host_vector<float> h_y;
-DataFrame source = picGen.generate(XRESOLUTION,YRESOLUTION,128);
+    thrust::host_vector<float> h_x;
+    thrust::host_vector<float> h_y;
+    DataFrame source = picGen.generate(XRESOLUTION,YRESOLUTION,128);
 
-	thrust::device_vector<double> means(source.size());
+    thrust::device_vector<double> means(k);
 	randF.setNumericLimitsL(0, data.size() - 1);
 
 	thrust::device_vector<Color> means(k);
@@ -97,49 +97,49 @@ DataFrame source = picGen.generate(XRESOLUTION,YRESOLUTION,128);
 		cluster = data[randF.MT19937RandL()];
 	}
 
-// Load x and y into host vectors ... (omitted)
+    // Load x and y into host vectors ... (omitted)
 
-const size_t number_of_elements = h_x.size();
+    const size_t number_of_elements = h_x.size();
 
-thrust::device_vector<float> d_x = h_x;
-thrust::device_vector<float> d_y = h_y;
+    thrust::device_vector<float> d_x = h_x;
+    thrust::device_vector<float> d_y = h_y;
 
-std::mt19937 rng(std::random_device{}());
-std::shuffle(h_x.begin(), h_x.end(), rng);
-std::shuffle(h_y.begin(), h_y.end(), rng);
-thrust::device_vector<float> d_mean_x(h_x.begin(), h_x.begin() + k);
-thrust::device_vector<float> d_mean_y(h_y.begin(), h_y.begin() + k);
+    std::mt19937 rng(std::random_device{}());
+    std::shuffle(h_x.begin(), h_x.end(), rng);
+    std::shuffle(h_y.begin(), h_y.end(), rng);
+    thrust::device_vector<float> d_mean_x(h_x.begin(), h_x.begin() + k);
+    thrust::device_vector<float> d_mean_y(h_y.begin(), h_y.begin() + k);
 
-thrust::device_vector<float> d_sums_x(k);
-thrust::device_vector<float> d_sums_y(k);
-thrust::device_vector<int> d_counts(k, 0);
+    thrust::device_vector<float> d_sums_x(k);
+    thrust::device_vector<float> d_sums_y(k);
+    thrust::device_vector<int> d_counts(k, 0);
 
-const int threads = 1024;
-const int blocks = (number_of_elements + threads - 1) / threads;
+    const int threads = 1024;
+    const int blocks = (number_of_elements + threads - 1) / threads;
 
-for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
-thrust::fill(d_sums_x.begin(), d_sums_x.end(), 0);
-thrust::fill(d_sums_y.begin(), d_sums_y.end(), 0);
-thrust::fill(d_counts.begin(), d_counts.end(), 0);
+    for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
+        thrust::fill(d_sums_x.begin(), d_sums_x.end(), 0);
+        thrust::fill(d_sums_y.begin(), d_sums_y.end(), 0);
+        thrust::fill(d_counts.begin(), d_counts.end(), 0);
 
-assign_clusters<<<blocks, threads>>>(d_x.data(),
-			 d_y.data(),
-			 number_of_elements,
-			 d_mean_x.data(),
-			 d_mean_y.data(),
-			 d_sums_x.data(),
-			 d_sums_y.data(),
-			 k,
-			 d_counts.data());
-//cudaDeviceSynchronize();
-__syncthreads();
+        assign_clusters<<<blocks, threads>>>(d_x.data(),
+                     d_y.data(),
+                     number_of_elements,
+                     d_mean_x.data(),
+                     d_mean_y.data(),
+                     d_sums_x.data(),
+                     d_sums_y.data(),
+                     k,
+                     d_counts.data());
+        //cudaDeviceSynchronize();
+        __syncthreads();
 
-compute_new_means<<<1, k>>>(d_mean_x.data(),
-	d_mean_y.data(),
-	d_sums_x.data(),
-	d_sums_y.data(),
-	d_counts.data());
-//cudaDeviceSynchronize();
-__syncthreads();
-}
+        compute_new_means<<<1, k>>>(d_mean_x.data(),
+            d_mean_y.data(),
+            d_sums_x.data(),
+            d_sums_y.data(),
+            d_counts.data());
+        //cudaDeviceSynchronize();
+        __syncthreads();
+    }
 }
