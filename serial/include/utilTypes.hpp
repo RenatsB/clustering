@@ -27,6 +27,34 @@ struct Color
         m_b = _v;
         m_a = 1.0;
     }
+    Color operator+(const Color& rhs){return Color{this->m_r+=rhs.m_r,
+                                                   this->m_g+=rhs.m_g,
+                                                   this->m_b+=rhs.m_b,
+                                                   this->m_a+=rhs.m_a};}
+    Color operator+=(const Color& rhs){return Color{this->m_r+=rhs.m_r,
+                                                    this->m_g+=rhs.m_g,
+                                                    this->m_b+=rhs.m_b,
+                                                    this->m_a+=rhs.m_a};}
+    Color operator-(const Color& rhs){return Color{this->m_r-=rhs.m_r,
+                                                   this->m_g-=rhs.m_g,
+                                                   this->m_b-=rhs.m_b,
+                                                   this->m_a-=rhs.m_a};}
+    Color operator-=(const Color& rhs){return Color{this->m_r-=rhs.m_r,
+                                                    this->m_g-=rhs.m_g,
+                                                    this->m_b-=rhs.m_b,
+                                                    this->m_a-=rhs.m_a};}
+    Color operator/(const double& rhs){return Color{this->m_r/rhs,
+                                                    this->m_g/rhs,
+                                                    this->m_b/rhs,
+                                                    this->m_a/rhs};}
+    Color operator/(const float& rhs){return Color{this->m_r/(double)rhs,
+                                                   this->m_g/(double)rhs,
+                                                   this->m_b/(double)rhs,
+                                                   this->m_a/(double)rhs};}
+    Color operator/(const int& rhs){return Color{this->m_r/(double)rhs,
+                                                   this->m_g/(double)rhs,
+                                                   this->m_b/(double)rhs,
+                                                   this->m_a/(double)rhs};}
 };
 
 using DataFrame = std::vector<Color>;

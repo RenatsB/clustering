@@ -11,8 +11,8 @@
 #include <thrust/device_vector.h>
 
 // Include 
-#include <../../serial/src/gen.cpp> //this includes generator, random and utilTypes
-#include <../../serial/include/img.hpp>
+#include "../../serial/src/gen.cpp" //this includes generator, random and utilTypes
+#include "../../serial/include/img.hpp"
 
 // Needed to get matrix functions working in CUDA
 #include <eigen-nvcc/Dense>
@@ -27,94 +27,119 @@
 #define XRESOLUTION 512
 #define YRESOLUTION 512
 
-double squared_Colour_l2_Distance(Color first, Color second)
+__device__ double sq_Parallel(double ref)
 {
-    return square(first.m_r*first.m_a - second.m_r*second.m_a)
-       + square(first.m_g*first.m_a - second.m_g*second.m_a)
-       + square(first.m_b*first.m_a - second.m_b*second.m_a);
+	return ref*ref;
 }
 
-__global__ DataFrame kmeansParallel(DataFrame &data,
-                                    thrust::device_vector<float> *means,
-                                    Ran *rfun,
-                                    size_t k,
-                                    size_t numIterations) {
-    // Here is where YOU make it happen
-    rfunc.setNumericLimitsL(0, data.size() - 1);
-    DataFrame correctedImage(data.size());
+__device__ double sq_Col_l2_Dist_Parallel(Color first, Color second)
+{
+    return sq_Parallel(first.m_r*first.m_a - second.m_r*second.m_a)
+         + sq_Parallel(first.m_g*first.m_a - second.m_g*second.m_a)
+         + sq_Parallel(first.m_b*first.m_a - second.m_b*second.m_a);
+}
 
-	Eigen::Map<Eigen::Matrix<float,4,4,Eigen::RowMajor> > M(Mf)
+// In the assignment step, each point (thread) computes its distance to each
+// cluster centroid and adds its x and y values to the sum of its closest
+// centroid, as well as incrementing that centroid's count of assigned points.
+__global__ void assign_clusters(const thrust::device_ptr<Color> data,
+								size_t data_size,
+								const thrust::device_ptr<Color> means,
+								thrust::device_ptr<Color> new_sums,
+								size_t k,
+								thrust::device_ptr<int> counts) {
+	const int index = blockIdx.x * blockDim.x + threadIdx.x;
+	if (index >= data_size) return;
 
-	Eigen::Matrix4f Px, Py, Pz;
-	__syncthreads();
+	// Make global loads once.
+	const Color current = data[index];
 
-	if((ThreadIdx.x < 4) && (threadIdx.y < 4))
+	double best_distance = DBL_MAX;
+	int best_cluster = 0;
+	for (int cluster = 0; cluster < k; ++cluster) {
+		const double distance = sq_Col_l2_Dist_Parallel(current, means[cluster]);
+		if (distance < best_distance) {
+			best_distance = distance;
+			best_cluster = cluster;
+		}
+	}
+
+	atomicAdd(thrust::raw_pointer_cast(new_sums_x + best_cluster), x);
+	atomicAdd(thrust::raw_pointer_cast(new_sums_y + best_cluster), y);
+	atomicAdd(thrust::raw_pointer_cast(counts + best_cluster), 1);
+}
+
+// Each thread is one cluster, which just recomputes its coordinates as the mean
+// of all points assigned to it.
+__global__ void compute_new_means(thrust::device_ptr<Color> means,
+  								const thrust::device_ptr<Color> new_sum,
+  								const thrust::device_ptr<int> counts) {
+	const int cluster = threadIdx.x;
+	const int count = max(1, counts[cluster]);
+	means[cluster] = new_sum[cluster] / count;
+}
+
+int main(int argc, const char* argv[]) {
+
+	Ran<size_t> rfunc;
+	Gen picGen;
+	size_t k = 4;
+thrust::host_vector<float> h_x;
+thrust::host_vector<float> h_y;
+DataFrame source = picGen.generate(XRESOLUTION,YRESOLUTION,128);
+
+	thrust::device_vector<double> means(source.size());
+	randF.setNumericLimitsL(0, data.size() - 1);
+
+	thrust::device_vector<Color> means(k);
+	for(auto &cluster : means)
 	{
-		uint idx = patches[blockIdx.x * 16 + threadIdx.x*4 + threadIdx.y];
-		Px(threadIdx.x,threadIdx.y) = vertices[idx * 3 + 0];
-		Py(threadIdx.x,threadIdx.y) = vertices[idx * 3 + 1];
-		Pz(threadIdx.x,threadIdx.y) = vertices[idx * 3 + 2];
+		cluster = data[randF.MT19937RandL()];
 	}
-	__syncthreads();
 
-	float posU = (float)(threadIdx.x)/(float)(blockDim.x-1);
-	float posV = (float)(threadIdx.y)/(float)(blockDim.y-1);
-	Eigen::Vector4f U(1.f, posU, posU*posU, posU*posU*posU);
-	Eigen::Vector4f V(1.f, posV, posV*posV, posV*posV*posV);
-	
-	uint output_idx = blockIdx.x * blockDim.x * blockDim.y +
-	threadIdx.x * blockDim.y + threadIdx.y;
-	output_vertices[output_idx * 3] = U.dot(M*Px*M.transpose()*V);
-	output_vertices[output_idx * 3+1] = U.dot(M*Py*M.transpose()*V);
-	output_vertices[output_idx * 3+2] = U.dot(M*Pz*M.transpose()*V);
+// Load x and y into host vectors ... (omitted)
+
+const size_t number_of_elements = h_x.size();
+
+thrust::device_vector<float> d_x = h_x;
+thrust::device_vector<float> d_y = h_y;
+
+std::mt19937 rng(std::random_device{}());
+std::shuffle(h_x.begin(), h_x.end(), rng);
+std::shuffle(h_y.begin(), h_y.end(), rng);
+thrust::device_vector<float> d_mean_x(h_x.begin(), h_x.begin() + k);
+thrust::device_vector<float> d_mean_y(h_y.begin(), h_y.begin() + k);
+
+thrust::device_vector<float> d_sums_x(k);
+thrust::device_vector<float> d_sums_y(k);
+thrust::device_vector<int> d_counts(k, 0);
+
+const int threads = 1024;
+const int blocks = (number_of_elements + threads - 1) / threads;
+
+for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
+thrust::fill(d_sums_x.begin(), d_sums_x.end(), 0);
+thrust::fill(d_sums_y.begin(), d_sums_y.end(), 0);
+thrust::fill(d_counts.begin(), d_counts.end(), 0);
+
+assign_clusters<<<blocks, threads>>>(d_x.data(),
+			 d_y.data(),
+			 number_of_elements,
+			 d_mean_x.data(),
+			 d_mean_y.data(),
+			 d_sums_x.data(),
+			 d_sums_y.data(),
+			 k,
+			 d_counts.data());
+//cudaDeviceSynchronize();
+__syncthreads();
+
+compute_new_means<<<1, k>>>(d_mean_x.data(),
+	d_mean_y.data(),
+	d_sums_x.data(),
+	d_sums_y.data(),
+	d_counts.data());
+//cudaDeviceSynchronize();
+__syncthreads();
 }
-
-/**
- * Host main routine. In this function we'll basically stash the teapot data onto the device using
- * thrust iterators, call the kernel, and then output the result to the screen, formatted for an
- * obj file.
- */
-int main(void) {
-	
-    Ran<double> rfunc;
-	// Create our vectors for the device to hold our point data by using
-	// array iterators (like STL)
-	thrust::device_vector<float> d_vertices(teapot::vertices, teapot::vertices + 3*teapot::num_vertices);
-	thrust::copy(d_vertices.begin(), d_vertices.end(), std::ostream_iterator<float>(std::cout, " "));
-	// Create an array for our patch indices
-	thrust::device_vector<unsigned int> d_patches(teapot::patches, teapot::patches + 16*teapot::num_patches);
-
-	// Create output data structure (there will be (x,y,z) values in both the u and v directions along the patch)
-	thrust::device_vector<float> d_output_vertices(RES*RES*3*teapot::num_patches);
-
-	float M[] = 1.f, 0.f, 0.f, 0.f, -3.f, 3.f, 0.f, 0.f, 3.f, -6.f, 3.f, 0.f, -1.f, 3.f, -3.f, 1.f;
-	//std::copy(M, M+16, std::ostream_iterator<float>)
-	if(cudaMemCpyToSymbol(Mf, M, sizof(M)) != cudaSuccess)
-	{
-		return EXIT_FAILURE;
-	}
-
-	// Define the dimension of the block - the u and v coordinates of the sampled point are given
-	// by the threadIdx.x/y.
-	dim3 blockDim(RES, RES, 1);
-
-	// Call our kernel function to sample points on the bezier patch
-	tesselate<<<teapot::num_patches, blockDim>>>(thrust::raw_pointer_cast(&d_output_vertices[0]),
-	  					thrust::raw_pointer_cast(&d_patches[0]),
-						thrust::raw_pointer_cast(&d_vertices[0]),
-						teapot::num_patches);
-
-	// Dump the data in obj format to cout (use the pipe ">" command to make an obj file)
-	thrust::device_vector<float>::iterator dit = d_output_vertices.begin();
-	unsigned int i;
-	for (i=0; i<RES*RES*teapot::num_patches; ++i) {
-		std::cout << "v ";
-		thrust::copy(dit, dit+3, std::ostream_iterator<float>(std::cout, " "));
-		std::cout << "\n";
-		dit += 3;
-	}
-
-	// Exit politely
-	return 0;
 }
-
