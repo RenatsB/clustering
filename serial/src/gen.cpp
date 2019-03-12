@@ -1,4 +1,4 @@
-#include <gen.hpp>
+#include "../include/gen.hpp"
 
 DataFrame Gen::generate(uint w, uint h, uint size)
 {
@@ -14,51 +14,17 @@ DataFrame Gen::generate(uint w, uint h, uint size)
     //generate the per-pixel noise
     generateNoise();
 
-    //set limits to 0-256 for colors
-    m_rand.setNumericLimits(0.0,1.0);
-
-    //generate 4 different random colors
-    Color L1,L2,L3,L4;
-    //L1.setData(256.0,0.0,0.0,0.0);
-    L1.setData(m_rand.MT19937RandU(),
-               m_rand.MT19937RandU(),
-               m_rand.MT19937RandU());
-    L2.setData(m_rand.MT19937RandU(),
-               m_rand.MT19937RandU(),
-               m_rand.MT19937RandU());
-    L3.setData(m_rand.MT19937RandU(),
-               m_rand.MT19937RandU(),
-               m_rand.MT19937RandU());
-    L4.setData(m_rand.MT19937RandU(),
-               m_rand.MT19937RandU(),
-               m_rand.MT19937RandU());
-
     //Create a variable here to avoid reallocation in the loop
-    Color pixelColor, a1,a2,a3;
+    Color pixelColor;
 
     //generate the map here
     for(uint y=0; y<h; ++y)
     {
         for(uint x=0; x<w; ++x)
         {
-            double pwr1 = turbulence(x, y, size);
-
-
-            /*double pwr2 = turbulence(x, y, size/2);
-            a1.setData(pwr2*L1.m_r,pwr2*L1.m_g,pwr2*L1.m_b);
-
-            double pwr3 = turbulence(x, y, size/4);
-            a2.setData(pwr3*L1.m_r,pwr3*L1.m_g,pwr3*L1.m_b);
-
-            double pwr4 = turbulence(x, y, size/8);
-            a3.setData(pwr4*L1.m_r,pwr4*L1.m_g,pwr4*L1.m_b);*/
-
-            /*pixelColor.m_r+=a1.m_r*pwr2;
-            pixelColor.m_g+=a1.m_g*pwr2;
-            pixelColor.m_b+=a1.m_b*pwr2;*/
-
-            double pwr2 = turbulence(x, y+m_noiseHeight, size/2);
-            double pwr3 = turbulence(x, y+m_noiseHeight*2, size/2);
+            float pwr1 = turbulence(x, y, size);
+            float pwr2 = turbulence(x, y+m_noiseHeight, size/2);
+            float pwr3 = turbulence(x, y+m_noiseHeight*2, size/2);
 
             pixelColor.setData(pwr1,pwr2,pwr3);
 
@@ -66,15 +32,14 @@ DataFrame Gen::generate(uint w, uint h, uint size)
         }
     }
     //end of map generation
-
     return rawData;
 }
 
-double Gen::smoothNoise(double x, double y)
+float Gen::smoothNoise(float x, float y)
 {
    //get fractional part of x and y
-   double fractX = x - int(x);
-   double fractY = y - int(y);
+   float fractX = x - int(x);
+   float fractY = y - int(y);
 
    //wrap around
    int x1 = (int(x) + m_noiseWidth) % m_noiseWidth;
@@ -85,7 +50,7 @@ double Gen::smoothNoise(double x, double y)
    int y2 = (y1 + m_noiseHeight - 1) % m_noiseHeight;
 
    //smooth the noise with bilinear interpolation
-   double value;
+   float value;
    value  = fractX       * fractY       * m_noise.at(y1).at(x1);
    value += (1 - fractX) * fractY       * m_noise.at(y1).at(x2);
    value += fractX       * (1 - fractY) * m_noise.at(y2).at(x1);
@@ -94,9 +59,9 @@ double Gen::smoothNoise(double x, double y)
    return value;
 }
 
-double Gen::turbulence(double x, double y, double size)
+float Gen::turbulence(float x, float y, float size)
 {
-  double value = 0.0, initialSize = size;
+  float value = 0.0, initialSize = size;
 
   while(size >= 1)
   {

@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
     DataFrame ret = m_gen.generate(x,y, 128);
     const char* name = "Test.jpg";
     const char* name2 = "DeeEffed.jpg";
-    std::vector<double> outp;
+    std::vector<float> outp;
     outp.resize(ret.size()*4);
     for(uint i=0; i<ret.size(); ++i)
     {
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     //std::cout<<"Serial version finished in "<<time1<<"seconds..."<<std::endl;
     writeImage(name,outp,x,y);
     kmeans k;
-    DataFrame df = k.k_means(ret,16,1);
+    DataFrame df = k.k_means(ret,256,1);
     outp.resize(ret.size()*4);
     for(uint i=0; i<ret.size(); ++i)
     {

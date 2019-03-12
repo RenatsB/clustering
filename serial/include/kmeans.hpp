@@ -10,11 +10,11 @@ DataFrame k_means(const DataFrame& data,
                   size_t k,
                   size_t number_of_iterations);
 private:
-double square(double value);
+float square(float value);
 //double squared_l2_distance(Color first, Color second);
-double squared_Colour_l2_Distance(Color first, Color second);
+float squared_Colour_l2_Distance(Color first, Color second);
 private:
-Ran<double> rfunc;
+Ran<float> rfunc;
 };
 
 #endif //CLUSTERING_KMEANS_HPP_

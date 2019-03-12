@@ -9,14 +9,14 @@ class Gen
 public:
     DataFrame generate(uint w, uint h, uint size);
 private:
-    double smoothNoise(double x, double y);
-    double turbulence(double x, double y, double size);
+    float smoothNoise(float x, float y);
+    float turbulence(float x, float y, float size);
     void generateNoise();
 private:
     size_t m_noiseWidth=1;
     size_t m_noiseHeight=1;
-    std::vector<std::vector<double>> m_noise;
-    Ran<double> m_rand;
+    std::vector<std::vector<float>> m_noise;
+    Ran<float> m_rand;
 };
 
 #endif //CLUSTERING_GEN_HPP_

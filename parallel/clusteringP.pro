@@ -1,13 +1,16 @@
 # Read shared environment settings from the common include file
-LIB_INSTALL_DIR=$$PWD/lib
-BIN_INSTALL_DIR=$$PWD/bin
-INC_INSTALL_DIR=$$PWD/include
+#LIB_INSTALL_DIR=$$PWD/lib
+#BIN_INSTALL_DIR=$$PWD/bin
+#INC_INSTALL_DIR=$$PWD/include
 
 linux:QMAKE_CXX = $$(HOST_COMPILER)
 macx:QMAKE_CXX=clang++
 QMAKE_CXXFLAGS += -D_DEBUG -DTHRUST_DEBUG
 
-INCLUDEPATH += ${CUDA_SAMPLES_PATH}/common/inc ${PWD}/../common/include include ${CUDA_PATH}/include ${CUDA_PATH}/include/cuda
+#HEADERS+= $$PWD/../serial/include/*.hpp
+INCLUDEPATH+=$$PWD/../../serial/include/*.hpp
+
+INCLUDEPATH += ${CUDA_PATH}/include ${CUDA_PATH}/include/cuda
 
 # This is set to build a dynamic library
 TEMPLATE = app
@@ -16,7 +19,7 @@ TEMPLATE = app
 OBJECTS_DIR = obj
 
 # Set this up as the installation directory for our library
-TARGET = $$LIB_INSTALL_DIR/fluid
+TARGET = ClusteringParallel
 
 # Set the C++ flags for this compilation when using the host compiler
 QMAKE_CXXFLAGS += -std=c++11 -fPIC 
@@ -24,7 +27,7 @@ QMAKE_CXXFLAGS += -std=c++11 -fPIC
 QMAKE_CXXFLAGS += $$system(pkg-config --silence-errors --cflags cuda-8.0 cudart-8.0 curand-8.0 cublas-8.0)
 
 # Link with the following libraries
-LIBS += $$system(pkg-config --silence-errors --libs cuda-8.0 cudart-8.0 curand-8.0 cublas-8.0) -lcublas_device -lcudadevrt
+LIBS += $$system(pkg-config --silence-errors --libs cuda-8.0 cudart-8.0 curand-8.0 cublas-8.0) -Lcudart-8.0 -lcublas_device -lcudadevrt
 
 # Use the following path for nvcc created object files
 CUDA_OBJECTS_DIR = cudaobj
@@ -37,7 +40,7 @@ isEmpty(CUDA_DIR) {
 }
  
 ## CUDA_SOURCES - the source (generally .cu) files for nvcc. No spaces in path names
-CUDA_SOURCES += src/*.cu
+CUDA_SOURCES += cusrc/*.cu
 
 ## CUDA_INC - all includes needed by the cuda files (such as CUDA\<version-number\include)
 CUDA_INC += $$join(INCLUDEPATH,' -I','-I',' ')
@@ -47,8 +50,8 @@ CUDA_INC += $$join(INCLUDEPATH,' -I','-I',' ')
 NVCC_DEBUG_FLAGS += -D_DEBUG -g -G  -DTHRUST_DEBUG
 #NVCC_DEBUG_FLAGS += -Xptxas -v
 # New added by Jon - determines the best current cuda architecture of your system
-GENCODE=$$system(../findCudaArch.sh)
-NVCCFLAGS =  -ccbin $$(HOST_COMPILER) -I../src/	-m64 $$NVCC_DEBUG_FLAGS $$GENCODE --compiler-options -fno-strict-aliasing --compiler-options -fPIC -use_fast_math --std=c++11
+#GENCODE=$$system(../findCudaArch.sh)
+NVCCFLAGS =  -ccbin $$(HOST_COMPILER) -I../src/	-m64 $$NVCC_DEBUG_FLAGS --compiler-options -fno-strict-aliasing --compiler-options -fPIC -use_fast_math --std=c++11
 #message($$NVCCFLAGS)
 # Define the path and binary for nvcc
 NVCCBIN = $$CUDA_DIR/bin/nvcc
@@ -81,6 +84,6 @@ cudalink.depend_command = $$NVCCBIN $$NVCCFLAGS -M $$CUDA_INC ${QMAKE_FILE_NAME}
 QMAKE_EXTRA_COMPILERS += cudalink
 
 # Set up the post install script to copy the headers into the appropriate directory
-includeinstall.commands = mkdir -p $$INC_INSTALL_DIR && cp include/*.h $$INC_INSTALL_DIR
-QMAKE_EXTRA_TARGETS += includeinstall
-POST_TARGETDEPS += includeinstall
+#includeinstall.commands = mkdir -p $$INC_INSTALL_DIR && cp include/*.h $$INC_INSTALL_DIR
+#QMAKE_EXTRA_TARGETS += includeinstall
+#POST_TARGETDEPS += includeinstall

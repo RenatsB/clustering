@@ -1,7 +1,7 @@
 #include "kmeans.hpp"
 #include <random>
 
-double kmeans::square(double value) {
+float kmeans::square(float value) {
   return value * value;
 }
 /*
@@ -9,7 +9,7 @@ double kmeans::squared_l2_distance(Point first, Point second) {
   return square(first.x - second.x) + square(first.y - second.y);
 }
 */
-double kmeans::squared_Colour_l2_Distance(Color first, Color second)
+float kmeans::squared_Colour_l2_Distance(Color first, Color second)
 {
   return square(first.m_r*first.m_a - second.m_r*second.m_a)
        + square(first.m_g*first.m_a - second.m_g*second.m_a)
@@ -36,10 +36,10 @@ DataFrame kmeans::k_means(const DataFrame& data,
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
       // Find assignments.
       for (size_t point = 0; point < data.size(); ++point) {
-        double best_distance = std::numeric_limits<double>::max();
+        float best_distance = std::numeric_limits<float>::max();
         size_t best_cluster = 0;
         for (size_t cluster = 0; cluster < k; ++cluster) {
-          const double distance =
+          const float distance =
               squared_Colour_l2_Distance(data[point], means[cluster]);
           if (distance < best_distance) {
             best_distance = distance;

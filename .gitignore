@@ -8,3 +8,4 @@
 *MakeFile*
 *Makefile*
 serial/ClusteringSerial
+parallel/ClusteringParallel

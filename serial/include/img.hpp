@@ -6,6 +6,30 @@
 #include "utilTypes.hpp"
 #include <iostream>
 template <typename T>
+void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint dimY)
+{
+    std::cout << "Writing image to " << filename << '\n';
+      // OpenImageIO namespace
+      using namespace OIIO;
+      // unique_ptr with custom deleter to close file on exit
+      std::unique_ptr<ImageOutput> output(
+        ImageOutput::create(filename)
+    #if OIIO_VERSION >= 10900
+          .release()
+    #endif
+                  );
+      if(!output)
+          std::cout<<"error";
+      ImageSpec is(dimX,
+                   dimY,
+                   4,
+                   TypeDesc::FLOAT);
+      std::cout<<output->open(filename, is);
+    std::cout<<output->write_image(TypeDesc::FLOAT, data.data());
+    std::cout<<output->geterror();
+}
+
+/*template <typename T>
 auto readImage(const std::string filename)
 {
     // OpenImageIO namespace
@@ -39,33 +63,5 @@ auto readImage(const std::string filename)
       };
 
     return OwningSpan{std::move(data), std::move(dim)};
-}
-
-template <typename T>
-void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint dimY)
-{
-    std::cout << "Writing image to " << filename << '\n';
-      // OpenImageIO namespace
-      using namespace OIIO;
-      // unique_ptr with custom deleter to close file on exit
-      std::unique_ptr<ImageOutput, void (*)(ImageOutput*)> output(
-        ImageOutput::create(filename)
-    #if OIIO_VERSION >= 10900
-          .release()
-    #endif
-          ,
-        [](auto ptr) {
-          ptr->close();
-          delete ptr;
-        });
-      if(!output)
-          std::cout<<"error";
-      ImageSpec is(dimX,
-                   dimY,
-                   4,
-                   TypeDesc::DOUBLE);
-      std::cout<<output->open(filename, is);
-    std::cout<<output->write_image(TypeDesc::DOUBLE, data.data());
-    std::cout<<output->geterror();
-}
+}*/
 #endif //CLUSTERING_IMG_HPP_
