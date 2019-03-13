@@ -5,7 +5,5 @@
 *.qmake.stash
 *.qmake.cache
 *.pro.user
-*MakeFile*
 *Makefile*
-serial/ClusteringSerial
-parallel/ClusteringParallel
+demo/lib/*

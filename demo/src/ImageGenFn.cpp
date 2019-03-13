@@ -1,6 +1,6 @@
-#include "../include/gen.hpp"
+#include "ImageGenFn.hpp"
 
-DataFrame Gen::generate(uint w, uint h, uint size)
+DataFrame ImageGenFn::generate(uint w, uint h, uint size)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -35,7 +35,7 @@ DataFrame Gen::generate(uint w, uint h, uint size)
     return rawData;
 }
 
-float Gen::smoothNoise(float x, float y)
+float ImageGenFn::smoothNoise(float x, float y)
 {
    //get fractional part of x and y
    float fractX = x - int(x);
@@ -59,7 +59,7 @@ float Gen::smoothNoise(float x, float y)
    return value;
 }
 
-float Gen::turbulence(float x, float y, float size)
+float ImageGenFn::turbulence(float x, float y, float size)
 {
   float value = 0.0, initialSize = size;
 
@@ -72,7 +72,7 @@ float Gen::turbulence(float x, float y, float size)
   return(128.0 * value / initialSize)/256.0;
 }
 
-void Gen::generateNoise()
+void ImageGenFn::generateNoise()
 {
   m_noise.resize(m_noiseHeight*3);
   for(auto &l : m_noise)

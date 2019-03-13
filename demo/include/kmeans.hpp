@@ -1,7 +1,7 @@
 #ifndef CLUSTERING_KMEANS_HPP_
 #define CLUSTERING_KMEANS_HPP_
 #include "utilTypes.hpp"
-#include "ran.hpp"
+#include "RandomFn.hpp"
 
 class kmeans
 {
@@ -14,7 +14,7 @@ float square(float value);
 //double squared_l2_distance(Color first, Color second);
 float squared_Colour_l2_Distance(Color first, Color second);
 private:
-Ran<float> rfunc;
+RandomFn<float> rfunc;
 };
 
 #endif //CLUSTERING_KMEANS_HPP_

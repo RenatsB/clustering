@@ -4,16 +4,16 @@
 #include <random>
 #include <cstdlib>
 template <typename T>
-class Ran
+class RandomFn
 {
 public:
-    Ran()
+    RandomFn()
     {
         srand((unsigned)time(NULL));
         m_generator.seed((seed()));
         m_MTgenerator=std::mt19937(seed());
     }
-    ~Ran()=default;
+    ~RandomFn()=default;
     T SimpleRand(T r_low, T r_high)
     {
         double r = rand()/(1.0 + RAND_MAX);

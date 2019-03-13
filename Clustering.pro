@@ -1,4 +1,6 @@
 TEMPLATE = subdirs
-SUBDIRS = serial/clusteringS.pro parallel/clusteringP.pro
+SUBDIRS = demo #test
+
+#test.depends = demo
 
 OTHER_FILES += $$files($$PWD/README.md)

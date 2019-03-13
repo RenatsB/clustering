@@ -12,14 +12,16 @@ void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint
       // OpenImageIO namespace
       using namespace OIIO;
       // unique_ptr with custom deleter to close file on exit
-      std::unique_ptr<ImageOutput> output(
-        ImageOutput::create(filename)
+      std::unique_ptr<ImageOutput, void (*)(ImageOutput*)> output(
+        ImageOutput::create(filename.data())
     #if OIIO_VERSION >= 10900
           .release()
     #endif
-                  );
-      if(!output)
-          std::cout<<"error";
+          ,
+        [](auto ptr) {
+          ptr->close();
+          delete ptr;
+        });
       ImageSpec is(dimX,
                    dimY,
                    4,

@@ -1,12 +1,11 @@
 #ifndef CLUSTERING_UTILTYPES_HPP_
 #define CLUSTERING_UTILTYPES_HPP_
-#include <vector>
 #include <array>
+#include <vector>
 
-class Color
+struct Color
 {
-public:
-    Color() = default;
+    Color(){}
     Color(float x, float y, float z, float w):
         m_r(x),
         m_g(y),
@@ -17,11 +16,6 @@ public:
     float m_g=1.0;
     float m_b=1.0;
     float m_a=1.0;
-    std::array<float,4> getData() const
-    {
-        std::array<float,4> ret{m_r,m_g,m_b,m_a};
-        return ret;
-    }
     void setData(float _r, float _g, float _b, float _a=1.0)
     {
         m_r = _r;
@@ -40,22 +34,6 @@ public:
                                                    m_g+=rhs.m_g,
                                                    m_b+=rhs.m_b,
                                                    m_a+=rhs.m_a};}
-    Color operator+=(const Color& rhs){return Color{m_r+=rhs.m_r,
-                                                    m_g+=rhs.m_g,
-                                                    m_b+=rhs.m_b,
-                                                    m_a+=rhs.m_a};}
-    Color operator-(const Color& rhs){return Color{m_r-=rhs.m_r,
-                                                   m_g-=rhs.m_g,
-                                                   m_b-=rhs.m_b,
-                                                   m_a-=rhs.m_a};}
-    Color operator-=(const Color& rhs){return Color{m_r-=rhs.m_r,
-                                                    m_g-=rhs.m_g,
-                                                    m_b-=rhs.m_b,
-                                                    m_a-=rhs.m_a};}
-    Color operator/(const double& rhs){return Color{m_r/(float)rhs,
-                                                    m_g/(float)rhs,
-                                                    m_b/(float)rhs,
-                                                    m_a/(float)rhs};}
     Color operator/(const float& rhs){return Color{m_r/rhs,
                                                    m_g/rhs,
                                                    m_b/rhs,
@@ -65,7 +43,6 @@ public:
                                                  m_b/rhs,
                                                  m_a/rhs};}
 };
-
 using DataFrame = std::vector<Color>;
 struct uinteger2
 {

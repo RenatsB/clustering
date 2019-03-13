@@ -1,10 +1,11 @@
-#ifndef CLUSTERING_GEN_HPP_
-#define CLUSTERING_GEN_HPP_
+#ifndef CLUSTERING_IMAGEGENFN_HPP_
+#define CLUSTERING_IMAGEGENFN_HPP_
 
-#include "ran.hpp"
+#include "ImageGenFn.hpp"
+#include "RandomFn.hpp"
 #include "utilTypes.hpp"
 
-class Gen
+class ImageGenFn
 {
 public:
     DataFrame generate(uint w, uint h, uint size);
@@ -16,7 +17,7 @@ private:
     size_t m_noiseWidth=1;
     size_t m_noiseHeight=1;
     std::vector<std::vector<float>> m_noise;
-    Ran<float> m_rand;
+    RandomFn<float> m_rand;
 };
 
-#endif //CLUSTERING_GEN_HPP_
+#endif //CLUSTERING_IMAGEGENFN_HPP_
