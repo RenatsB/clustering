@@ -4,53 +4,101 @@
 #include "ImageGenFn.hpp"
 #include "kmeans.hpp"
 #include "kmeansP.cuh"
+#include "ImageGen.cuh"
 #include <chrono>
 
 int main(int argc, char* argv[])
 {
     ImageGenFn m_gen;
     RandomFn<float> rfunc;
-    uint x = 2048;
-    uint y = 2048;
+    uint x = 512;
+    uint y = 512;
+    uint noiseW = 512;
+    uint noiseH = 512;
+    uint noiseSize = 64;
     uint numIter = 1;
     uint numClusters = 8;
+    uint numThreads = 1024;
+
+    const char* nameGCS = "GeneratorColorSerial.jpg";
+    const char* nameCSF = "SerialColorSerialFiltered.jpg";
+    const char* nameCPF = "SerialColorParallelFiltered.jpg";
+    const char* nameGLS = "GeneratorLinearSerial.jpg";
+    const char* nameLSF = "SerialLinearSerialFiltered.jpg";
+    const char* nameLPF = "SerialLinearParallelFiltered.jpg";
+    const char* nameGCP = "GeneratorColorParallel.jpg";
+    const char* nameGLP = "GeneratorLinearParallel.jpg";
+    kmeans k;
+
+    float gens1Duration =0.f;
+    float gens2Duration =0.f;
+    float genp1Duration =0.f;
+    float genp2Duration =0.f;
+    float flt1sDuration =0.f;
+    float flt1pDuration =0.f;
+    float flt2sDuration =0.f;
+    float flt2pDuration =0.f;
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    DataFrame source = m_gen.generate(x,y, 128, 1024, 1024);
+    DataFrame source = m_gen.generate(x,y, noiseSize, noiseW, noiseH);
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-    float duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Color structure version generation finished in "<<duration<<"seconds..."<<std::endl;
+    gens1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Color structure version generation finished in "<<gens1Duration<<" seconds..."<<std::endl;
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> linearSource = m_gen.linear_generate(x,y, noiseSize, noiseW, noiseH);
+    t2 = std::chrono::high_resolution_clock::now();
+    gens2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Linear 1D version generation finished in "<<gens2Duration<<" seconds..."<<std::endl;
 
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> linearSource = m_gen.linear_generate(x,y, 128, 1024, 1024);
+    DataFrame parallelSource = generate(x,y, noiseSize, noiseW, noiseH, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Linear 1D version generation finished in "<<duration<<"seconds..."<<std::endl;
+    genp1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Color structure version generation finished in "<<genp1Duration<<" seconds..."<<std::endl;
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> parallelLinearSource = linear_generate(x,y, noiseSize, noiseW, noiseH, numThreads);
+    t2 = std::chrono::high_resolution_clock::now();
+    genp2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Linear 1D version generation finished in "<<genp2Duration<<" seconds..."<<std::endl;
 
-    const char* nameA1 = "BaseSource.jpg";
-    const char* nameB1 = "SerialFiltered.jpg";
-    const char* nameB2 = "ParallelFiltered.jpg";
-    const char* nameL1 = "LinearSource.jpg";
-    const char* nameL2 = "LinearSerialFiltered.jpg";
-    const char* nameL3 = "LinearParallelFiltered.jpg";
-    std::vector<float> outp(source.size()*4);
-    kmeans k;
+
+
+
     t1 = std::chrono::high_resolution_clock::now();
     DataFrame serialOut = k.k_means(source,numClusters,numIter);
     t2 = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Color version filtered on host in "<<duration<<"seconds..."<<std::endl;
-
+    flt1sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Color version filtered on host in "<<flt1sDuration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
     std::vector<float> linFiltered = k.linear_k_means(linearSource,numClusters,numIter);
     t2 = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Linear 1D version filtered on host in "<<duration<<"seconds..."<<std::endl;
+    flt2sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Linear 1D version filtered on host in "<<flt2sDuration<<" seconds..."<<std::endl;
 
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> parallelOut = kmeansP(source,numClusters,numIter,&rfunc);
+    std::vector<float> parallelOut = kmeansP(source,numClusters,numIter,&rfunc,1024);
     t2 = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Color version filtered on device in "<<duration<<"seconds..."<<std::endl;
+    flt1pDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Color version filtered on device in "<<flt1pDuration<<" seconds..."<<std::endl;
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> linParallelOut = linear_kmeansP(linearSource,numClusters,numIter,&rfunc,numThreads);
+    t2 = std::chrono::high_resolution_clock::now();
+    flt2pDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"Linear 1D version filtered on device in "<<flt2pDuration<<" seconds..."<<std::endl;
+
+    std::cout<<"---------------------------------------"<<std::endl;
+
+    std::cout<<"Linear is "<<gens1Duration/gens2Duration<<" times quicker than Color structure based on generation"<<std::endl;
+
+    std::cout<<"Host filter is "<<flt1sDuration/flt1pDuration<<" times quicker than Device filter using Color structure based"<<std::endl;
+    std::cout<<"Host filter is "<<flt2sDuration/flt2pDuration<<" times quicker than Device filter using linear"<<std::endl;
+
+    std::cout<<"Linear is "<<flt1sDuration/flt2sDuration<<" times quicker than Color structure based on Host"<<std::endl;
+    std::cout<<"Linear is "<<flt1pDuration/flt2pDuration<<" times quicker than Color structure based on Device"<<std::endl;
+
+    std::cout<<"---------------------------------------"<<std::endl;
+
+    std::vector<float> outp(source.size()*4);
+
     //outp.resize(source.size()*4);
     for(uint i=0; i<source.size(); ++i)
     {
@@ -59,9 +107,7 @@ int main(int argc, char* argv[])
         outp.at(i*4+2) = source.at(i).m_b;
         outp.at(i*4+3) = source.at(i).m_a;
     }
-
-
-    writeImage(nameA1,outp,x,y);
+    writeImage(nameGCS,outp,x,y);
     for(uint i=0; i<source.size(); ++i)
     {
         outp.at(i*4) = serialOut.at(i).m_r;
@@ -69,17 +115,35 @@ int main(int argc, char* argv[])
         outp.at(i*4+2) = serialOut.at(i).m_b;
         outp.at(i*4+3) = serialOut.at(i).m_a;
     }
-    writeImage(nameB1,outp,x,y);
+    writeImage(nameCSF,outp,x,y);
+
+
+    for(uint i=0; i<parallelSource.size(); ++i)
+    {
+        outp.at(i*4) = parallelSource.at(i).m_r;
+        outp.at(i*4+1) = parallelSource.at(i).m_g;
+        outp.at(i*4+2) = parallelSource.at(i).m_b;
+        outp.at(i*4+3) = parallelSource.at(i).m_a;
+    }
+    writeImage(nameGCP,outp,x,y);
+    outp = parallelLinearSource;
+    writeImage(nameGLP,outp,x,y);
+
+
+
     for(uint i=0; i<outp.size(); ++i)
     {
         outp.at(i) = parallelOut.at(i);
     }
-    writeImage(nameB2,outp,x,y);
+    writeImage(nameCPF,outp,x,y);
 
     outp = linearSource;
-    writeImage(nameL1,outp,x,y);
+    writeImage(nameGLS,outp,x,y);
 
     outp = linFiltered;
-    writeImage(nameL2,outp,x,y);
+    writeImage(nameLSF,outp,x,y);
+
+    outp = linParallelOut;
+    writeImage(nameLPF,outp,x,y);
     return 0;
 }

@@ -26,9 +26,8 @@ void writeImage(const std::string filename, std::vector<T> data, uint dimX, uint
                    dimY,
                    4,
                    TypeDesc::FLOAT);
-      std::cout<<output->open(filename, is);
-    std::cout<<output->write_image(TypeDesc::FLOAT, data.data());
-    std::cout<<output->geterror();
+      output->open(filename, is);
+    output->write_image(TypeDesc::FLOAT, data.data());
 }
 
 /*template <typename T>

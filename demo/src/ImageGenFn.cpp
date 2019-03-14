@@ -24,10 +24,10 @@ std::vector<float> ImageGenFn::linear_generate(const uint w,
             float pwr2 = turbulence(x, y+m_noiseHeight, turbulence_size/2);
             float pwr3 = turbulence(x, y+m_noiseHeight*2, turbulence_size/2);
 
-            rawData.at(y*w+x)=pwr1;
-            rawData.at(y*w+x+1)=pwr2;
-            rawData.at(y*w+x+2)=pwr3;
-            rawData.at(y*w+x+3)=1.0f;
+            rawData.at((y*w+x)*4)=pwr1;
+            rawData.at((y*w+x)*4+1)=pwr2;
+            rawData.at((y*w+x)*4+2)=pwr3;
+            rawData.at((y*w+x)*4+3)=1.0f;
         }
     }
     //end of map generation

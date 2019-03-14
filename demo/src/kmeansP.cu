@@ -1,5 +1,4 @@
 #include "kmeansP.cuh"
-#define RES 30
 
 __device__ float sq_Parallel(float ref)
 {
@@ -80,7 +79,8 @@ __global__ void write_new_mean_colors(thrust::device_ptr<float4> means,
 std::vector<float> kmeansP(const DataFrame &source,
                            size_t k,
                            size_t number_of_iterations,
-                          RandomFn<float>* rfunc)
+                           RandomFn<float>* rfunc,
+                           const uint numThreads)
 {
     thrust::host_vector<float4> h_source(source.size());
     for(uint x=0; x<source.size(); ++x)
@@ -114,14 +114,13 @@ std::vector<float> kmeansP(const DataFrame &source,
     thrust::device_vector<float4> d_sums(k);
     thrust::device_vector<int> d_counts(k, 0);
 
-    const int threads = 1024;
-    const int blocks = (number_of_elements + threads - 1) / threads;
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sums.begin(), d_sums.end(), float4{0.0,0.0,0.0,0.0});
         thrust::fill(d_counts.begin(), d_counts.end(), 0);
 
-        assign_clusters<<<blocks, threads>>>(d_source.data(),
+        assign_clusters<<<blocks, numThreads>>>(d_source.data(),
                                              number_of_elements,
                                              d_means.data(),
                                              d_sums.data(),
@@ -135,7 +134,7 @@ std::vector<float> kmeansP(const DataFrame &source,
                                     d_counts.data());
         cudaDeviceSynchronize();
     }
-    write_new_mean_colors<<<blocks, threads>>>(d_means.data(),
+    write_new_mean_colors<<<blocks, numThreads>>>(d_means.data(),
                                                number_of_elements,
                                                d_assignments.data(),
                                                d_filtered.data());
@@ -150,6 +149,135 @@ std::vector<float> kmeansP(const DataFrame &source,
         ret.at(i*4+1) = h_filtered[i].y;
         ret.at(i*4+2) = h_filtered[i].z;
         ret.at(i*4+3) = h_filtered[i].w;
+    }
+    return ret;
+}
+
+//=======================================================================
+//--------------------------|   LINEAR   |-------------------------------
+//=======================================================================
+
+__device__ float linear_sq_Col_l2_Dist_Parallel(float FR,float FG,float FB, float SR,float SG, float SB)
+{
+    return sq_Parallel(FR - SR) + sq_Parallel(FG - SG) + sq_Parallel(FB - SB);
+}
+
+__global__ void linear_assign_clusters(thrust::device_ptr<float> data,
+                                size_t data_size,
+                                const thrust::device_ptr<float> means,
+                                thrust::device_ptr<float> new_sums,
+                                size_t k,
+                                thrust::device_ptr<int> counts,
+                                thrust::device_ptr<int> h_assign)
+{
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= data_size) return;
+
+    float best_distance = FLT_MAX;
+    int best_cluster = 0;
+    for (int cluster = 0; cluster < k; ++cluster)
+    {
+        const float distance = linear_sq_Col_l2_Dist_Parallel(data[index*4],data[index*4+1],data[index*4+2],means[cluster*4],means[cluster*4+1],means[cluster*4+2]);
+        if (distance < best_distance)
+        {
+            best_distance = distance;
+            best_cluster = cluster;
+        }
+    }
+
+    atomicAdd(thrust::raw_pointer_cast(new_sums + best_cluster*4), data[index*4]);
+    atomicAdd(thrust::raw_pointer_cast(new_sums + best_cluster*4+1), data[index*4+1]);
+    atomicAdd(thrust::raw_pointer_cast(new_sums + best_cluster*4+2), data[index*4+2]);
+    atomicAdd(thrust::raw_pointer_cast(new_sums + best_cluster*4+3), data[index*4+3]);
+    atomicAdd(thrust::raw_pointer_cast(counts + best_cluster), 1);
+    h_assign[index]=best_cluster;
+}
+
+// Each thread is one cluster, which just recomputes its coordinates as the mean
+// of all points assigned to it.
+__global__ void linear_compute_new_means(thrust::device_ptr<float> means,
+                                const thrust::device_ptr<float> new_sum,
+                                const thrust::device_ptr<int> counts)
+{
+    const int cluster = threadIdx.x;
+    const int count = max(1, counts[cluster]);
+    means[cluster*4]   = new_sum[cluster*4]  /count;
+    means[cluster*4+1] = new_sum[cluster*4+1]/count;
+    means[cluster*4+2] = new_sum[cluster*4+2]/count;
+    means[cluster*4+3] = new_sum[cluster*4+3]/count;
+}
+
+__global__ void linear_write_new_mean_colors(thrust::device_ptr<float> means,
+                                      size_t data_size,
+                                      thrust::device_ptr<int> assignment,
+                                      thrust::device_ptr<float> newOut)
+{
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= data_size) return;
+    newOut[index*4]   = means[assignment[index]*4];
+    newOut[index*4+1] = means[assignment[index]*4+1];
+    newOut[index*4+2] = means[assignment[index]*4+2];
+    newOut[index*4+3] = means[assignment[index]*4+3];
+}
+std::vector<float> linear_kmeansP(const std::vector<float> &source,
+                                  size_t k,
+                                  size_t number_of_iterations,
+                                  RandomFn<float>* rfunc,
+                                  const uint numThreads)
+{
+    const size_t number_of_elements = source.size()/4;
+    thrust::device_vector<float> d_means(k*4);
+    rfunc->setNumericLimitsL(0, number_of_elements - 1);
+    for(uint cluster=0; cluster<k; ++cluster)
+    {
+        size_t cID = rfunc->MT19937RandL();
+        d_means[cluster*4]   = source[cID*4];
+        d_means[cluster*4+1] = source[cID*4+1];
+        d_means[cluster*4+2] = source[cID*4+2];
+        d_means[cluster*4+3] = source[cID*4+3];
+    }
+
+    thrust::device_vector<float> d_source(source.size());
+    thrust::copy(source.begin(), source.end(), d_source.begin());
+    thrust::device_vector<int> d_assignments(source.size()/4); //for cluster assignments
+    thrust::device_vector<float> d_filtered(source.size()); //to copy back and return
+    thrust::host_vector<float> h_filtered(source.size());
+
+    thrust::device_vector<float> d_sums(k*4);
+    thrust::device_vector<int> d_counts(k, 0);
+
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
+
+    for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
+        thrust::fill(d_sums.begin(), d_sums.end(), 0.f);
+        thrust::fill(d_counts.begin(), d_counts.end(), 0);
+
+        linear_assign_clusters<<<blocks, numThreads>>>(d_source.data(),
+                                             number_of_elements,
+                                             d_means.data(),
+                                             d_sums.data(),
+                                             k,
+                                             d_counts.data(),
+                                             d_assignments.data());
+        cudaDeviceSynchronize();
+
+        linear_compute_new_means<<<1, k>>>(d_means.data(),
+                                    d_sums.data(),
+                                    d_counts.data());
+        cudaDeviceSynchronize();
+    }
+    linear_write_new_mean_colors<<<blocks, numThreads>>>(d_means.data(),
+                                               number_of_elements,
+                                               d_assignments.data(),
+                                               d_filtered.data());
+    cudaDeviceSynchronize();
+    thrust::copy(d_filtered.begin(), d_filtered.end(), h_filtered.begin());
+
+    //h_source = d_source;
+    std::vector<float> ret(source.size());
+    for(uint i=0; i<source.size(); ++i)
+    {
+        ret.at(i)   = h_filtered[i];
     }
     return ret;
 }

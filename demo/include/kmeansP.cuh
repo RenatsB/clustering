@@ -1,5 +1,6 @@
 #include <cuda_runtime.h>
-#include "ImageGenFn.hpp" //this includes generator, random and utilTypes
+#include "utilTypes.hpp"
+#include "RandomFn.hpp"
 
 // for devices of compute capability 2.0 and higher
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
@@ -35,7 +36,8 @@ __global__ void write_new_mean_colors(thrust::device_ptr<float4> means,
 std::vector<float> kmeansP(const DataFrame &source,
                            size_t k,
                            size_t number_of_iterations,
-                          RandomFn<float>* rfunc);
+                           RandomFn<float>* rfunc,
+                           const uint numThreads);
 
 //=======================================================================
 //--------------------------|   LINEAR   |-------------------------------
@@ -63,4 +65,5 @@ __global__ void linear_write_new_mean_colors(thrust::device_ptr<float> means,
 std::vector<float> linear_kmeansP(const std::vector<float> &source,
                                   size_t k,
                                   size_t number_of_iterations,
-                                  RandomFn<float>* rfunc);
+                                  RandomFn<float>* rfunc,
+                                  const uint numThreads);
