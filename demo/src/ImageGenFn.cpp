@@ -1,39 +1,70 @@
 #include "ImageGenFn.hpp"
 
-DataFrame ImageGenFn::generate(uint w, uint h, uint size)
+std::vector<float> ImageGenFn::linear_generate(const uint w,
+                               const uint h,
+                               const uint turbulence_size,
+                               const size_t noiseWidth,
+                               const size_t noiseHeight)
 {
-    m_noiseWidth=w;
-    m_noiseHeight=h;
-    DataFrame rawData(w*h);
-    m_noise.resize(h);
-    for (auto &vert : m_noise )
-        vert.resize(w);
+    m_noiseWidth=noiseWidth;
+    m_noiseHeight=noiseHeight;
+    std::vector<float> rawData(w*h*4);
 
     //this has to be set before a number within desired limits can be acquired
     m_rand.setNumericLimits(0.0,1.0);
     //generate the per-pixel noise
     generateNoise();
 
-    //Create a variable here to avoid reallocation in the loop
-    Color pixelColor;
+    //generate the map here
+    for(uint y=0; y<h; ++y)
+    {
+        for(uint x=0; x<w; ++x)
+        {
+            float pwr1 = turbulence(x, y, turbulence_size);
+            float pwr2 = turbulence(x, y+m_noiseHeight, turbulence_size/2);
+            float pwr3 = turbulence(x, y+m_noiseHeight*2, turbulence_size/2);
+
+            rawData.at(y*w+x)=pwr1;
+            rawData.at(y*w+x+1)=pwr2;
+            rawData.at(y*w+x+2)=pwr3;
+            rawData.at(y*w+x+3)=1.0f;
+        }
+    }
+    //end of map generation
+    return rawData;
+}
+
+DataFrame ImageGenFn::generate(const uint w,
+                               const uint h,
+                               const uint turbulence_size,
+                               const size_t noiseWidth,
+                               const size_t noiseHeight)
+{
+    m_noiseWidth=noiseWidth;
+    m_noiseHeight=noiseHeight;
+    DataFrame rawData(w*h);
+
+    //this has to be set before a number within desired limits can be acquired
+    m_rand.setNumericLimits(0.0,1.0);
+    //generate the per-pixel noise
+    generateNoise();
 
     //generate the map here
     for(uint y=0; y<h; ++y)
     {
         for(uint x=0; x<w; ++x)
         {
-            float pwr1 = turbulence(x, y, size);
-            float pwr2 = turbulence(x, y+m_noiseHeight, size/2);
-            float pwr3 = turbulence(x, y+m_noiseHeight*2, size/2);
+            float pwr1 = turbulence(x, y, turbulence_size);
+            float pwr2 = turbulence(x, y+m_noiseHeight, turbulence_size/2);
+            float pwr3 = turbulence(x, y+m_noiseHeight*2, turbulence_size/2);
 
-            pixelColor.setData(pwr1,pwr2,pwr3);
-
-            rawData.at(y*w+x).setData(pixelColor.m_r,pixelColor.m_g,pixelColor.m_b);
+            rawData.at(y*w+x).setData(pwr1,pwr2,pwr3);
         }
     }
     //end of map generation
     return rawData;
 }
+
 
 float ImageGenFn::smoothNoise(float x, float y)
 {
@@ -51,10 +82,10 @@ float ImageGenFn::smoothNoise(float x, float y)
 
    //smooth the noise with bilinear interpolation
    float value;
-   value  = fractX       * fractY       * m_noise.at(y1).at(x1);
-   value += (1 - fractX) * fractY       * m_noise.at(y1).at(x2);
-   value += fractX       * (1 - fractY) * m_noise.at(y2).at(x1);
-   value += (1 - fractX) * (1 - fractY) * m_noise.at(y2).at(x2);
+   value  = fractX       * fractY       * m_noise.at(y1*m_noiseWidth+x1);
+   value += (1 - fractX) * fractY       * m_noise.at(y1*m_noiseWidth+x2);
+   value += fractX       * (1 - fractY) * m_noise.at(y2*m_noiseWidth+x1);
+   value += (1 - fractX) * (1 - fractY) * m_noise.at(y2*m_noiseWidth+x2);
 
    return value;
 }
@@ -74,12 +105,7 @@ float ImageGenFn::turbulence(float x, float y, float size)
 
 void ImageGenFn::generateNoise()
 {
-  m_noise.resize(m_noiseHeight*3);
-  for(auto &l : m_noise)
-      l.resize(m_noiseWidth);
-  for (uint y = 0; y < m_noise.size(); y++)
-    for (uint x = 0; x < m_noiseWidth; x++)
-    {
-        m_noise.at(y).at(x) = m_rand.MT19937RandU();
-    }
+  m_noise.resize(m_noiseHeight*m_noiseWidth);
+  for (uint i = 0; i < m_noise.size(); ++i)
+    m_noise.at(i) = m_rand.MT19937RandU();
 }

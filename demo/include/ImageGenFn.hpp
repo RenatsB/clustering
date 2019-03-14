@@ -8,7 +8,16 @@
 class ImageGenFn
 {
 public:
-    DataFrame generate(uint w, uint h, uint size);
+    DataFrame generate(const uint w,
+                       const uint h,
+                       const uint turbulence_size,
+                       const size_t noiseWidth,
+                       const size_t noiseHeight);
+    std::vector<float> linear_generate(const uint w,
+                       const uint h,
+                       const uint turbulence_size,
+                       const size_t noiseWidth,
+                       const size_t noiseHeight);
 private:
     float smoothNoise(float x, float y);
     float turbulence(float x, float y, float size);
@@ -16,7 +25,7 @@ private:
 private:
     size_t m_noiseWidth=1;
     size_t m_noiseHeight=1;
-    std::vector<std::vector<float>> m_noise;
+    std::vector<float> m_noise;
     RandomFn<float> m_rand;
 };
 

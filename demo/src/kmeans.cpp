@@ -82,3 +82,78 @@ DataFrame kmeans::k_means(const DataFrame& data,
 
     return correctedImage;
 }
+
+//=======================================================================
+//--------------------------|   LINEAR   |-------------------------------
+//=======================================================================
+
+float kmeans::linear_squared_Colour_l2_Distance(float FR,float FG,float FB,
+                                         float SR,float SG,float SB)
+{
+  return square(FR - SR) + square(FG - SG) + square(FB - SB);
+}
+
+std::vector<float> kmeans::linear_k_means(const std::vector<float>& data,
+                          size_t k,
+                          size_t number_of_iterations) {
+    size_t numberOfItems = data.size()/3;
+    rfunc.setNumericLimitsL(0, numberOfItems - 1);
+
+    std::vector<float> correctedImage(data.size());
+
+    // Pick centroids as random points from the dataset.
+    std::vector<float> means(k*3);
+
+    for (uint cluster=0; cluster<k; ++cluster) {
+      size_t num = rfunc.MT19937RandL();
+      means[cluster] = data[num];
+      means[cluster+1] = data[num+1];
+      means[cluster+2] = data[num+2];
+    }
+
+    std::vector<size_t> assignments(numberOfItems);
+    for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
+      // Find assignments.
+      for (size_t point = 0; point < numberOfItems; ++point) {
+        float best_distance = std::numeric_limits<float>::max();
+        size_t best_cluster = 0;
+        for (size_t cluster = 0; cluster < k; ++cluster) {
+          const float distance =
+              linear_squared_Colour_l2_Distance(data[point],data[point+1],data[point+2],means[cluster],means[cluster+1],means[cluster+2]);
+          if (distance < best_distance) {
+            best_distance = distance;
+            best_cluster = cluster;
+          }
+        }
+        assignments[point] = best_cluster;
+      }
+
+      // Sum up and count points for each cluster.
+      std::vector<float> new_means(k*3);
+      std::vector<size_t> counts(k, 0);
+      for (size_t point = 0; point < numberOfItems; ++point) {
+        new_means[assignments[point]] += data[point];
+        new_means[assignments[point]+1] += data[point+1];
+        new_means[assignments[point]+2] += data[point+2];
+        counts[assignments[point]] += 1;
+      }
+
+      // Divide sums by counts to get new centroids.
+      for (size_t cluster = 0; cluster < k; ++cluster) {
+        // Turn 0/0 into 0/1 to avoid zero division.
+        const auto count = std::max<size_t>(1, counts[cluster]);
+        means[cluster]   = new_means[cluster]   / count;
+        means[cluster+1] = new_means[cluster+1] / count;
+        means[cluster+2] = new_means[cluster+2] / count;
+      }
+    }
+
+    for(uint i=0; i<numberOfItems; ++i)
+    {
+        correctedImage[i]   = means[assignments[i]];
+        correctedImage[i+1] = means[assignments[i]+1];
+        correctedImage[i+2] = means[assignments[i]+2];
+    }
+
+    return correctedImage;
+}

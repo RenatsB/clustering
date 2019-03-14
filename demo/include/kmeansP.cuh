@@ -36,3 +36,31 @@ std::vector<float> kmeansP(const DataFrame &source,
                            size_t k,
                            size_t number_of_iterations,
                           RandomFn<float>* rfunc);
+
+//=======================================================================
+//--------------------------|   LINEAR   |-------------------------------
+//=======================================================================
+
+__device__ float linear_sq_Col_l2_Dist_Parallel(float FR,float FG,float FB, float SR,float SG, float SB);
+
+__global__ void linear_assign_clusters(thrust::device_ptr<float> data,
+                                size_t data_size,
+                                const thrust::device_ptr<float> means,
+                                thrust::device_ptr<float> new_sums,
+                                size_t k,
+                                thrust::device_ptr<int> counts,
+                                thrust::device_ptr<int> h_assign);
+
+__global__ void linear_compute_new_means(thrust::device_ptr<float> means,
+                                const thrust::device_ptr<float> new_sum,
+                                const thrust::device_ptr<int> counts);
+
+__global__ void linear_write_new_mean_colors(thrust::device_ptr<float> means,
+                                      size_t data_size,
+                                      thrust::device_ptr<int> assignment,
+                                      thrust::device_ptr<float> newOut);
+
+std::vector<float> linear_kmeansP(const std::vector<float> &source,
+                                  size_t k,
+                                  size_t number_of_iterations,
+                                  RandomFn<float>* rfunc);
