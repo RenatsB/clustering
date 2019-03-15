@@ -13,22 +13,22 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 
-__global__ void initCurand(thrust::device_ptr<curandState> ranDev, unsigned long seed );
-
 __device__ float smoothNoiseP(const thrust::device_ptr<float> d_noise,
                               const size_t width,
                               const size_t height,
                               const float x,
                               const float y);
+
 __device__ float turbulenceP(const thrust::device_ptr<float> d_noise,
                              const size_t noiseWidth,
                              const size_t noiseHeight,
                              const float x,
                              const float y,
                              const float size);
+
 __global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
-                               const size_t data_size,
-                               thrust::device_ptr<curandState> ranDev);
+                               const size_t data_size);
+
 __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
                               const size_t data_size,
                               const size_t noiseWidth,
@@ -40,12 +40,8 @@ __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
 DataFrame generate(const uint w,
                    const uint h,
                    const uint turbulence_size,
-                   const size_t noiseWidth,
-                   const size_t noiseHeight,
                    const uint numThreads);
 std::vector<float> linear_generate(const uint w,
                    const uint h,
                    const uint turbulence_size,
-                   const size_t noiseWidth,
-                   const size_t noiseHeight,
                    const uint numThreads);

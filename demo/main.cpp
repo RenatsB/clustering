@@ -11,13 +11,11 @@ int main(int argc, char* argv[])
 {
     ImageGenFn m_gen;
     RandomFn<float> rfunc;
-    uint x = 512;
-    uint y = 512;
-    uint noiseW = 512;
-    uint noiseH = 512;
-    uint noiseSize = 64;
+    uint x = 8192;
+    uint y = 8192;
+    uint noiseSize = 128;
     uint numIter = 1;
-    uint numClusters = 8;
+    uint numClusters = 6;
     uint numThreads = 1024;
 
     const char* nameGCS = "GeneratorColorSerial.jpg";
@@ -39,26 +37,26 @@ int main(int argc, char* argv[])
     float flt2sDuration =0.f;
     float flt2pDuration =0.f;
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    DataFrame source = m_gen.generate(x,y, noiseSize, noiseW, noiseH);
+    DataFrame source = m_gen.generate(x,y, noiseSize);
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
     gens1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Color structure version generation finished in "<<gens1Duration<<" seconds..."<<std::endl;
+    std::cout<<"Color structure version generation finished on host in "<<gens1Duration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> linearSource = m_gen.linear_generate(x,y, noiseSize, noiseW, noiseH);
+    std::vector<float> linearSource = m_gen.linear_generate(x,y, noiseSize);
     t2 = std::chrono::high_resolution_clock::now();
     gens2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Linear 1D version generation finished in "<<gens2Duration<<" seconds..."<<std::endl;
+    std::cout<<"Linear 1D version generation finished on host in "<<gens2Duration<<" seconds..."<<std::endl;
 
     t1 = std::chrono::high_resolution_clock::now();
-    DataFrame parallelSource = generate(x,y, noiseSize, noiseW, noiseH, numThreads);
+    DataFrame parallelSource = generate(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
     genp1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Color structure version generation finished in "<<genp1Duration<<" seconds..."<<std::endl;
+    std::cout<<"Color structure version generation finished on device in "<<genp1Duration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> parallelLinearSource = linear_generate(x,y, noiseSize, noiseW, noiseH, numThreads);
+    std::vector<float> parallelLinearSource = linear_generate(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
     genp2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
-    std::cout<<"Linear 1D version generation finished in "<<genp2Duration<<" seconds..."<<std::endl;
+    std::cout<<"Linear 1D version generation finished on device in "<<genp2Duration<<" seconds..."<<std::endl;
 
 
 

@@ -10,14 +10,10 @@ class ImageGenFn
 public:
     DataFrame generate(const uint w,
                        const uint h,
-                       const uint turbulence_size,
-                       const size_t noiseWidth,
-                       const size_t noiseHeight);
+                       const uint turbulence_size);
     std::vector<float> linear_generate(const uint w,
                        const uint h,
-                       const uint turbulence_size,
-                       const size_t noiseWidth,
-                       const size_t noiseHeight);
+                       const uint turbulence_size);
 private:
     float smoothNoise(float x, float y);
     float turbulence(float x, float y, float size);

@@ -12,3 +12,4 @@ https://devtalk.nvidia.com/default/topic/1014332/jetson-tx2/data-sharing-between
 https://github.com/OpenImageIO/oiio/blob/release/src/doc/openimageio.pdf
 https://github.com/marcoscastro/kmeans/blob/master/kmeans.cpp
 http://aresio.blogspot.com/2011/05/cuda-random-numbers-inside-kernels.html
+https://github.com/albelax/StableFluids/blob/master/SolverGpu/cudasrc/rand_gpu.cu

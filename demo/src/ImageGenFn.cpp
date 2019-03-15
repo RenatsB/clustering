@@ -2,12 +2,10 @@
 
 std::vector<float> ImageGenFn::linear_generate(const uint w,
                                const uint h,
-                               const uint turbulence_size,
-                               const size_t noiseWidth,
-                               const size_t noiseHeight)
+                               const uint turbulence_size)
 {
-    m_noiseWidth=noiseWidth;
-    m_noiseHeight=noiseHeight;
+    m_noiseWidth=w;
+    m_noiseHeight=h;
     std::vector<float> rawData(w*h*4);
 
     //this has to be set before a number within desired limits can be acquired
@@ -21,8 +19,8 @@ std::vector<float> ImageGenFn::linear_generate(const uint w,
         for(uint x=0; x<w; ++x)
         {
             float pwr1 = turbulence(x, y, turbulence_size);
-            float pwr2 = turbulence(x, y+m_noiseHeight, turbulence_size/2);
-            float pwr3 = turbulence(x, y+m_noiseHeight*2, turbulence_size/2);
+            float pwr2 = turbulence(x, y+h, turbulence_size/2);
+            float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
 
             rawData.at((y*w+x)*4)=pwr1;
             rawData.at((y*w+x)*4+1)=pwr2;
@@ -36,12 +34,10 @@ std::vector<float> ImageGenFn::linear_generate(const uint w,
 
 DataFrame ImageGenFn::generate(const uint w,
                                const uint h,
-                               const uint turbulence_size,
-                               const size_t noiseWidth,
-                               const size_t noiseHeight)
+                               const uint turbulence_size)
 {
-    m_noiseWidth=noiseWidth;
-    m_noiseHeight=noiseHeight;
+    m_noiseWidth=w;
+    m_noiseHeight=h;
     DataFrame rawData(w*h);
 
     //this has to be set before a number within desired limits can be acquired
@@ -55,8 +51,8 @@ DataFrame ImageGenFn::generate(const uint w,
         for(uint x=0; x<w; ++x)
         {
             float pwr1 = turbulence(x, y, turbulence_size);
-            float pwr2 = turbulence(x, y+m_noiseHeight, turbulence_size/2);
-            float pwr3 = turbulence(x, y+m_noiseHeight*2, turbulence_size/2);
+            float pwr2 = turbulence(x, y+h, turbulence_size/2);
+            float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
 
             rawData.at(y*w+x).setData(pwr1,pwr2,pwr3);
         }

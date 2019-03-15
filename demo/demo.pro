@@ -1,7 +1,7 @@
 include($${PWD}/../common.pri)
 TEMPLATE = app
 TARGET = KMeansClustering
-DESTDIR = lib
+DESTDIR = build
 
 OBJECTS_DIR = obj
 CUDA_OBJECTS_DIR = parallel/cudaobj
