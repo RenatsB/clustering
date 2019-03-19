@@ -8,7 +8,7 @@
 class ImageGenFn
 {
 public:
-    DataFrame generate(const uint w,
+    ColorVector generate(const uint w,
                        const uint h,
                        const uint turbulence_size);
     std::vector<float> linear_generate(const uint w,

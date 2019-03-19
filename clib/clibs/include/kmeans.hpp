@@ -6,7 +6,7 @@
 class kmeans
 {
 public:
-DataFrame k_means(const DataFrame& data,
+ColorVector k_means(const ColorVector& data,
                   size_t k,
                   size_t number_of_iterations);
 std::vector<float> linear_k_means(const std::vector<float>& data,

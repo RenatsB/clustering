@@ -18,14 +18,18 @@ int main(int argc, char* argv[])
     uint numClusters = 6;
     uint numThreads = 1024;
 
-    const char* nameGCS = "GeneratorColorSerial.jpg";
-    const char* nameCSF = "SerialColorSerialFiltered.jpg";
-    const char* nameCPF = "SerialColorParallelFiltered.jpg";
-    const char* nameGLS = "GeneratorLinearSerial.jpg";
-    const char* nameLSF = "SerialLinearSerialFiltered.jpg";
-    const char* nameLPF = "SerialLinearParallelFiltered.jpg";
-    const char* nameGCP = "GeneratorColorParallel.jpg";
-    const char* nameGLP = "GeneratorLinearParallel.jpg";
+    //look at half float, struct of arrays
+    //get rid of ss seen in compiler explorer
+    //https://www.godbolt.org/
+
+    const char* nameGCS = "GeneratorColorSerial.exr";
+    const char* nameCSF = "SerialColorSerialFiltered.exr";
+    const char* nameCPF = "SerialColorParallelFiltered.exr";
+    const char* nameGLS = "GeneratorLinearSerial.exr";
+    const char* nameLSF = "SerialLinearSerialFiltered.exr";
+    const char* nameLPF = "SerialLinearParallelFiltered.exr";
+    const char* nameGCP = "GeneratorColorParallel.exr";
+    const char* nameGLP = "GeneratorLinearParallel.exr";
     kmeans k;
 
     float gens1Duration =0.f;
@@ -37,7 +41,7 @@ int main(int argc, char* argv[])
     float flt2sDuration =0.f;
     float flt2pDuration =0.f;
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    DataFrame source = m_gen.generate(x,y, noiseSize);
+    ColorVector source = m_gen.generate(x,y, noiseSize);
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
     gens1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color structure version generation finished on host in "<<gens1Duration<<" seconds..."<<std::endl;
@@ -48,7 +52,7 @@ int main(int argc, char* argv[])
     std::cout<<"Linear 1D version generation finished on host in "<<gens2Duration<<" seconds..."<<std::endl;
 
     t1 = std::chrono::high_resolution_clock::now();
-    DataFrame parallelSource = generate(x,y, noiseSize, numThreads);
+    ColorVector parallelSource = generate(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
     genp1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color structure version generation finished on device in "<<genp1Duration<<" seconds..."<<std::endl;
@@ -62,7 +66,7 @@ int main(int argc, char* argv[])
 
 
     t1 = std::chrono::high_resolution_clock::now();
-    DataFrame serialOut = k.k_means(source,numClusters,numIter);
+    ColorVector serialOut = k.k_means(source,numClusters,numIter);
     t2 = std::chrono::high_resolution_clock::now();
     flt1sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color version filtered on host in "<<flt1sDuration<<" seconds..."<<std::endl;

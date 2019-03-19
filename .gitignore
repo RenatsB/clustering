@@ -7,3 +7,6 @@
 *.pro.user
 *Makefile*
 demo/lib/*
+demo/KMeansClustering
+test/gtest
+clib/*clib*.so*

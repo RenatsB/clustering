@@ -87,13 +87,13 @@ __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
     d_out[index*4+3] = 1.f;
 }
 
-DataFrame generate(const uint w,
+ColorVector generate(const uint w,
                    const uint h,
                    const uint turbulence_size,
                    const uint numThreads)
 {
     uint dataSize = w*h;
-    DataFrame outData(dataSize);
+    ColorVector outData(dataSize);
     thrust::host_vector<float> h_transfer(dataSize*4);
     thrust::device_vector<float> d_noise(dataSize);
     thrust::device_vector<float> d_colors(dataSize*4);

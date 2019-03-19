@@ -43,7 +43,7 @@ struct Color
                                                  m_b/rhs,
                                                  m_a/rhs};}
 };
-using DataFrame = std::vector<Color>;
+using ColorVector = std::vector<Color>;
 struct uinteger2
 {
     uint x;

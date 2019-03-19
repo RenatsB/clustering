@@ -16,7 +16,7 @@ float kmeans::squared_Colour_l2_Distance(Color first, Color second)
        + square(first.m_b*first.m_a - second.m_b*second.m_a);
 }
 
-DataFrame kmeans::k_means(const DataFrame& data,
+ColorVector kmeans::k_means(const ColorVector& data,
                           size_t k,
                           size_t number_of_iterations) {
     //static std::random_device seed;
@@ -24,10 +24,10 @@ DataFrame kmeans::k_means(const DataFrame& data,
     //std::uniform_int_distribution<size_t> indices(0, data.size() - 1);
     rfunc.setNumericLimitsL(0, data.size() - 1);
 
-    DataFrame correctedImage(data.size());
+    ColorVector correctedImage(data.size());
 
     // Pick centroids as random points from the dataset.
-    DataFrame means(k);
+    ColorVector means(k);
     for (auto& cluster : means) {
       cluster = data[rfunc.MT19937RandL()];
     }
@@ -50,7 +50,7 @@ DataFrame kmeans::k_means(const DataFrame& data,
       }
 
       // Sum up and count points for each cluster.
-      DataFrame new_means(k);
+      ColorVector new_means(k);
       std::vector<size_t> counts(k, 0);
       for (size_t point = 0; point < data.size(); ++point) {
         const auto cluster = assignments[point];

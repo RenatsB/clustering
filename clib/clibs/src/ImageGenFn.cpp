@@ -32,13 +32,13 @@ std::vector<float> ImageGenFn::linear_generate(const uint w,
     return rawData;
 }
 
-DataFrame ImageGenFn::generate(const uint w,
+ColorVector ImageGenFn::generate(const uint w,
                                const uint h,
                                const uint turbulence_size)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
-    DataFrame rawData(w*h);
+    ColorVector rawData(w*h);
 
     //this has to be set before a number within desired limits can be acquired
     m_rand.setNumericLimits(0.0,1.0);

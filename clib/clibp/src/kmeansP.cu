@@ -76,7 +76,7 @@ __global__ void write_new_mean_colors(thrust::device_ptr<float4> means,
     if (index >= data_size) return;
     newOut[index] = means[assignment[index]];
 }
-std::vector<float> kmeansP(const DataFrame &source,
+std::vector<float> kmeansP(const ColorVector &source,
                            size_t k,
                            size_t number_of_iterations,
                            RandomFn<float>* rfunc,

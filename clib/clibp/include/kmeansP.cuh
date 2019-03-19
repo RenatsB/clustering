@@ -33,7 +33,7 @@ __global__ void write_new_mean_colors(thrust::device_ptr<float4> means,
                                       size_t data_size,
                                       thrust::device_ptr<int> assignment,
                                       thrust::device_ptr<float4> newOut);
-std::vector<float> kmeansP(const DataFrame &source,
+std::vector<float> kmeansP(const ColorVector &source,
                            size_t k,
                            size_t number_of_iterations,
                            RandomFn<float>* rfunc,
