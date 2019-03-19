@@ -1,7 +1,7 @@
 TEMPLATE = subdirs
-SUBDIRS = clib demo #test
+SUBDIRS = clib demo test
 
 demo.depends = clib
-#test.depends = clib
+test.depends = clib
 
 OTHER_FILES += $$files($$PWD/README.md)

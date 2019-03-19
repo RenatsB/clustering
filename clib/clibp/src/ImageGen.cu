@@ -1,4 +1,5 @@
 #include "ImageGen.cuh"
+#include "gpuRandF.cuh"
 
 __device__ float smoothNoiseP(const thrust::device_ptr<float> d_noise,
                              const size_t width,
@@ -57,6 +58,13 @@ __global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
     d_noise[index] = curand_uniform( &s );
 }
 
+__host__ void genNoiseCustom(thrust::device_ptr<float> d_noise,
+                               const size_t data_size)
+{
+    float *ptr = thrust::raw_pointer_cast(d_noise);
+    GPU_RandF::randFloatsInternal(ptr,data_size);
+}
+
 __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
                              const size_t data_size,
                              const size_t noiseWidth,
@@ -92,8 +100,9 @@ DataFrame generate(const uint w,
 
     const int blocks = (dataSize + numThreads - 1) / numThreads;
     //generate the per-pixel noise
-    generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
-                                           dataSize);
+    /*generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
+                                           dataSize);*/
+    genNoiseCustom(d_noise.data(), dataSize);
     cudaDeviceSynchronize();
     //generate the map here
     assignColorsP<<<blocks, numThreads>>>(d_noise.data(),
@@ -129,8 +138,9 @@ std::vector<float> linear_generate(const uint w,
 
     const int blocks = (dataSize + numThreads - 1) / numThreads;
     //generate the per-pixel noise
-    generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
-                                           dataSize);
+    /*generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
+                                           dataSize);*/
+    genNoiseCustom(d_noise.data(), dataSize);
     cudaDeviceSynchronize();
     //generate the map here
     assignColorsP<<<blocks, numThreads>>>(d_noise.data(),

@@ -29,6 +29,9 @@ __device__ float turbulenceP(const thrust::device_ptr<float> d_noise,
 __global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
                                const size_t data_size);
 
+__host__ void genNoiseCustom(thrust::device_ptr<float> d_noise,
+                               const size_t data_size);
+
 __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
                               const size_t data_size,
                               const size_t noiseWidth,
