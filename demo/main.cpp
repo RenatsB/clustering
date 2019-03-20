@@ -3,16 +3,16 @@
 #include "img.hpp"
 #include "ImageGenFn.hpp"
 #include "kmeans.hpp"
-#include "kmeansP.cuh"
-#include "ImageGen.cuh"
+#include "kmeansP.h"
+#include "ImageGen.h"
 #include <chrono>
 
 int main(int argc, char* argv[])
 {
     ImageGenFn m_gen;
     RandomFn<float> rfunc;
-    uint x = 8192;
-    uint y = 8192;
+    uint x = 2048;
+    uint y = 2048;
     uint noiseSize = 128;
     uint numIter = 1;
     uint numClusters = 6;
@@ -22,18 +22,22 @@ int main(int argc, char* argv[])
     //get rid of ss seen in compiler explorer
     //https://www.godbolt.org/
 
-    const char* nameGCS = "GeneratorColorSerial.exr";
-    const char* nameCSF = "SerialColorSerialFiltered.exr";
-    const char* nameCPF = "SerialColorParallelFiltered.exr";
-    const char* nameGLS = "GeneratorLinearSerial.exr";
-    const char* nameLSF = "SerialLinearSerialFiltered.exr";
-    const char* nameLPF = "SerialLinearParallelFiltered.exr";
-    const char* nameGCP = "GeneratorColorParallel.exr";
-    const char* nameGLP = "GeneratorLinearParallel.exr";
+    const char* nameGCS = "GeneratorColorSerial.jpg";
+    const char* nameCSF = "SerialColorSerialFiltered.jpg";
+    const char* nameCPF = "SerialColorParallelFiltered.jpg";
+    const char* nameGLS = "GeneratorLinearSerial.jpg";
+    const char* nameLSF = "SerialLinearSerialFiltered.jpg";
+    const char* nameLPF = "SerialLinearParallelFiltered.jpg";
+    const char* nameGCP = "GeneratorColorParallel.jpg";
+    const char* nameGLP = "GeneratorLinearParallel.jpg";
     kmeans k;
 
     float gens1Duration =0.f;
     float gens2Duration =0.f;
+    float gens3Duration =0.f;
+    float gens4Duration =0.f;
+    float gens5Duration =0.f;
+    float gens6Duration =0.f;
     float genp1Duration =0.f;
     float genp2Duration =0.f;
     float flt1sDuration =0.f;
@@ -41,15 +45,57 @@ int main(int argc, char* argv[])
     float flt2sDuration =0.f;
     float flt2pDuration =0.f;
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    ColorVector source = m_gen.generate(x,y, noiseSize);
+    ColorVector source = m_gen.generate_serial_CV(x,y, noiseSize);
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
     gens1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color structure version generation finished on host in "<<gens1Duration<<" seconds..."<<std::endl;
+
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> linearSource = m_gen.linear_generate(x,y, noiseSize);
+    std::vector<float> linearSource = m_gen.generate_serial_LN(x,y, noiseSize);
     t2 = std::chrono::high_resolution_clock::now();
     gens2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Linear 1D version generation finished on host in "<<gens2Duration<<" seconds..."<<std::endl;
+
+    t1 = std::chrono::high_resolution_clock::now();
+    ImageColors imgColSource = m_gen.generate_serial_IC(x,y, noiseSize);
+    t2 = std::chrono::high_resolution_clock::now();
+    gens3Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"ImageColor structure version generation finished on host in "<<gens3Duration<<" seconds..."<<std::endl;
+
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> redChan(x*y);
+    std::vector<float> grnChan(x*y);
+    std::vector<float> bluChan(x*y);
+    std::vector<float> alpChan(x*y);
+    m_gen.generate_serial_4SV(x,y, noiseSize, &redChan, &grnChan, &bluChan, &alpChan);
+    t2 = std::chrono::high_resolution_clock::now();
+    gens4Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"4 std::vector<float> version generation finished on host in "<<gens4Duration<<" seconds..."<<std::endl;
+
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> BredChan(x*y);
+    std::vector<float> BgrnChan(x*y);
+    std::vector<float> BbluChan(x*y);
+    std::vector<float> BalpChan(x*y);
+    m_gen.generate_serial_4LV(x,y, noiseSize, BredChan.data(), BgrnChan.data(), BbluChan.data(), BalpChan.data());
+    t2 = std::chrono::high_resolution_clock::now();
+    gens5Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"4 float* version generation finished on host in "<<gens5Duration<<" seconds..."<<std::endl;
+
+    t1 = std::chrono::high_resolution_clock::now();
+    std::vector<float> AredChan(x*y);
+    std::vector<float> AgrnChan(x*y);
+    std::vector<float> AbluChan(x*y);
+    std::vector<float> AalpChan(x*y);
+    m_gen.generate_serial_4LL(x,y, noiseSize, AredChan.data(), AgrnChan.data(), AbluChan.data(), AalpChan.data());
+    t2 = std::chrono::high_resolution_clock::now();
+    gens6Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
+    std::cout<<"4 float* version generation finished on host in "<<gens6Duration<<" seconds..."<<std::endl;
+
+
+
+
+
 
     t1 = std::chrono::high_resolution_clock::now();
     ColorVector parallelSource = generate(x,y, noiseSize, numThreads);
@@ -110,6 +156,7 @@ int main(int argc, char* argv[])
         outp.at(i*4+3) = source.at(i).m_a;
     }
     writeImage(nameGCS,outp,x,y);
+
     for(uint i=0; i<source.size(); ++i)
     {
         outp.at(i*4) = serialOut.at(i).m_r;

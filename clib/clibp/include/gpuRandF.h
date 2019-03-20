@@ -1,8 +1,6 @@
 #ifndef _GPURANDF_H
 #define _GPURANDF_H
 
-#include <thrust/device_vector.h>
-
 namespace GPU_RandF
 {
 

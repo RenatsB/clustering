@@ -1,5 +1,5 @@
-#include "ImageGen.cuh"
-#include "gpuRandF.cuh"
+#include "ImageGen.h"
+#include "gpuRandF.h"
 
 __device__ float smoothNoiseP(const thrust::device_ptr<float> d_noise,
                              const size_t width,

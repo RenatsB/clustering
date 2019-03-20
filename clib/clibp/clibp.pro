@@ -9,7 +9,7 @@ CUDA_OBJECTS_DIR = cudaobj
 INCLUDEPATH+=$$PWD/include
 INCLUDEPATH+=$$PWD/../clibs/include
 
-HEADERS += $$files($$PWD/include/*.cuh)
+HEADERS += $$files($$PWD/include/*.h)
 CUDA_SOURCES += $$files($$PWD/src/*.cu)
 
 include($${PWD}/../../cuda_compiler.pri)

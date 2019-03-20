@@ -1,18 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <gtest/gtest.h>
 #include <iostream>
 #include <memory>
 
 //tests
-/*
-#include "constructor.h"
-#include "velocity.h"
-#include "density.h"
-#include "pressure.h"
-#include "divergence.h"
-*/
+#include "testClibTypes.h"
+#include "testRandom.h"
+#include "testKmeans.h"
+#include "testImgGen.h"
 // end tests
 
 int main( int argc, char **argv )

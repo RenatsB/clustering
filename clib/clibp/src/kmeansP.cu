@@ -1,4 +1,4 @@
-#include "kmeansP.cuh"
+#include "kmeansP.h"
 
 __device__ float sq_Parallel(float ref)
 {

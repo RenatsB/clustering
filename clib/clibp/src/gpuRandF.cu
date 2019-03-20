@@ -1,5 +1,4 @@
-#include "gpuRandF.cuh"
-
+#include "gpuRandF.h"
 // Cuda includes begin
 #include <cuda_runtime.h>
 #include <curand.h>
