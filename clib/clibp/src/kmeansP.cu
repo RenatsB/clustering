@@ -1,4 +1,11 @@
+#include <cuda_runtime.h>
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
 #include "kmeansP.h"
+
+#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
+   #define printf(f, ...) ((void)(f, __VA_ARGS__),0)
+#endif
 
 __device__ float sq_Parallel(float ref)
 {
@@ -76,7 +83,7 @@ __global__ void write_new_mean_colors(thrust::device_ptr<float4> means,
     if (index >= data_size) return;
     newOut[index] = means[assignment[index]];
 }
-std::vector<float> kmeansP(const ColorVector &source,
+std::vector<float> GPUclib::kmeansP(const ColorVector &source,
                            size_t k,
                            size_t number_of_iterations,
                            RandomFn<float>* rfunc,
@@ -219,7 +226,7 @@ __global__ void linear_write_new_mean_colors(thrust::device_ptr<float> means,
     newOut[index*4+2] = means[assignment[index]*4+2];
     newOut[index*4+3] = means[assignment[index]*4+3];
 }
-std::vector<float> linear_kmeansP(const std::vector<float> &source,
+std::vector<float> GPUclib::linear_kmeansP(const std::vector<float> &source,
                                   size_t k,
                                   size_t number_of_iterations,
                                   RandomFn<float>* rfunc,

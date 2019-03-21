@@ -1,5 +1,13 @@
+#include <cuda_runtime.h>
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <vector>
 #include "ImageGen.h"
-#include "gpuRandF.h"
+
+// for devices of compute capability 2.0 and higher
+#if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
+   #define printf(f, ...) ((void)(f, __VA_ARGS__),0)
+#endif
 
 __device__ float smoothNoiseP(const thrust::device_ptr<float> d_noise,
                              const size_t width,
@@ -47,7 +55,7 @@ __device__ float turbulenceP(const thrust::device_ptr<float> d_noise,
     return(128.0 * value / initialSize)/256.0;
 }
 
-__global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
+/*__global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
                               const size_t data_size)
 {
     const int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -56,13 +64,13 @@ __global__ void generateNoiseP(thrust::device_ptr<float> d_noise,
     curandState s;
     curand_init(seed, 0, 0, &s);
     d_noise[index] = curand_uniform( &s );
-}
+}*/
 
 __host__ void genNoiseCustom(thrust::device_ptr<float> d_noise,
                                const size_t data_size)
 {
     float *ptr = thrust::raw_pointer_cast(d_noise);
-    GPU_RandF::randFloatsInternal(ptr,data_size);
+    GPUclib::randFloatsInternal(ptr,data_size);
 }
 
 __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
@@ -87,12 +95,12 @@ __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
     d_out[index*4+3] = 1.f;
 }
 
-ColorVector generate(const uint w,
+ColorVector GPUclib::generate(const uint w,
                    const uint h,
                    const uint turbulence_size,
                    const uint numThreads)
 {
-    uint dataSize = w*h;
+    int dataSize = w*h;
     ColorVector outData(dataSize);
     thrust::host_vector<float> h_transfer(dataSize*4);
     thrust::device_vector<float> d_noise(dataSize);
@@ -125,12 +133,12 @@ ColorVector generate(const uint w,
     return outData;
 }
 
-std::vector<float> linear_generate(const uint w,
+std::vector<float> GPUclib::linear_generate(const uint w,
                    const uint h,
                    const uint turbulence_size,
                    const uint numThreads)
 {
-    uint dataSize = w*h;
+    int dataSize = w*h;
     std::vector<float> outData(dataSize*4);
     thrust::host_vector<float> h_transfer(dataSize*4);
     thrust::device_vector<float> d_noise(dataSize);

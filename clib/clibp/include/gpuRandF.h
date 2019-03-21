@@ -1,7 +1,7 @@
 #ifndef _GPURANDF_H
 #define _GPURANDF_H
 
-namespace GPU_RandF
+namespace GPUclib
 {
 
 /// Fill up a vector on the device with n floats. Memory is assumed already preallocated.
