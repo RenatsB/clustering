@@ -1,4 +1,4 @@
-#include "ImageGenFn.hpp"
+#include "cpuImageGen.hpp"
 
 ColorVector ImageGenFn::generate_serial_CV(const uint w,
                                const uint h,

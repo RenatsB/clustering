@@ -1,8 +1,7 @@
 #ifndef CLUSTERING_IMAGEGENFN_HPP_
 #define CLUSTERING_IMAGEGENFN_HPP_
 
-#include "ImageGenFn.hpp"
-#include "RandomFn.hpp"
+#include "cpuRandomFn.hpp"
 #include "utilTypes.hpp"
 
 class ImageGenFn

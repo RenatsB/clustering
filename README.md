@@ -1,5 +1,34 @@
 # Image based K-Means Clustering
 
+--
+
+#### Naming conventions
+
+Function names in this library have certain naming conventions for the ease of use.
+
+Image generation and kmeans clustering functions use the following naming structure:
+```
+<name>_<type>_<processing type>
+```
+* <name> refers to actual name of the method, without any additional types.
+* <type> refers to CPU/GPU or in other words serial/parallel
+* <processing type> refers to data structure the method performs operations on.
+
+```
+<processing type>:
+CV - ColorVector (vector of Color)
+IC - ImageColors (Structure of float vectors)
+LN - Linear (single vector of floats)
+4SV - 4 Std::Vectors of floats
+4LV - 4 pointers to arrays (or std::vectors)
+4LL - 4 pointers to arrays or vectors, but using direct assignment (see cpuImageGen for reference)
+```
+
+
+--
+
+
+
 references:
 
 https://lodev.org/cgtutor/randomnoise.html

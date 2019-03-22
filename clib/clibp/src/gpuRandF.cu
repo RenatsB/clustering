@@ -12,7 +12,7 @@ exit(0);\
 }
 
 
-int GPUclib::randFloatsInternal(float *&devData, const size_t n)
+int gpuRandFn::randFloatsInternal(float *&devData, const size_t n)
 {
   // The generator, used for random numbers
   curandGenerator_t gen;
