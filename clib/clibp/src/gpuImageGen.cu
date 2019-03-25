@@ -118,8 +118,6 @@ ColorVector gpuImageGen::generate_parallel_CV(const uint w,
 
     const int blocks = (dataSize + numThreads - 1) / numThreads;
     //generate the per-pixel noise
-    /*generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
-                                           dataSize);*/
     genNoiseCustom(d_noise.data(), dataSize);
     cudaDeviceSynchronize();
     //generate the map here
@@ -150,8 +148,7 @@ ImageColors gpuImageGen::generate_parallel_IC(const uint w,
 {
     int dataSize = w*h;
     ImageColors outData;
-    //outData.resize(dataSize);
-    //thrust::host_vector<float> h_transfer(dataSize*4);
+    outData.resize(dataSize);
     thrust::device_vector<float> d_noise(dataSize);
     thrust::device_vector<float> d_colorsR(dataSize);
     thrust::device_vector<float> d_colorsG(dataSize);
@@ -174,14 +171,6 @@ ImageColors gpuImageGen::generate_parallel_IC(const uint w,
                                           d_colorsA.data());
     //end of map generation
     cudaDeviceSynchronize();
-    /*thrust::copy(d_colors.begin(), d_colors.end(), h_transfer.begin());
-    for(uint i=0; i<dataSize; ++i)
-    {
-        outData.at(i).m_r = h_transfer[i*4];
-        outData.at(i).m_g = h_transfer[i*4+1];
-        outData.at(i).m_b = h_transfer[i*4+2];
-        outData.at(i).m_a = h_transfer[i*4+3];
-    }*/
     thrust::copy(d_colorsR.begin(), d_colorsR.end(), outData.m_r.begin());
     thrust::copy(d_colorsG.begin(), d_colorsG.end(), outData.m_g.begin());
     thrust::copy(d_colorsB.begin(), d_colorsB.end(), outData.m_b.begin());
@@ -196,14 +185,11 @@ std::vector<float> gpuImageGen::generate_parallel_LN(const uint w,
 {
     int dataSize = w*h;
     std::vector<float> outData(dataSize*4);
-    thrust::host_vector<float> h_transfer(dataSize*4);
     thrust::device_vector<float> d_noise(dataSize);
     thrust::device_vector<float> d_colors(dataSize*4);
 
     const int blocks = (dataSize + numThreads - 1) / numThreads;
     //generate the per-pixel noise
-    /*generateNoiseP<<<blocks, numThreads>>>(d_noise.data(),
-                                           dataSize);*/
     genNoiseCustom(d_noise.data(), dataSize);
     cudaDeviceSynchronize();
     //generate the map here
@@ -216,10 +202,86 @@ std::vector<float> gpuImageGen::generate_parallel_LN(const uint w,
                                           d_colors.data());
     //end of map generation
     cudaDeviceSynchronize();
-    thrust::copy(d_colors.begin(), d_colors.end(), h_transfer.begin());
-    for(uint i=0; i<dataSize*4; ++i)
-    {
-        outData.at(i) = h_transfer[i];
-    }
+    thrust::copy(d_colors.begin(), d_colors.end(), outData.begin());
     return outData;
+}
+
+void gpuImageGen::generate_parallel_4SV(std::vector<float>* redChannel,
+                                        std::vector<float>* greenChannel,
+                                        std::vector<float>* blueChannel,
+                                        std::vector<float>* alphaChannel,
+                                        const uint w,
+                                        const uint h,
+                                        const uint turbulence_size,
+                                        const uint numThreads)
+{
+    int dataSize = w*h;
+    thrust::device_vector<float> d_noise(dataSize);
+    thrust::device_vector<float> d_colRed(dataSize);
+    thrust::device_vector<float> d_colGrn(dataSize);
+    thrust::device_vector<float> d_colBlu(dataSize);
+    thrust::device_vector<float> d_colAlp(dataSize);
+
+    const int blocks = (dataSize + numThreads - 1) / numThreads;
+    //generate the per-pixel noise
+    genNoiseCustom(d_noise.data(), dataSize);
+    cudaDeviceSynchronize();
+    //generate the map here
+    assignColors4<<<blocks, numThreads>>>(d_noise.data(),
+                                          dataSize,
+                                          w,
+                                          h,
+                                          w,
+                                          turbulence_size,
+                                          d_colRed.data(),
+                                          d_colGrn.data(),
+                                          d_colBlu.data(),
+                                          d_colAlp.data());
+    //end of map generation
+    cudaDeviceSynchronize();
+    thrust::copy(d_colRed.begin(), d_colRed.end(), redChannel->begin());
+    thrust::copy(d_colGrn.begin(), d_colGrn.end(), greenChannel->begin());
+    thrust::copy(d_colBlu.begin(), d_colBlu.end(), blueChannel->begin());
+    thrust::copy(d_colAlp.begin(), d_colAlp.end(), alphaChannel->begin());
+    return;
+}
+
+void gpuImageGen::generate_parallel_4LV(float* redChannel,
+                                        float* greenChannel,
+                                        float* blueChannel,
+                                        float* alphaChannel,
+                                        const uint w,
+                                        const uint h,
+                                        const uint turbulence_size,
+                                        const uint numThreads)
+{
+    int dataSize = w*h;
+    thrust::device_vector<float> d_noise(dataSize);
+    thrust::device_vector<float> d_colRed(dataSize);
+    thrust::device_vector<float> d_colGrn(dataSize);
+    thrust::device_vector<float> d_colBlu(dataSize);
+    thrust::device_vector<float> d_colAlp(dataSize);
+
+    const int blocks = (dataSize + numThreads - 1) / numThreads;
+    //generate the per-pixel noise
+    genNoiseCustom(d_noise.data(), dataSize);
+    cudaDeviceSynchronize();
+    //generate the map here
+    assignColors4<<<blocks, numThreads>>>(d_noise.data(),
+                                          dataSize,
+                                          w,
+                                          h,
+                                          w,
+                                          turbulence_size,
+                                          d_colRed.data(),
+                                          d_colGrn.data(),
+                                          d_colBlu.data(),
+                                          d_colAlp.data());
+    //end of map generation
+    cudaDeviceSynchronize();
+    thrust::copy(d_colRed.begin(), d_colRed.end(), redChannel);
+    thrust::copy(d_colGrn.begin(), d_colGrn.end(), greenChannel);
+    thrust::copy(d_colBlu.begin(), d_colBlu.end(), blueChannel);
+    thrust::copy(d_colAlp.begin(), d_colAlp.end(), alphaChannel);
+    return;
 }

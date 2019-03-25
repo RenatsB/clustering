@@ -2,7 +2,7 @@
 #define _CLIB_TESTRANDOM_H
 
 #include <gtest/gtest.h>
-#include "RandomFn.hpp"
+#include "cpuRandomFn.hpp"
 
 ////----------------------------------------------------------------------------------------------------------------------
 

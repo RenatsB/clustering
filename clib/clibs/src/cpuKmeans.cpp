@@ -113,7 +113,7 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
         for (size_t cluster = 0; cluster < k; ++cluster) {
           const float distance =
               linear_squared_Colour_l2_Distance(data.m_r.at(point),data.m_g.at(point),data.m_b.at(point),
-                                            means.m_r.at(point),means.m_g.at(point),means.m_b.at(point));
+                                            means.m_r.at(cluster),means.m_g.at(cluster),means.m_b.at(cluster));
           if (distance < best_distance) {
             best_distance = distance;
             best_cluster = cluster;

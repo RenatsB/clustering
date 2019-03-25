@@ -1,10 +1,10 @@
 #include <string>
 #include <iostream>
 #include "img.hpp"
-#include "ImageGenFn.hpp"
-#include "kmeans.hpp"
-#include "kmeansP.h"
-#include "ImageGen.h"
+#include "cpuImageGen.hpp"
+#include "cpuKmeans.hpp"
+#include "gpuImageGen.h"
+#include "gpuKmeans.h"
 #include <chrono>
 
 int main(int argc, char* argv[])
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
     const char* nameLPF = "SerialLinearParallelFiltered.png";
     const char* nameGCP = "GeneratorColorParallel.png";
     const char* nameGLP = "GeneratorLinearParallel.png";
-    kmeans k;
+    cpuKmeans k;
 
     float gens1Duration =0.f;
     float gens2Duration =0.f;
@@ -98,12 +98,12 @@ int main(int argc, char* argv[])
 
 
     t1 = std::chrono::high_resolution_clock::now();
-    ColorVector parallelSource = GPUclib::generate(x,y, noiseSize, numThreads);
+    ColorVector parallelSource = gpuImageGen::generate_parallel_CV(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
     genp1Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color structure version generation finished on device in "<<genp1Duration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> parallelLinearSource = GPUclib::linear_generate(x,y, noiseSize, numThreads);
+    std::vector<float> parallelLinearSource = gpuImageGen::generate_parallel_LN(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
     genp2Duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Linear 1D version generation finished on device in "<<genp2Duration<<" seconds..."<<std::endl;
@@ -112,23 +112,23 @@ int main(int argc, char* argv[])
 
 
     t1 = std::chrono::high_resolution_clock::now();
-    ColorVector serialOut = k.k_means(source,numClusters,numIter);
+    ColorVector serialOut = k.kmeans_serial_CV(source,numClusters,numIter);
     t2 = std::chrono::high_resolution_clock::now();
     flt1sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color version filtered on host in "<<flt1sDuration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> linFiltered = k.linear_k_means(linearSource,numClusters,numIter);
+    std::vector<float> linFiltered = k.kmeans_serial_LN(linearSource,numClusters,numIter);
     t2 = std::chrono::high_resolution_clock::now();
     flt2sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Linear 1D version filtered on host in "<<flt2sDuration<<" seconds..."<<std::endl;
 
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> parallelOut = GPUclib::kmeansP(source,numClusters,numIter,&rfunc,1024);
+    std::vector<float> parallelOut = gpuKmeans::kmeans_parallel_CV(source,numClusters,numIter,1024,&rfunc);
     t2 = std::chrono::high_resolution_clock::now();
     flt1pDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Color version filtered on device in "<<flt1pDuration<<" seconds..."<<std::endl;
     t1 = std::chrono::high_resolution_clock::now();
-    std::vector<float> linParallelOut = GPUclib::linear_kmeansP(linearSource,numClusters,numIter,&rfunc,numThreads);
+    std::vector<float> linParallelOut = gpuKmeans::kmeans_parallel_LN(linearSource,numClusters,numIter,numThreads,&rfunc);
     t2 = std::chrono::high_resolution_clock::now();
     flt2pDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Linear 1D version filtered on device in "<<flt2pDuration<<" seconds..."<<std::endl;

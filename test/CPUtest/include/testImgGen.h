@@ -2,7 +2,7 @@
 #define _CLIB_TESTIMGGEN_H
 
 #include <gtest/gtest.h>
-#include "ImageGenFn.hpp"
+#include "cpuImageGen.hpp"
 
 ////----------------------------------------------------------------------------------------------------------------------
 

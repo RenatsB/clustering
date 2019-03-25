@@ -1,6 +1,7 @@
 include($${PWD}/../../common.pri)
 
-TARGET = clibCPUtests.out
+TEMPLATE = app
+TARGET = clib_CPU_tests.out
 
 OBJECTS_DIR = obj
 

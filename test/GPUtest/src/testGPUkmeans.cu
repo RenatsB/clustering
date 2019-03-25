@@ -1,15 +1,15 @@
 #include "gtest/gtest.h"
 #include "testUtils.h"
-#include "ImageGen.h"
-#include "kmeansP.h"
+#include "gpuImageGen.h"
+#include "gpuKmeans.h"
 
 ////----------------------------------------------------------------------------------------------------------------------
 
 TEST( GPUkmeans, COlorVectorBased )
 {
-    ColorVector cv = GPUclib::generate(64,64,64,64);
+    ColorVector cv = gpuImageGen::generate_parallel_CV(64,64,64,64);
     RandomFn<float> rg;
-    std::vector<float> fl = GPUclib::kmeansP(cv,4,1,&rg,64);
+    std::vector<float> fl = gpuKmeans::kmeans_parallel_CV(cv,4,1,64,&rg);
     for(auto c=0; c<cv.size(); ++c)
     {
         EXPECT_GE(fl.at(c*4),   0.f);
@@ -31,9 +31,9 @@ TEST( GPUkmeans, COlorVectorBased )
 
 TEST( GPUkmeans, linearBased)
 {
-    std::vector<float> fv = GPUclib::linear_generate(64,64,64,64);
+    std::vector<float> fv = gpuImageGen::generate_parallel_LN(64,64,64,64);
     RandomFn<float> rg;
-    std::vector<float> fl = GPUclib::linear_kmeansP(fv,4,1,&rg,64);
+    std::vector<float> fl = gpuKmeans::kmeans_parallel_LN(fv,4,1,64,&rg);
     for(auto f=0; f<fv.size(); ++f)
     {
         EXPECT_GE(fl.at(f), 0.f);

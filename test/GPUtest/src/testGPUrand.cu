@@ -8,7 +8,7 @@ TEST( RandomGPU, fillVectorGpu )
 {
     thrust::device_vector<float> dv(10000, 10.f);
     float* dvPtr = thrust::raw_pointer_cast(dv.data());
-    GPUclib::randFloatsInternal(dvPtr,10000);
+    gpuRandFn::randFloatsInternal(dvPtr,10000);
     cudaDeviceSynchronize();
     std::vector<float> v = device_vector_to_host(dv);
 

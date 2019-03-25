@@ -1,12 +1,12 @@
 #include "gtest/gtest.h"
 #include "testUtils.h"
-#include "ImageGen.h"
+#include "gpuImageGen.h"
 
 ////----------------------------------------------------------------------------------------------------------------------
 
 TEST( GPUImageGen, COlorVectorBased )
 {
-    ColorVector cv = GPUclib::generate(64,64,64,64);
+    ColorVector cv = gpuImageGen::generate_parallel_CV(64,64,64,64);
 
     for(auto &c : cv)
     {
@@ -24,7 +24,7 @@ TEST( GPUImageGen, COlorVectorBased )
 
 TEST( GPUImageGen, linearBased)
 {
-    std::vector<float> fv = GPUclib::linear_generate(64,64,64,64);
+    std::vector<float> fv = gpuImageGen::generate_parallel_LN(64,64,64,64);
     for(auto &f : fv)
     {
         EXPECT_GE(f, 0.f);
