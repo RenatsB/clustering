@@ -17,5 +17,6 @@ INCLUDEPATH+=../../clib/clibp/include
 QMAKE_RPATHDIR += ../../clib
 
 HEADERS +=$$files($$PWD/include/*.h)
+HEADERS +=$$files($$PWD/include/*.hpp)
 SOURCES +=$$files($$PWD/src/*.cpp)
 SOURCES +=$$files($$PWD/*.cpp)

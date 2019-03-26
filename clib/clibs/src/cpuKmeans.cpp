@@ -12,10 +12,10 @@ float cpuKmeans::squared_Colour_l2_Distance(Color first, Color second)
        + square(first.m_b*first.m_a - second.m_b*second.m_a);
 }
 
-float cpuKmeans::linear_squared_Colour_l2_Distance(float FR,float FG,float FB,
-                                         float SR,float SG,float SB)
+float cpuKmeans::linear_squared_Colour_l2_Distance(float FR,float FG,float FB,float FA,
+                                         float SR,float SG,float SB,float SA)
 {
-  return square(FR - SR) + square(FG - SG) + square(FB - SB);
+  return square(FR*FA - SR*SA) + square(FG*FA - SG*SA) + square(FB*FA - SB*SA);
 }
 
 ColorVector cpuKmeans::kmeans_serial_CV(const ColorVector& data,
@@ -112,8 +112,8 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
         size_t best_cluster = 0;
         for (size_t cluster = 0; cluster < k; ++cluster) {
           const float distance =
-              linear_squared_Colour_l2_Distance(data.m_r.at(point),data.m_g.at(point),data.m_b.at(point),
-                                            means.m_r.at(cluster),means.m_g.at(cluster),means.m_b.at(cluster));
+              linear_squared_Colour_l2_Distance(data.m_r.at(point),data.m_g.at(point),data.m_b.at(point), data.m_a.at(point),
+                                            means.m_r.at(cluster),means.m_g.at(cluster),means.m_b.at(cluster), means.m_a.at(cluster));
           if (distance < best_distance) {
             best_distance = distance;
             best_cluster = cluster;
@@ -180,8 +180,16 @@ std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
         size_t best_cluster = 0;
         for (size_t cluster = 0; cluster < k; ++cluster) {
           const float distance =
-              linear_squared_Colour_l2_Distance(data[point*4],data[point*4+1],data[point*4+2],means[cluster*4],means[cluster*4+1],means[cluster*4+2]);
-          if (distance < best_distance) {
+              linear_squared_Colour_l2_Distance(data[point*4],
+                                                data[point*4+1],
+                                                data[point*4+2],
+                                                data[point*4+3],
+                                                means[cluster*4],
+                                                means[cluster*4+1],
+                                                means[cluster*4+2],
+                                                means[cluster*4+2]);
+          if (distance < best_distance)
+          {
             best_distance = distance;
             best_cluster = cluster;
           }
@@ -192,7 +200,8 @@ std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
       // Sum up and count points for each cluster.
       std::vector<float> new_means(k*4);
       std::vector<size_t> counts(k, 0);
-      for (size_t point = 0; point < numberOfItems; ++point) {
+      for (size_t point = 0; point < numberOfItems; ++point)
+      {
         new_means[assignments[point]*4]   += data[point*4];
         new_means[assignments[point]*4+1] += data[point*4+1];
         new_means[assignments[point]*4+2] += data[point*4+2];
@@ -201,7 +210,8 @@ std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
       }
 
       // Divide sums by counts to get new centroids.
-      for (size_t cluster = 0; cluster < k; ++cluster) {
+      for (size_t cluster = 0; cluster < k; ++cluster)
+      {
         // Turn 0/0 into 0/1 to avoid zero division.
         const auto count = std::max<size_t>(1, counts[cluster]);
         means[cluster*4]   = new_means[cluster*4]   / count;
@@ -261,10 +271,13 @@ void cpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
               linear_squared_Colour_l2_Distance(_inreds->at(point),
                                                 _ingrns->at(point),
                                                 _inblus->at(point),
+                                                _inalps->at(point),
                                                 meansR.at(cluster),
                                                 meansG.at(cluster),
-                                                meansB.at(cluster));
-          if (distance < best_distance) {
+                                                meansB.at(cluster),
+                                                meansA.at(cluster));
+          if (distance < best_distance)
+          {
             best_distance = distance;
             best_cluster = cluster;
           }
@@ -278,7 +291,8 @@ void cpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
       std::vector<float> new_meansB(k);
       std::vector<float> new_meansA(k);
       std::vector<size_t> counts(k, 0);
-      for (size_t point = 0; point < num_items; ++point) {
+      for (size_t point = 0; point < num_items; ++point)
+      {
         new_meansR.at(assignments.at(point)) += _inreds->at(point);
         new_meansG.at(assignments.at(point)) += _ingrns->at(point);
         new_meansB.at(assignments.at(point)) += _inblus->at(point);
@@ -287,7 +301,8 @@ void cpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
       }
 
       // Divide sums by counts to get new centroids.
-      for (size_t cluster = 0; cluster < k; ++cluster) {
+      for (size_t cluster = 0; cluster < k; ++cluster)
+      {
         // Turn 0/0 into 0/1 to avoid zero division.
         const auto count = std::max<size_t>(1, counts[cluster]);
         meansR[cluster] = new_meansR[cluster] / count;
@@ -327,7 +342,8 @@ void cpuKmeans::kmeans_serial_4LV(const float* _inreds,
     std::vector<float> meansB(k);
     std::vector<float> meansA(k);
 
-    for (uint cluster=0; cluster<k; ++cluster) {
+    for (uint cluster=0; cluster<k; ++cluster)
+    {
       size_t num = rfunc.MT19937RandL();
       meansR[cluster] = _inreds[num];
       meansG[cluster] = _ingrns[num];
@@ -336,16 +352,24 @@ void cpuKmeans::kmeans_serial_4LV(const float* _inreds,
     }
 
     std::vector<size_t> assignments(num_items);
-    for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
+    for (size_t iteration = 0; iteration < number_of_iterations; ++iteration)
+    {
       // Find assignments.
       for (size_t point = 0; point < num_items; ++point) {
         float best_distance = std::numeric_limits<float>::max();
         size_t best_cluster = 0;
         for (size_t cluster = 0; cluster < k; ++cluster) {
           const float distance =
-              linear_squared_Colour_l2_Distance(_inreds[point],_ingrns[point],_inblus[point],
-                                                meansR[cluster],meansG[cluster],meansB[cluster]);
-          if (distance < best_distance) {
+              linear_squared_Colour_l2_Distance(_inreds[point],
+                                                _ingrns[point],
+                                                _inblus[point],
+                                                _inalps[point],
+                                                meansR[cluster],
+                                                meansG[cluster],
+                                                meansB[cluster],
+                                                meansA[cluster]);
+          if (distance < best_distance)
+          {
             best_distance = distance;
             best_cluster = cluster;
           }
@@ -359,7 +383,8 @@ void cpuKmeans::kmeans_serial_4LV(const float* _inreds,
       std::vector<float> new_meansB(k);
       std::vector<float> new_meansA(k);
       std::vector<size_t> counts(k, 0);
-      for (size_t point = 0; point < num_items; ++point) {
+      for (size_t point = 0; point < num_items; ++point)
+      {
         new_meansR[assignments[point]] += _inreds[point];
         new_meansG[assignments[point]] += _ingrns[point];
         new_meansB[assignments[point]] += _inblus[point];
@@ -368,7 +393,8 @@ void cpuKmeans::kmeans_serial_4LV(const float* _inreds,
       }
 
       // Divide sums by counts to get new centroids.
-      for (size_t cluster = 0; cluster < k; ++cluster) {
+      for (size_t cluster = 0; cluster < k; ++cluster)
+      {
         // Turn 0/0 into 0/1 to avoid zero division.
         const auto count = std::max<size_t>(1, counts[cluster]);
         meansR[cluster] = new_meansR[cluster] / count;

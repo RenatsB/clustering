@@ -102,7 +102,7 @@ __global__ void assignColors4(thrust::device_ptr<float> d_noise,
     d_outR[index] = turbulenceP(d_noise, noiseWidth, noiseHeight, x, y, turbulence_size);
     d_outG[index] = turbulenceP(d_noise, noiseWidth, noiseHeight, x, y+noiseHeight, turbulence_size/2);
     d_outB[index] = turbulenceP(d_noise, noiseWidth, noiseHeight, x, y+noiseHeight*2, turbulence_size/2);
-    d_outA[index] = 1.f;
+    d_outA[index] = turbulenceP(d_noise, noiseWidth, imageWidth-noiseHeight, x, y, turbulence_size*2);
 }
 
 ColorVector gpuImageGen::generate_parallel_CV(const uint w,

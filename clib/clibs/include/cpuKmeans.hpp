@@ -40,8 +40,8 @@ void kmeans_serial_4LV(const float* _inreds,
 private:
 float square(float value);
 float squared_Colour_l2_Distance(Color first, Color second);
-float linear_squared_Colour_l2_Distance(float FR,float FG,float FB,
-                                        float SR,float SG,float SB);
+float linear_squared_Colour_l2_Distance(float FR,float FG,float FB,float FA,
+                                        float SR,float SG,float SB, float SA);
 private:
 RandomFn<float> rfunc;
 };

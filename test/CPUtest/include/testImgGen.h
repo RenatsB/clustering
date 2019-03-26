@@ -2,6 +2,7 @@
 #define _CLIB_TESTIMGGEN_H
 
 #include <gtest/gtest.h>
+#include "testUtils.hpp"
 #include "cpuImageGen.hpp"
 
 ////----------------------------------------------------------------------------------------------------------------------
@@ -12,14 +13,10 @@ TEST( CPUImgGenerator, ColorVectorBased)
     ColorVector cv = gen.generate_serial_CV(64,64,64);
     for(auto &c : cv)
     {
-        EXPECT_GE(c.m_r, 0.f);
-        EXPECT_LE(c.m_r, 1.f);
-        EXPECT_GE(c.m_g, 0.f);
-        EXPECT_LE(c.m_g, 1.f);
-        EXPECT_GE(c.m_b, 0.f);
-        EXPECT_LE(c.m_b, 1.f);
-        EXPECT_GE(c.m_a, 0.f);
-        EXPECT_LE(c.m_a, 1.f);
+        EXPECT_TRUE(testRange(c.m_r, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(c.m_g, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(c.m_b, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(c.m_a, 0.f, 1.f, 0.001f));
     }
 }
 
@@ -29,8 +26,7 @@ TEST( CPUImgGenerator, linearBased)
     std::vector<float> fv = gen.generate_serial_LN(64,64,64);
     for(auto &f : fv)
     {
-        EXPECT_GE(f, 0.f);
-        EXPECT_LE(f, 1.f);
+        EXPECT_TRUE(testRange(f, 0.f, 1.f, 0.001f));
     }
 }
 
@@ -40,14 +36,10 @@ TEST( CPUImgGenerator, ImageColorsStructure )
     ImageColors ic = gen.generate_serial_IC(64,64,64);
     for(size_t i=0; i<ic.m_r.size(); ++i)
     {
-        EXPECT_GE(ic.m_r.at(i), 0.f);
-        EXPECT_LE(ic.m_r.at(i), 1.f);
-        EXPECT_GE(ic.m_g.at(i), 0.f);
-        EXPECT_LE(ic.m_g.at(i), 1.f);
-        EXPECT_GE(ic.m_b.at(i), 0.f);
-        EXPECT_LE(ic.m_b.at(i), 1.f);
-        EXPECT_GE(ic.m_a.at(i), 0.f);
-        EXPECT_LE(ic.m_a.at(i), 1.f);
+        EXPECT_TRUE(testRange(ic.m_r.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(ic.m_g.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(ic.m_b.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(ic.m_a.at(i), 0.f, 1.f, 0.001f));
     }
 }
 
@@ -62,14 +54,10 @@ TEST( CPUImgGenerator, 4VectorPointers )
     gen.generate_serial_4SV(64,64,64,&rv,&gv,&bv,&av);
     for(size_t i=0; i<4096; ++i)
     {
-        EXPECT_GE(rv.at(i), 0.f);
-        EXPECT_LE(rv.at(i), 1.f);
-        EXPECT_GE(gv.at(i), 0.f);
-        EXPECT_LE(gv.at(i), 1.f);
-        EXPECT_GE(bv.at(i), 0.f);
-        EXPECT_LE(bv.at(i), 1.f);
-        EXPECT_GE(av.at(i), 0.f);
-        EXPECT_LE(av.at(i), 1.f);
+        EXPECT_TRUE(testRange(rv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(gv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(bv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(av.at(i), 0.f, 1.f, 0.001f));
     }
 }
 
@@ -83,14 +71,10 @@ TEST( CPUImgGenerator, 4FloatPointers )
     gen.generate_serial_4LV(64,64,64,rv.data(),gv.data(),bv.data(),av.data());
     for(size_t i=0; i<4096; ++i)
     {
-        EXPECT_GE(rv.at(i), 0.f);
-        EXPECT_LE(rv.at(i), 1.f);
-        EXPECT_GE(gv.at(i), 0.f);
-        EXPECT_LE(gv.at(i), 1.f);
-        EXPECT_GE(bv.at(i), 0.f);
-        EXPECT_LE(bv.at(i), 1.f);
-        EXPECT_GE(av.at(i), 0.f);
-        EXPECT_LE(av.at(i), 1.f);
+        EXPECT_TRUE(testRange(rv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(gv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(bv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(av.at(i), 0.f, 1.f, 0.001f));
     }
 }
 
@@ -104,14 +88,10 @@ TEST( CPUImgGenerator, 4FloatPointersDirectAssignment )
     gen.generate_serial_4LL(64,64,64,rv.data(),gv.data(),bv.data(),av.data());
     for(size_t i=0; i<4096; ++i)
     {
-        EXPECT_GE(rv.at(i), 0.f);
-        EXPECT_LE(rv.at(i), 1.f);
-        EXPECT_GE(gv.at(i), 0.f);
-        EXPECT_LE(gv.at(i), 1.f);
-        EXPECT_GE(bv.at(i), 0.f);
-        EXPECT_LE(bv.at(i), 1.f);
-        EXPECT_GE(av.at(i), 0.f);
-        EXPECT_LE(av.at(i), 1.f);
+        EXPECT_TRUE(testRange(rv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(gv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(bv.at(i), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(testRange(av.at(i), 0.f, 1.f, 0.001f));
     }
 }
 

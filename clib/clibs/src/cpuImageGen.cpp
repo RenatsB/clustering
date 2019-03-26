@@ -9,7 +9,7 @@ ColorVector ImageGenFn::generate_serial_CV(const uint w,
     ColorVector rawData(w*h);
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -39,7 +39,7 @@ ImageColors ImageGenFn::generate_serial_IC(const uint w,
     data.resize(w*h);
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -67,7 +67,7 @@ std::vector<float> ImageGenFn::generate_serial_LN(const uint w,
     std::vector<float> rawData(w*h*4);
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -102,7 +102,7 @@ void ImageGenFn::generate_serial_4SV(const uint w,
     m_noiseHeight=h;
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -136,7 +136,7 @@ void ImageGenFn::generate_serial_4LV(const uint w,
     m_noiseHeight=h;
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -170,7 +170,7 @@ void ImageGenFn::generate_serial_4LL(const uint w,
     m_noiseHeight=h;
 
     //this has to be set before a number within desired limits can be acquired
-    m_rand.setNumericLimits(0.0,1.0);
+    m_rand.setNumericLimits(0.00000f,1.00000f);
     //generate the per-pixel noise
     generateNoise();
 
@@ -182,7 +182,7 @@ void ImageGenFn::generate_serial_4LL(const uint w,
             redChannel[y*w+x]=turbulence(x, y, turbulence_size);
             greenChannel[y*w+x]=turbulence(x, y+h, turbulence_size/2);
             blueChannel[y*w+x]=turbulence(x, y+h*2, turbulence_size/2);
-            alphaChannel[y*w+x]=1.0f;
+            alphaChannel[y*w+x]=turbulence(x, h-y, turbulence_size*2);
         }
     }
     //end of map generation

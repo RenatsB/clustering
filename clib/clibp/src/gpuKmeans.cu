@@ -22,11 +22,13 @@ __device__ float sqL2Dist_device_CL(float4 first, float4 second)
 __device__ float sqL2Dist_device_LN(float FR,
                                     float FG,
                                     float FB,
+                                    float FA,
                                     float SR,
                                     float SG,
-                                    float SB)
+                                    float SB,
+                                    float SA)
 {
-    return sq_device(FR - SR) + sq_device(FG - SG) + sq_device(FB - SB);
+    return sq_device(FR*FA - SR*SA) + sq_device(FG*FA - SG*SA) + sq_device(FB*FA - SB*SA);
 }
 
 // In the assignment step, each point (thread) computes its distance to each
@@ -98,10 +100,11 @@ __global__ void assignClusters_parallel_4F(thrust::device_ptr<float> inRed,
     int best_cluster = 0;
     for (int cluster = 0; cluster < k; ++cluster)
     {
-        const float distance = sqL2Dist_device_LN(currentR,currentG,currentB,
+        const float distance = sqL2Dist_device_LN(currentR,currentG,currentB,currentA,
                                                   meansR[cluster],
                                                   meansG[cluster],
-                                                  meansB[cluster]);
+                                                  meansB[cluster],
+                                                  meansA[cluster]);
         if (distance < best_distance)
         {
             best_distance = distance;
@@ -132,7 +135,14 @@ __global__ void assignClusters_parallel_LN(thrust::device_ptr<float> data,
     int best_cluster = 0;
     for (int cluster = 0; cluster < k; ++cluster)
     {
-        const float distance = sqL2Dist_device_LN(data[index*4],data[index*4+1],data[index*4+2],means[cluster*4],means[cluster*4+1],means[cluster*4+2]);
+        const float distance = sqL2Dist_device_LN(data[index*4],
+                                                  data[index*4+1],
+                                                  data[index*4+2],
+                                                  data[index*4+3],
+                                                  means[cluster*4],
+                                                  means[cluster*4+1],
+                                                  means[cluster*4+2],
+                                                  means[cluster*4+3]);
         if (distance < best_distance)
         {
             best_distance = distance;
@@ -447,7 +457,6 @@ std::vector<float> gpuKmeans::kmeans_parallel_LN(const std::vector<float> &sourc
     cudaDeviceSynchronize();
     thrust::copy(d_filtered.begin(), d_filtered.end(), h_filtered.begin());
 
-    //h_source = d_source;
     std::vector<float> ret(source.size());
     for(uint i=0; i<source.size(); ++i)
     {
@@ -456,16 +465,20 @@ std::vector<float> gpuKmeans::kmeans_parallel_LN(const std::vector<float> &sourc
     return ret;
 }
 
-std::vector<float> gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _reds,
-                                                const std::vector<float>* _grns,
-                                                const std::vector<float>* _blus,
-                                                const std::vector<float>* _alps,
-                                                size_t k,
-                                                size_t number_of_iterations,
-                                                const size_t numThreads,
-                                                RandomFn<float>* rfunc)
+void gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
+                                  const std::vector<float>* _ingrns,
+                                  const std::vector<float>* _inblus,
+                                  const std::vector<float>* _inalps,
+                                  std::vector<float>* _outreds,
+                                  std::vector<float>* _outgrns,
+                                  std::vector<float>* _outblus,
+                                  std::vector<float>* _outalps,
+                                  size_t k,
+                                  size_t number_of_iterations,
+                                  const size_t numThreads,
+                                  RandomFn<float>* rfunc)
 {
-    const size_t number_of_elements = _reds->size();
+    const size_t number_of_elements = _inreds->size();
     //thrust::fill(h_source.begin(), h_source.end(), source.begin());
     thrust::device_vector<float> d_meansR(k);
     thrust::device_vector<float> d_meansG(k);
@@ -475,30 +488,26 @@ std::vector<float> gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _reds,
     for(auto cluster=0; cluster<k; ++cluster)
     {
         size_t num = rfunc->MT19937RandL();
-        d_meansR[cluster] = _reds->at(num);
-        d_meansG[cluster] = _grns->at(num);
-        d_meansB[cluster] = _blus->at(num);
-        d_meansA[cluster] = _alps->at(num);
+        d_meansR[cluster] = _inreds->at(num);
+        d_meansG[cluster] = _ingrns->at(num);
+        d_meansB[cluster] = _inblus->at(num);
+        d_meansA[cluster] = _inalps->at(num);
     }
 
     thrust::device_vector<float> d_sourceR(number_of_elements);
     thrust::device_vector<float> d_sourceG(number_of_elements);
     thrust::device_vector<float> d_sourceB(number_of_elements);
     thrust::device_vector<float> d_sourceA(number_of_elements);
-    thrust::copy(_reds->begin(), _reds->end(), d_sourceR.begin());
-    thrust::copy(_grns->begin(), _grns->end(), d_sourceG.begin());
-    thrust::copy(_blus->begin(), _blus->end(), d_sourceB.begin());
-    thrust::copy(_alps->begin(), _alps->end(), d_sourceA.begin());
+    thrust::copy(_inreds->begin(), _inreds->end(), d_sourceR.begin());
+    thrust::copy(_ingrns->begin(), _ingrns->end(), d_sourceG.begin());
+    thrust::copy(_inblus->begin(), _inblus->end(), d_sourceB.begin());
+    thrust::copy(_inalps->begin(), _inalps->end(), d_sourceA.begin());
 
     thrust::device_vector<int> d_assignments(number_of_elements);
     thrust::device_vector<float> d_filteredR(number_of_elements);
     thrust::device_vector<float> d_filteredG(number_of_elements);
     thrust::device_vector<float> d_filteredB(number_of_elements);
     thrust::device_vector<float> d_filteredA(number_of_elements);
-    thrust::host_vector<float> h_filteredR(number_of_elements);
-    thrust::host_vector<float> h_filteredG(number_of_elements);
-    thrust::host_vector<float> h_filteredB(number_of_elements);
-    thrust::host_vector<float> h_filteredA(number_of_elements);
 
     thrust::device_vector<float> d_sumsR(k);
     thrust::device_vector<float> d_sumsG(k);
@@ -556,32 +565,27 @@ std::vector<float> gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _reds,
                                                        d_filteredB.data(),
                                                        d_filteredA.data());
     cudaDeviceSynchronize();
-    thrust::copy(d_filteredR.begin(), d_filteredR.end(), h_filteredR.begin());
-    thrust::copy(d_filteredG.begin(), d_filteredG.end(), h_filteredG.begin());
-    thrust::copy(d_filteredB.begin(), d_filteredB.end(), h_filteredB.begin());
-    thrust::copy(d_filteredA.begin(), d_filteredA.end(), h_filteredA.begin());
+    thrust::copy(d_filteredR.begin(), d_filteredR.end(), _outreds->begin());
+    thrust::copy(d_filteredG.begin(), d_filteredG.end(), _outgrns->begin());
+    thrust::copy(d_filteredB.begin(), d_filteredB.end(), _outblus->begin());
+    thrust::copy(d_filteredA.begin(), d_filteredA.end(), _outalps->begin());
 
-    //h_source = d_source;
-    std::vector<float> ret(number_of_elements*4);
-    for(uint i=0; i<number_of_elements; ++i)
-    {
-        ret.at(i*4)   = h_filteredR[i];
-        ret.at(i*4+1) = h_filteredG[i];
-        ret.at(i*4+2) = h_filteredB[i];
-        ret.at(i*4+3) = h_filteredA[i];
-    }
-    return ret;
+    return;
 }
 
-std::vector<float> gpuKmeans::kmeans_serial_4LV(const float* _reds,
-                                                const float* _grns,
-                                                const float* _blus,
-                                                const float* _alps,
-                                                const size_t number_of_elements,
-                                                size_t k,
-                                                size_t number_of_iterations,
-                                                const size_t numThreads,
-                                                RandomFn<float>* rfunc)
+void gpuKmeans::kmeans_serial_4LV(const float* _inreds,
+                                  const float* _ingrns,
+                                  const float* _inblus,
+                                  const float* _inalps,
+                                  float* _outreds,
+                                  float* _outgrns,
+                                  float* _outblus,
+                                  float* _outalps,
+                                  const size_t number_of_elements,
+                                  size_t k,
+                                  size_t number_of_iterations,
+                                  const size_t numThreads,
+                                  RandomFn<float>* rfunc)
 {
     //thrust::fill(h_source.begin(), h_source.end(), source.begin());
     thrust::device_vector<float> d_meansR(k);
@@ -592,30 +596,26 @@ std::vector<float> gpuKmeans::kmeans_serial_4LV(const float* _reds,
     for(auto cluster=0; cluster<k; ++cluster)
     {
         size_t num = rfunc->MT19937RandL();
-        d_meansR[cluster] = _reds[num];
-        d_meansG[cluster] = _grns[num];
-        d_meansB[cluster] = _blus[num];
-        d_meansA[cluster] = _alps[num];
+        d_meansR[cluster] = _inreds[num];
+        d_meansG[cluster] = _ingrns[num];
+        d_meansB[cluster] = _inblus[num];
+        d_meansA[cluster] = _inalps[num];
     }
 
     thrust::device_vector<float> d_sourceR(number_of_elements);
     thrust::device_vector<float> d_sourceG(number_of_elements);
     thrust::device_vector<float> d_sourceB(number_of_elements);
     thrust::device_vector<float> d_sourceA(number_of_elements);
-    thrust::copy(_reds, _reds+number_of_elements, d_sourceR.begin());
-    thrust::copy(_grns, _grns+number_of_elements, d_sourceG.begin());
-    thrust::copy(_blus, _blus+number_of_elements, d_sourceB.begin());
-    thrust::copy(_alps, _alps+number_of_elements, d_sourceA.begin());
+    thrust::copy(_inreds, _inreds+number_of_elements, d_sourceR.begin());
+    thrust::copy(_ingrns, _ingrns+number_of_elements, d_sourceG.begin());
+    thrust::copy(_inblus, _inblus+number_of_elements, d_sourceB.begin());
+    thrust::copy(_inalps, _inalps+number_of_elements, d_sourceA.begin());
 
     thrust::device_vector<int> d_assignments(number_of_elements);
     thrust::device_vector<float> d_filteredR(number_of_elements);
     thrust::device_vector<float> d_filteredG(number_of_elements);
     thrust::device_vector<float> d_filteredB(number_of_elements);
     thrust::device_vector<float> d_filteredA(number_of_elements);
-    thrust::host_vector<float> h_filteredR(number_of_elements);
-    thrust::host_vector<float> h_filteredG(number_of_elements);
-    thrust::host_vector<float> h_filteredB(number_of_elements);
-    thrust::host_vector<float> h_filteredA(number_of_elements);
 
     thrust::device_vector<float> d_sumsR(k);
     thrust::device_vector<float> d_sumsG(k);
@@ -673,19 +673,10 @@ std::vector<float> gpuKmeans::kmeans_serial_4LV(const float* _reds,
                                                        d_filteredB.data(),
                                                        d_filteredA.data());
     cudaDeviceSynchronize();
-    thrust::copy(d_filteredR.begin(), d_filteredR.end(), h_filteredR.begin());
-    thrust::copy(d_filteredG.begin(), d_filteredG.end(), h_filteredG.begin());
-    thrust::copy(d_filteredB.begin(), d_filteredB.end(), h_filteredB.begin());
-    thrust::copy(d_filteredA.begin(), d_filteredA.end(), h_filteredA.begin());
+    thrust::copy(d_filteredR.begin(), d_filteredR.end(), _outreds);
+    thrust::copy(d_filteredG.begin(), d_filteredG.end(), _outgrns);
+    thrust::copy(d_filteredB.begin(), d_filteredB.end(), _outblus);
+    thrust::copy(d_filteredA.begin(), d_filteredA.end(), _outalps);
 
-    //h_source = d_source;
-    std::vector<float> ret(number_of_elements*4);
-    for(uint i=0; i<number_of_elements; ++i)
-    {
-        ret.at(i*4)   = h_filteredR[i];
-        ret.at(i*4+1) = h_filteredG[i];
-        ret.at(i*4+2) = h_filteredB[i];
-        ret.at(i*4+3) = h_filteredA[i];
-    }
-    return ret;
+    return;
 }
