@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "testUtils.h"
 #include "gpuRandF.h"
+#include <thrust/device_vector.h>
 
 ////----------------------------------------------------------------------------------------------------------------------
 
@@ -10,13 +11,12 @@ TEST( RandomGPU, fillVectorGpu )
     float* dvPtr = thrust::raw_pointer_cast(dv.data());
     gpuRandFn::randFloatsInternal(dvPtr,10000);
     cudaDeviceSynchronize();
-    std::vector<float> v = device_vector_to_host(dv);
+    std::vector<float> v(dv.size());
+    thrust::copy(dv.begin(), dv.end(), v.begin());
 
     for(auto val : v)
     {
-        EXPECT_NE(val, 10.f);
-        EXPECT_LE(val, 1.f);
-        EXPECT_GE(val, 0.f);
+        EXPECT_TRUE(clibTutils::testRange(val, 0.f, 1.f, 0.001f));
     }
 }
 

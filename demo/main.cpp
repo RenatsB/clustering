@@ -9,8 +9,9 @@
 
 int main(int argc, char* argv[])
 {
-    ImageGenFn m_gen;
-    RandomFn<float> rfunc;
+    ImageGenFn gen;
+    cpuKmeans km;
+    RandomFn<float> rg;
     uint x = 64;
     uint y = 64;
     uint noiseSize = 64;
@@ -18,32 +19,221 @@ int main(int argc, char* argv[])
     uint numClusters = 4;
     uint numThreads = 64;
 
-    //look at half float, struct of arrays
-    //get rid of ss seen in compiler explorer
-    //https://www.godbolt.org/
+    const char* nameGsCV = "GeneratorSerialCV.png";
+    const char* nameGsIC = "GeneratorSerialIC.png";
+    const char* nameGsLN = "GeneratorSerialLN.png";
+    const char* nameGs4SV = "GeneratorSerial4SV.png";
+    const char* nameGs4LV = "GeneratorSerial4LN.png";
 
-    const char* nameGCS = "GeneratorColorSerial.png";
-    const char* nameCSF = "SerialColorSerialFiltered.png";
-    const char* nameCPF = "SerialColorParallelFiltered.png";
-    const char* nameGLS = "GeneratorLinearSerial.png";
-    const char* nameLSF = "SerialLinearSerialFiltered.png";
-    const char* nameLPF = "SerialLinearParallelFiltered.png";
-    const char* nameGCP = "GeneratorColorParallel.png";
-    const char* nameGLP = "GeneratorLinearParallel.png";
-    cpuKmeans k;
+    const char* nameGpCV = "GeneratorParallelCV.png";
+    const char* nameGpIC = "GeneratorParallelIC.png";
+    const char* nameGpLN = "GeneratorParallelLN.png";
+    const char* nameGp4SV = "GeneratorParallel4SV.png";
+    const char* nameGp4LV = "GeneratorParallel4LN.png";
 
-    float gens1Duration =0.f;
-    float gens2Duration =0.f;
-    float gens3Duration =0.f;
-    float gens4Duration =0.f;
-    float gens5Duration =0.f;
-    float gens6Duration =0.f;
-    float genp1Duration =0.f;
-    float genp2Duration =0.f;
-    float flt1sDuration =0.f;
-    float flt1pDuration =0.f;
-    float flt2sDuration =0.f;
-    float flt2pDuration =0.f;
+    const char* nameFsCV = "FilterSerialCV.png";
+    const char* nameFsIC = "FilterSerialIC.png";
+    const char* nameFsLN = "FilterSerialLN.png";
+    const char* nameFs4SV = "FilterSerial4SV.png";
+    const char* nameFs4LV = "FilterSerial4LV.png";
+
+    const char* nameFpCV = "FilterParallelCV.png";
+    const char* nameFpIC = "FilterParallelIC.png";
+    const char* nameFpLN = "FilterParallelLN.png";
+    const char* nameFp4SV = "FilterParallel4SV.png";
+    const char* nameFp4LV = "FilterParallel4LV.png";
+
+    ColorVector source_serial_CV =gen.generate_serial_CV(x,y,noiseSize);
+    ImageColors source_serial_IC =gen.generate_serial_IC(x,y,noiseSize);
+    std::vector<float> source_serial_LN = gen.generate_serial_LN(x,y,noiseSize);
+    std::vector<float> source_serial_4SVr(x*y);
+    std::vector<float> source_serial_4SVg(x*y);
+    std::vector<float> source_serial_4SVb(x*y);
+    std::vector<float> source_serial_4SVa(x*y);
+    gen.generate_serial_4SV(x,y,noiseSize,
+                            &source_serial_4SVr,
+                            &source_serial_4SVg,
+                            &source_serial_4SVb,
+                            &source_serial_4SVa);
+    std::vector<float> source_serial_4LVr(x*y);
+    std::vector<float> source_serial_4LVg(x*y);
+    std::vector<float> source_serial_4LVb(x*y);
+    std::vector<float> source_serial_4LVa(x*y);
+    gen.generate_serial_4LV(x,y,noiseSize,
+                            source_serial_4LVr.data(),
+                            source_serial_4LVg.data(),
+                            source_serial_4LVb.data(),
+                            source_serial_4LVa.data());
+
+
+    ColorVector source_parallel_CV =gpuImageGen::generate_parallel_CV(x,y,
+                                                                      noiseSize,
+                                                                      numThreads);
+    ImageColors source_parallel_IC =gpuImageGen::generate_parallel_IC(x,y,
+                                                                      noiseSize,
+                                                                      numThreads);
+    std::vector<float> source_parallel_LN =gpuImageGen::generate_parallel_LN(x,y,
+                                                                             noiseSize,
+                                                                             numThreads);
+    std::vector<float> source_parallel_4SVr(x*y);
+    std::vector<float> source_parallel_4SVg(x*y);
+    std::vector<float> source_parallel_4SVb(x*y);
+    std::vector<float> source_parallel_4SVa(x*y);
+    gpuImageGen::generate_parallel_4SV(x,y,noiseSize,
+                                       &source_parallel_4SVr,
+                                       &source_parallel_4SVg,
+                                       &source_parallel_4SVb,
+                                       &source_parallel_4SVa,
+                                       numThreads);
+    std::vector<float> source_parallel_4LVr(x*y);
+    std::vector<float> source_parallel_4LVg(x*y);
+    std::vector<float> source_parallel_4LVb(x*y);
+    std::vector<float> source_parallel_4LVa(x*y);
+    gpuImageGen::generate_parallel_4SV(x,y,noiseSize,
+                                       source_parallel_4LVr.data(),
+                                       source_parallel_4LVg.data(),
+                                       source_parallel_4LVb.data(),
+                                       source_parallel_4LVa.data(),
+                                       numThreads);
+
+
+    ColorVector filter_serial_CV = km.kmeans_serial_CV(source_serial_CV,
+                                                              numClusters,
+                                                              numIter);
+    ImageColors filter_serial_IC = km.kmeans_serial_IC(source_serial_IC,
+                                                              numClusters,
+                                                              numIter);
+    std::vector<float> filter_serial_LN = km.kmeans_serial_LN(source_serial_LN,
+                                                              numClusters,
+                                                              numIter);
+    std::vector<float> filter_serial_4SVr(x*y);
+    std::vector<float> filter_serial_4SVg(x*y);
+    std::vector<float> filter_serial_4SVb(x*y);
+    std::vector<float> filter_serial_4SVa(x*y);
+    km.kmeans_serial_4SV(&source_serial_4SVr,
+                         &source_serial_4SVg,
+                         &source_serial_4SVb,
+                         &source_serial_4SVa,
+                         &filter_serial_4SVr,
+                         &filter_serial_4SVg,
+                         &filter_serial_4SVb,
+                         &filter_serial_4SVa,
+                         x*y,
+                         numClusters,
+                         numIter);
+    std::vector<float> filter_serial_4LVr(x*y);
+    std::vector<float> filter_serial_4LVg(x*y);
+    std::vector<float> filter_serial_4LVb(x*y);
+    std::vector<float> filter_serial_4LVa(x*y);
+    km.kmeans_serial_4LV(&source_serial_4LVr,
+                         &source_serial_4LVg,
+                         &source_serial_4LVb,
+                         &source_serial_4LVa,
+                         &filter_serial_4LVr,
+                         &filter_serial_4LVg,
+                         &filter_serial_4LVb,
+                         &filter_serial_4LVa,
+                         x*y,
+                         numClusters,
+                         numIter);
+
+
+
+
+    ColorVector filter_parallel_CV =
+            gpuKmeans::kmeans_parallel_CV(source_serial_CV,
+                                          numClusters,
+                                          numIter,
+                                          numThreads,&rg);
+    ImageColors filter_serial_IC =
+            gpuKmeans::kmeans_parallel_IC(source_serial_IC,
+                                          numClusters,
+                                          numIter,
+                                          numThreads,&rg);
+    std::vector<float> filter_serial_LN =
+            gpuKmeans::kmeans_parallel_LN(source_serial_LN,
+                                          numClusters,
+                                          numIter,
+                                          numThreads,&rg);
+    std::vector<float> filter_serial_4SVr(x*y);
+    std::vector<float> filter_serial_4SVg(x*y);
+    std::vector<float> filter_serial_4SVb(x*y);
+    std::vector<float> filter_serial_4SVa(x*y);
+    gpuKmeans::kmeans_parallel_4SV(&source_serial_4SVr,
+                                   &source_serial_4SVg,
+                                   &source_serial_4SVb,
+                                   &source_serial_4SVa,
+                                   &filter_serial_4SVr,
+                                   &filter_serial_4SVg,
+                                   &filter_serial_4SVb,
+                                   &filter_serial_4SVa,
+                                   numClusters,
+                                   numIter,
+                                   numThreads,
+                                   &rg);
+    std::vector<float> filter_serial_4LVr(x*y);
+    std::vector<float> filter_serial_4LVg(x*y);
+    std::vector<float> filter_serial_4LVb(x*y);
+    std::vector<float> filter_serial_4LVa(x*y);
+    gpuKmeans::kmeans_parallel_4LV(&source_serial_4LVr,
+                                   &source_serial_4LVg,
+                                   &source_serial_4LVb,
+                                   &source_serial_4LVa,
+                                   &filter_serial_4LVr,
+                                   &filter_serial_4LVg,
+                                   &filter_serial_4LVb,
+                                   &filter_serial_4LVa,
+                                   numClusters,
+                                   numIter,
+                                   numThreads,
+                                   &rg);
+
+
+    std::vector<float> outp(source_serial_CV.size()*4);
+    for(uint i=0; i<source_serial_CV.size(); ++i)
+    {
+        outp.at(i*4)   = source_serial_CV.at(i).m_r;
+        outp.at(i*4+1) = source_serial_CV.at(i).m_g;
+        outp.at(i*4+2) = source_serial_CV.at(i).m_b;
+        outp.at(i*4+3) = source_serial_CV.at(i).m_a;
+    }
+    writeImage(nameGsCV,outp,x,y);
+
+    for(uint i=0; i<source_serial_CV.size(); ++i)
+    {
+        outp.at(i*4)   = source_serial_IC.m_r.at(i);
+        outp.at(i*4+1) = source_serial_IC.m_g.at(i);
+        outp.at(i*4+2) = source_serial_IC.m_b.at(i);
+        outp.at(i*4+3) = source_serial_IC.m_a.at(i);
+    }
+    writeImage(nameGsIC,outp,x,y);
+
+    std::copy(source_serial_LN.begin(),source_serial_LN.end(),outp.begin());
+    writeImage(nameGsLN,outp,x,y);
+
+    for(uint i=0; i<x*y; ++i)
+    {
+        outp.at(i*4)   = source_serial_4SVr.at(i);
+        outp.at(i*4+1) = source_serial_4SVg.at(i);
+        outp.at(i*4+2) = source_serial_4SVb.at(i);
+        outp.at(i*4+3) = source_serial_4SVa.at(i);
+    }
+    writeImage(nameGs4SV,outp,x,y);
+
+    for(uint i=0; i<x*y; ++i)
+    {
+        outp.at(i*4)   = source_serial_4LVr.at(i);
+        outp.at(i*4+1) = source_serial_4LVg.at(i);
+        outp.at(i*4+2) = source_serial_4LVb.at(i);
+        outp.at(i*4+3) = source_serial_4LVa.at(i);
+    }
+    writeImage(nameGs4LV,outp,x,y);
+
+    return 0;
+}
+
+
+/*
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     ColorVector source = m_gen.generate_serial_CV(x,y, noiseSize);
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
@@ -93,10 +283,6 @@ int main(int argc, char* argv[])
     std::cout<<"4 float* version generation finished on host in "<<gens6Duration<<" seconds..."<<std::endl;
 
 
-
-
-
-
     t1 = std::chrono::high_resolution_clock::now();
     ColorVector parallelSource = gpuImageGen::generate_parallel_CV(x,y, noiseSize, numThreads);
     t2 = std::chrono::high_resolution_clock::now();
@@ -121,6 +307,9 @@ int main(int argc, char* argv[])
     t2 = std::chrono::high_resolution_clock::now();
     flt2sDuration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count() / 1000000.f;
     std::cout<<"Linear 1D version filtered on host in "<<flt2sDuration<<" seconds..."<<std::endl;
+
+    ImageColors cerialKmIC = k.kmeans_serial_IC(imgColSource,numClusters,numIter);
+
 
     t1 = std::chrono::high_resolution_clock::now();
     std::vector<float> parallelOut = gpuKmeans::kmeans_parallel_CV(source,numClusters,numIter,1024,&rfunc);
@@ -154,6 +343,15 @@ int main(int argc, char* argv[])
         outp.at(i*4+1) = source.at(i).m_g;
         outp.at(i*4+2) = source.at(i).m_b;
         outp.at(i*4+3) = source.at(i).m_a;
+    }
+    writeImage(nameGCS,outp,x,y);
+
+    for(uint i=0; i<source.size(); ++i)
+    {
+        outp.at(i*4)   = cerialKmIC.m_r.at(i);
+        outp.at(i*4+1) = cerialKmIC.m_g.at(i);
+        outp.at(i*4+2) = cerialKmIC.m_b.at(i);
+        outp.at(i*4+3) = cerialKmIC.m_a.at(i);
     }
     writeImage(nameGCS,outp,x,y);
 
@@ -195,4 +393,4 @@ int main(int argc, char* argv[])
     outp = linParallelOut;
     writeImage(nameLPF,outp,x,y);
     return 0;
-}
+*/

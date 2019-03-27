@@ -2,6 +2,7 @@
 #define _CLIB_TESTRANDOM_H
 
 #include <gtest/gtest.h>
+#include "testUtils.h"
 #include "cpuRandomFn.hpp"
 
 ////----------------------------------------------------------------------------------------------------------------------
@@ -26,8 +27,7 @@ TEST( RandomCPU, testLimits )
 {
     RandomFn<float> r1;
     float t1 = r1.UniformRandU();
-    EXPECT_GE(t1, 0.f);
-    EXPECT_LE(t1, 1.f);
+    EXPECT_TRUE(clibTutils::testRange(t1, 0.f, 1.f, 0.001f));
     size_t t2 = r1.UniformRandL();
     EXPECT_GE(t2, 0);
     EXPECT_LE(t2, std::numeric_limits<size_t>::max());
@@ -35,8 +35,7 @@ TEST( RandomCPU, testLimits )
     r1.setNumericLimits(-100.f,100.f);
     r1.setNumericLimitsL(0, 200);
     float t3 = r1.UniformRandU();
-    EXPECT_GE(t3, -100.f);
-    EXPECT_LE(t3, 100.f);
+    EXPECT_TRUE(clibTutils::testRange(t3, -100.f, 100.f, 0.001f));
     size_t t4 = r1.UniformRandL();
     EXPECT_GE(t4, 0);
     EXPECT_LE(t4, 200);
@@ -45,8 +44,7 @@ TEST( RandomCPU, testLimits )
     for(int a=0; a<1000; ++a)
     {
         float t = r1.UniformRandU();
-        EXPECT_GE(t, -100.f);
-        EXPECT_LE(t, 100.f);
+        EXPECT_TRUE(clibTutils::testRange(t, -100.f, 100.f, 0.001f));
     }
 
     r1.setNumericLimits(100.f, 100.f);

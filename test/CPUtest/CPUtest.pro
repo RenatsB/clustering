@@ -13,10 +13,12 @@ LIBS+= -L/usr/local/lib -lgtest -lpthread \
 
 INCLUDEPATH+=../../clib/clibs/include
 INCLUDEPATH+=../../clib/clibp/include
+INCLUDEPATH+=$$PWD/../include
 
 QMAKE_RPATHDIR += ../../clib
 
 HEADERS +=$$files($$PWD/include/*.h)
-HEADERS +=$$files($$PWD/include/*.hpp)
+HEADERS +=$$files($$PWD/../include/testUtils.h)
 SOURCES +=$$files($$PWD/src/*.cpp)
 SOURCES +=$$files($$PWD/*.cpp)
+SOURCES +=$$files($$PWD/../src/testUtils.cpp)

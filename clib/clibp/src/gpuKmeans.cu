@@ -465,18 +465,18 @@ std::vector<float> gpuKmeans::kmeans_parallel_LN(const std::vector<float> &sourc
     return ret;
 }
 
-void gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
-                                  const std::vector<float>* _ingrns,
-                                  const std::vector<float>* _inblus,
-                                  const std::vector<float>* _inalps,
-                                  std::vector<float>* _outreds,
-                                  std::vector<float>* _outgrns,
-                                  std::vector<float>* _outblus,
-                                  std::vector<float>* _outalps,
-                                  size_t k,
-                                  size_t number_of_iterations,
-                                  const size_t numThreads,
-                                  RandomFn<float>* rfunc)
+void gpuKmeans::kmeans_parallel_4SV(const std::vector<float>* _inreds,
+                                    const std::vector<float>* _ingrns,
+                                    const std::vector<float>* _inblus,
+                                    const std::vector<float>* _inalps,
+                                    std::vector<float>* _outreds,
+                                    std::vector<float>* _outgrns,
+                                    std::vector<float>* _outblus,
+                                    std::vector<float>* _outalps,
+                                    size_t k,
+                                    size_t number_of_iterations,
+                                    const size_t numThreads,
+                                    RandomFn<float>* rfunc)
 {
     const size_t number_of_elements = _inreds->size();
     //thrust::fill(h_source.begin(), h_source.end(), source.begin());
@@ -573,19 +573,19 @@ void gpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
     return;
 }
 
-void gpuKmeans::kmeans_serial_4LV(const float* _inreds,
-                                  const float* _ingrns,
-                                  const float* _inblus,
-                                  const float* _inalps,
-                                  float* _outreds,
-                                  float* _outgrns,
-                                  float* _outblus,
-                                  float* _outalps,
-                                  const size_t number_of_elements,
-                                  size_t k,
-                                  size_t number_of_iterations,
-                                  const size_t numThreads,
-                                  RandomFn<float>* rfunc)
+void gpuKmeans::kmeans_parallel_4LV(const float* _inreds,
+                                    const float* _ingrns,
+                                    const float* _inblus,
+                                    const float* _inalps,
+                                    float* _outreds,
+                                    float* _outgrns,
+                                    float* _outblus,
+                                    float* _outalps,
+                                    const size_t number_of_elements,
+                                    size_t k,
+                                    size_t number_of_iterations,
+                                    const size_t numThreads,
+                                    RandomFn<float>* rfunc)
 {
     //thrust::fill(h_source.begin(), h_source.end(), source.begin());
     thrust::device_vector<float> d_meansR(k);

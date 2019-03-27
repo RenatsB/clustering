@@ -146,9 +146,17 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
       }
     }
 
-    correctedImage.setData(&(means.m_r),
+    /*correctedImage.setData(&(means.m_r),
                            &(means.m_g),
-                           &(means.m_b));
+                           &(means.m_b));*/
+    for(uint i=0; i<numberOfItems; ++i)
+    {
+        correctedImage.m_r.at(i) = means.m_r.at(assignments[i]);
+        correctedImage.m_g.at(i) = means.m_g.at(assignments[i]);
+        correctedImage.m_b.at(i) = means.m_b.at(assignments[i]);
+        correctedImage.m_a.at(i) = means.m_a.at(assignments[i]);
+    }
+
 
     return correctedImage;
 }
