@@ -15,6 +15,7 @@ HEADERS += $$files(include/*.hpp)
 SOURCES += $$files(src/*.cpp)
 
 INCLUDEPATH += $$PWD/include
+INCLUDEPATH += $$PWD/../include
 INCLUDEPATH += $$PWD/../../../clib/clibs/include
 
 LIBS += -lbenchmark

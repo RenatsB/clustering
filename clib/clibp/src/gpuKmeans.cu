@@ -250,7 +250,7 @@ __global__ void writeNewColors_parallel_LN(thrust::device_ptr<float> means,
 ///----------------------------|  END UTILITY  |------------------------------------
 ///=================================================================================
 
-std::vector<float> gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
+ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
                            size_t k,
                            size_t number_of_iterations,
                            const size_t numThreads,
@@ -315,19 +315,18 @@ std::vector<float> gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
     cudaDeviceSynchronize();
     thrust::copy(d_filtered.begin(), d_filtered.end(), h_filtered.begin());
 
-    //h_source = d_source;
-    std::vector<float> ret(source.size()*4);
+    ColorVector ret(source.size());
     for(uint i=0; i<source.size(); ++i)
     {
-        ret.at(i*4)   = h_filtered[i].x;
-        ret.at(i*4+1) = h_filtered[i].y;
-        ret.at(i*4+2) = h_filtered[i].z;
-        ret.at(i*4+3) = h_filtered[i].w;
+        ret.at(i).m_r = h_filtered[i].x;
+        ret.at(i).m_g = h_filtered[i].y;
+        ret.at(i).m_b = h_filtered[i].z;
+        ret.at(i).m_a = h_filtered[i].w;
     }
     return ret;
 }
 
-std::vector<float> gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
+ImageColors gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
                            size_t k,
                            size_t number_of_iterations,
                            const size_t numThreads,
@@ -392,13 +391,14 @@ std::vector<float> gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
     thrust::copy(d_filtered.begin(), d_filtered.end(), h_filtered.begin());
 
     //h_source = d_source;
-    std::vector<float> ret(number_of_elements*4);
+    ImageColors ret;
+    ret.resize(number_of_elements);
     for(uint i=0; i<number_of_elements; ++i)
     {
-        ret.at(i*4)   = h_filtered[i].x;
-        ret.at(i*4+1) = h_filtered[i].y;
-        ret.at(i*4+2) = h_filtered[i].z;
-        ret.at(i*4+3) = h_filtered[i].w;
+        ret.m_r.at(i) = h_filtered[i].x;
+        ret.m_g.at(i) = h_filtered[i].y;
+        ret.m_b.at(i) = h_filtered[i].z;
+        ret.m_a.at(i) = h_filtered[i].w;
     }
     return ret;
 }

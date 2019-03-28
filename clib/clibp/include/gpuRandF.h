@@ -5,7 +5,8 @@ namespace gpuRandFn
 {
 
 /// Fill up a vector on the device with n floats. Memory is assumed already preallocated.
-int randFloatsInternal(float *&/*devData*/, const size_t /*n*/);
+//int randFloatsInternal(float *&/*devData*/, const size_t /*n*/);
+int randFloatsInternal(float *&, const size_t, const size_t);
 //int randFloatsInternal(int *&/*devData*/, const size_t /*n*/);
 
 }

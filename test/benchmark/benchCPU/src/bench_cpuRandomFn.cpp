@@ -1,41 +1,59 @@
 #include <benchmark/benchmark.h>
+#include "benchParams.h"
 #include "cpuRandomFn.hpp"
 
-#define HOST_BM_RG_SF(BM_NAME, LOW, HI)                          \
-  static void BM_NAME(benchmark::State& state)                   \
-  {                                                              \
-    RandomFn<float> rg;                                          \
-    for (auto _ : state)                                         \
-    {                                                            \
-      benchmark::DoNotOptimize(rg.SimpleRand(LOW, HI));          \
-    }                                                            \
-  }                                                              \
-  BENCHMARK(BM_NAME)
+bool fillVectorS()
+{
+    RandomFn<float> rg;
+    std::vector<float> numbers(CLIB_BENCH_RANDNUM);
+    for(auto &n : numbers)
+        n = rg.SimpleRand(CLIB_BENCH_RANDLOW, CLIB_BENCH_RANDHI);
+    return true;
+}
 
-#define HOST_BM_RG_UF(BM_NAME, LOW, HI)                          \
-  static void BM_NAME(benchmark::State& state)                   \
-  {                                                              \
-    RandomFn<float> rg;                                          \
-    rg.setNumericLimits(LOW,HI);                                 \
-    for (auto _ : state)                                         \
-    {                                                            \
-      benchmark::DoNotOptimize(rg.UniformRandU());               \
-    }                                                            \
-  }                                                              \
-  BENCHMARK(BM_NAME)
+bool fillVectorU()
+{
+    RandomFn<float> rg;
+    std::vector<float> numbers(CLIB_BENCH_RANDNUM);
+    rg.setNumericLimits(CLIB_BENCH_RANDLOW,CLIB_BENCH_RANDHI);
+    for(auto &n : numbers)
+        n = rg.UniformRandU();
+    return true;
+}
 
-#define HOST_BM_RG_MF(BM_NAME, LOW, HI)                          \
-  static void BM_NAME(benchmark::State& state)                   \
-  {                                                              \
-    RandomFn<float> rg;                                          \
-    rg.setNumericLimits(LOW,HI);                                 \
-    for (auto _ : state)                                         \
-    {                                                            \
-      benchmark::DoNotOptimize(rg.MT19937RandU());               \
-    }                                                            \
-  }                                                              \
-  BENCHMARK(BM_NAME)
+bool fillVectorM()
+{
+    RandomFn<float> rg;
+    std::vector<float> numbers(CLIB_BENCH_RANDNUM);
+    rg.setNumericLimits(CLIB_BENCH_RANDLOW,CLIB_BENCH_RANDHI);
+    for(auto &n : numbers)
+        n = rg.MT19937RandU();
+    return true;
+}
 
-HOST_BM_RG_SF(Bench_Ran_Simple, -1000.f, 1000.f);
-HOST_BM_RG_UF(Bench_Ran_Uniform, -1000.f, 1000.f);
-HOST_BM_RG_MF(Bench_Ran_MT, -1000.f, 1000.f);
+static void Bench_Ran_Simple(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+      benchmark::DoNotOptimize(fillVectorS());
+    }
+}
+BENCHMARK(Bench_Ran_Simple);
+
+static void Bench_Ran_Uniform(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+      benchmark::DoNotOptimize(fillVectorU());
+    }
+}
+BENCHMARK(Bench_Ran_Uniform);
+
+static void Bench_Ran_MT(benchmark::State& state)
+{
+    for (auto _ : state)
+    {
+      benchmark::DoNotOptimize(fillVectorM());
+    }
+}
+BENCHMARK(Bench_Ran_MT);

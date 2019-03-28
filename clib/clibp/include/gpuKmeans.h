@@ -3,16 +3,16 @@
 #include <vector>
 
 namespace gpuKmeans {
-std::vector<float> kmeans_parallel_CV(const ColorVector &source,
-                                      size_t k,
-                                      size_t number_of_iterations,
-                                      const size_t numThreads,
-                                      RandomFn<float>* rfunc=nullptr);
-std::vector<float> kmeans_parallel_IC(const ImageColors &source,
-                                      size_t k,
-                                      size_t number_of_iterations,
-                                      const size_t numThreads,
-                                      RandomFn<float>* rfunc=nullptr);
+ColorVector kmeans_parallel_CV(const ColorVector &source,
+                               size_t k,
+                               size_t number_of_iterations,
+                               const size_t numThreads,
+                               RandomFn<float>* rfunc=nullptr);
+ImageColors kmeans_parallel_IC(const ImageColors &source,
+                               size_t k,
+                               size_t number_of_iterations,
+                               const size_t numThreads,
+                               RandomFn<float>* rfunc=nullptr);
 std::vector<float> kmeans_parallel_LN(const std::vector<float> &source,
                                       size_t k,
                                       size_t number_of_iterations,

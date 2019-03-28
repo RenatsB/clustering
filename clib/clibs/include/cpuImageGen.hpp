@@ -30,13 +30,6 @@ public:
                        float* greenChannel,
                        float* blueChannel,
                        float* alphaChannel);
-    void generate_serial_4LL(const uint w,
-                       const uint h,
-                       const uint turbulence_size,
-                       float* redChannel,
-                       float* greenChannel,
-                       float* blueChannel,
-                       float* alphaChannel);
 
 private:
     float smoothNoise(float x, float y);

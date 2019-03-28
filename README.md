@@ -21,7 +21,6 @@ IC - ImageColors (Structure of float vectors)
 LN - Linear (single vector of floats)
 4SV - 4 Std::Vectors of floats
 4LV - 4 pointers to arrays (or std::vectors)
-4LL - 4 pointers to arrays or vectors, but using direct assignment (see cpuImageGen for reference)
 ```
 
 
@@ -42,3 +41,4 @@ https://github.com/OpenImageIO/oiio/blob/release/src/doc/openimageio.pdf
 https://github.com/marcoscastro/kmeans/blob/master/kmeans.cpp
 http://aresio.blogspot.com/2011/05/cuda-random-numbers-inside-kernels.html
 https://github.com/albelax/StableFluids/blob/master/SolverGpu/cudasrc/rand_gpu.cu
+https://nidclip.wordpress.com/2014/04/02/cuda-random-number-generation/

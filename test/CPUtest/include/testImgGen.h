@@ -91,26 +91,6 @@ TEST( CPUImgGenerator, 4FloatPointers )
     }
 }
 
-TEST( CPUImgGenerator, 4FloatPointersDirectAssignment )
-{
-    ImageGenFn gen;
-    std::vector<float> rv(CLIB_TEST_ITEMS);
-    std::vector<float> gv(CLIB_TEST_ITEMS);
-    std::vector<float> bv(CLIB_TEST_ITEMS);
-    std::vector<float> av(CLIB_TEST_ITEMS);
-    gen.generate_serial_4LL(CLIB_TEST_DIMX,
-                            CLIB_TEST_DIMY,
-                            CLIB_TEST_NOISE,
-                            rv.data(),gv.data(),bv.data(),av.data());
-    for(size_t i=0; i<CLIB_TEST_ITEMS; ++i)
-    {
-        EXPECT_TRUE(clibTutils::testRange(rv.at(i), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(gv.at(i), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(bv.at(i), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(av.at(i), 0.f, 1.f, 0.001f));
-    }
-}
-
 ////----------------------------------------------------------------------------------------------------------------------
 
 #endif // _CLIB_TESTIMGGEN_H

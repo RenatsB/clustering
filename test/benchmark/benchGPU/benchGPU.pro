@@ -16,6 +16,7 @@ SOURCES += $$files(src/*.cpp)
 CUDA_SOURCES += $$files(src/*.cu)
 
 INCLUDEPATH += $$PWD/include
+INCLUDEPATH += $$PWD/../include
 INCLUDEPATH += $$PWD/../../../clib/clibs/include
 INCLUDEPATH += $$PWD/../../../clib/clibp/include
 

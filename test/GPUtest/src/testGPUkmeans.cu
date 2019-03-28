@@ -8,24 +8,24 @@
 
 TEST( GPUkmeans, ColorVectorBased )
 {
-    ColorVector cv = gpuImageGen::generate_parallel_CV(64,64,64,64);
     RandomFn<float> rg;
-    std::vector<float> fl = gpuKmeans::kmeans_parallel_CV(cv,4,1,64,&rg);
-    for(auto c=0; c<cv.size(); ++c)
+    ColorVector cv = gpuImageGen::generate_parallel_CV(CLIB_TEST_DIMX,
+                                                       CLIB_TEST_DIMY,
+                                                       CLIB_TEST_NOISE,
+                                                       CLIB_TEST_THREADS);
+
+    ColorVector flt1 = gpuKmeans::kmeans_parallel_CV(cv,
+                                                     CLIB_TEST_CLUSTERS,
+                                                     CLIB_TEST_ITER,
+                                                     CLIB_TEST_THREADS,
+                                                     &rg);
+    for(auto c=0; c<CLIB_TEST_ITEMS; ++c)
     {
-        EXPECT_GE(fl.at(c*4),   0.f);
-        EXPECT_LE(fl.at(c*4),   1.f);
-        EXPECT_GE(fl.at(c*4+1), 0.f);
-        EXPECT_LE(fl.at(c*4+1), 1.f);
-        EXPECT_GE(fl.at(c*4+2), 0.f);
-        EXPECT_LE(fl.at(c*4+2), 1.f);
-        EXPECT_GE(fl.at(c*4+3), 0.f);
-        EXPECT_LE(fl.at(c*4+3), 1.f);
-        bool equal = true;
-        if(fl.at(c*4)!=cv.at(c).m_r||fl.at(c*4+1)!=cv.at(c).m_g||
-           fl.at(c*4+2)!=cv.at(c).m_b||fl.at(c*4+3)!=cv.at(c).m_a)
-            equal = false;
-        EXPECT_FALSE(equal);
+        EXPECT_TRUE(clibTutils::testRange(flt1.at(c).m_r, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.at(c).m_g, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.at(c).m_b, 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.at(c).m_a, 0.f, 1.f, 0.001f));
+        EXPECT_FALSE(clibTutils::compareColors(flt1.at(c),cv.at(c)));
     }
 }
 
@@ -36,21 +36,21 @@ TEST( GPUkmeans, ImageColorsBased)
                                                        CLIB_TEST_DIMY,
                                                        CLIB_TEST_NOISE,
                                                        CLIB_TEST_THREADS);
-    std::vector<float> flt1 = gpuKmeans::kmeans_parallel_IC(ic,
+    ImageColors flt1 = gpuKmeans::kmeans_parallel_IC(ic,
                                                             CLIB_TEST_CLUSTERS,
                                                             CLIB_TEST_ITER,
                                                             CLIB_TEST_THREADS,
                                                             &rg);
     for(auto c=0; c<CLIB_TEST_ITEMS; ++c)
     {
-        EXPECT_TRUE(clibTutils::testRange(flt1.at(c*4), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(flt1.at(c*4+1), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(flt1.at(c*4+2), 0.f, 1.f, 0.001f));
-        EXPECT_TRUE(clibTutils::testRange(flt1.at(c*4+3), 0.f, 1.f, 0.001f));
-        EXPECT_FALSE(clibTutils::compareColors(flt1.at(c*4),
-                                               flt1.at(c*4+1),
-                                               flt1.at(c*4+2),
-                                               flt1.at(c*4+3),
+        EXPECT_TRUE(clibTutils::testRange(flt1.m_r.at(c), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.m_g.at(c), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.m_b.at(c), 0.f, 1.f, 0.001f));
+        EXPECT_TRUE(clibTutils::testRange(flt1.m_a.at(c), 0.f, 1.f, 0.001f));
+        EXPECT_FALSE(clibTutils::compareColors(flt1.m_r.at(c),
+                                               flt1.m_g.at(c),
+                                               flt1.m_b.at(c),
+                                               flt1.m_a.at(c),
                                                ic.m_r.at(c),
                                                ic.m_g.at(c),
                                                ic.m_b.at(c),

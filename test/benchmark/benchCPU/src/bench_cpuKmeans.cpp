@@ -1,4 +1,5 @@
 #include <benchmark/benchmark.h>
+#include "benchParams.h"
 #include "cpuImageGen.hpp"
 #include "cpuKmeans.hpp"
 
@@ -88,22 +89,97 @@
   }                                                                             \
   BENCHMARK(BM_NAME)
 
-HOST_BM_KM_CV(Bench_Kmn_ColorVectorS, 512, 512, 128, 2,  1);
-HOST_BM_KM_CV(Bench_Kmn_ColorVectorM, 512, 512, 128, 10, 1);
-HOST_BM_KM_CV(Bench_Kmn_ColorVectorL, 512, 512, 128, 24, 1);
+HOST_BM_KM_CV(Bench_Kmn_ColorVectorS,
+              CLIB_BENCH_GENDIM_X_S,
+              CLIB_BENCH_GENDIM_Y_S,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_S,
+              CLIB_BENCH_KM_ITER_A);
+HOST_BM_KM_CV(Bench_Kmn_ColorVectorM,
+              CLIB_BENCH_GENDIM_X_M,
+              CLIB_BENCH_GENDIM_Y_M,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_M,
+              CLIB_BENCH_KM_ITER_B);
+HOST_BM_KM_CV(Bench_Kmn_ColorVectorL,
+              CLIB_BENCH_GENDIM_X_L,
+              CLIB_BENCH_GENDIM_Y_L,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_L,
+              CLIB_BENCH_KM_ITER_C);
 
-HOST_BM_KM_IG(Bench_Kmn_ImageColorsS, 512, 512, 128, 2,  1);
-HOST_BM_KM_IG(Bench_Kmn_ImageColorsM, 512, 512, 128, 10, 1);
-HOST_BM_KM_IG(Bench_Kmn_ImageColorsL, 512, 512, 128, 24, 1);
+HOST_BM_KM_IG(Bench_Kmn_ImageColorsS,
+              CLIB_BENCH_GENDIM_X_S,
+              CLIB_BENCH_GENDIM_Y_S,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_S,
+              CLIB_BENCH_KM_ITER_A);
+HOST_BM_KM_IG(Bench_Kmn_ImageColorsM,
+              CLIB_BENCH_GENDIM_X_M,
+              CLIB_BENCH_GENDIM_Y_M,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_M,
+              CLIB_BENCH_KM_ITER_B);
+HOST_BM_KM_IG(Bench_Kmn_ImageColorsL,
+              CLIB_BENCH_GENDIM_X_L,
+              CLIB_BENCH_GENDIM_Y_L,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_L,
+              CLIB_BENCH_KM_ITER_C);
 
-HOST_BM_KM_LN(Bench_Kmn_LinearS, 512, 512, 128, 2,  1);
-HOST_BM_KM_LN(Bench_Kmn_LinearM, 512, 512, 128, 10, 1);
-HOST_BM_KM_LN(Bench_Kmn_LinearL, 512, 512, 128, 24, 1);
+HOST_BM_KM_LN(Bench_Kmn_LinearS,
+              CLIB_BENCH_GENDIM_X_S,
+              CLIB_BENCH_GENDIM_Y_S,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_S,
+              CLIB_BENCH_KM_ITER_A);
+HOST_BM_KM_LN(Bench_Kmn_LinearM,
+              CLIB_BENCH_GENDIM_X_M,
+              CLIB_BENCH_GENDIM_Y_M,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_M,
+              CLIB_BENCH_KM_ITER_B);
+HOST_BM_KM_LN(Bench_Kmn_LinearL,
+              CLIB_BENCH_GENDIM_X_L,
+              CLIB_BENCH_GENDIM_Y_L,
+              CLIB_BENCH_GENDIM_NOISE,
+              CLIB_BENCH_KM_CLUSTERS_L,
+              CLIB_BENCH_KM_ITER_C);
 
-HOST_BM_KM_4SV(Bench_Kmn_StdVecS, 512, 512, 128, 2,  1);
-HOST_BM_KM_4SV(Bench_Kmn_StdVecM, 512, 512, 128, 10, 1);
-HOST_BM_KM_4SV(Bench_Kmn_StdVecL, 512, 512, 128, 24, 1);
+HOST_BM_KM_4SV(Bench_Kmn_StdVecS,
+               CLIB_BENCH_GENDIM_X_S,
+               CLIB_BENCH_GENDIM_Y_S,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_S,
+               CLIB_BENCH_KM_ITER_A);
+HOST_BM_KM_4SV(Bench_Kmn_StdVecM,
+               CLIB_BENCH_GENDIM_X_M,
+               CLIB_BENCH_GENDIM_Y_M,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_M,
+               CLIB_BENCH_KM_ITER_B);
+HOST_BM_KM_4SV(Bench_Kmn_StdVecL,
+               CLIB_BENCH_GENDIM_X_L,
+               CLIB_BENCH_GENDIM_Y_L,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_L,
+               CLIB_BENCH_KM_ITER_C);
 
-HOST_BM_KM_4LV(Bench_Kmn_VecS, 512, 512, 128, 2,  1);
-HOST_BM_KM_4LV(Bench_Kmn_VecM, 512, 512, 128, 10, 1);
-HOST_BM_KM_4LV(Bench_Kmn_VecL, 512, 512, 128, 24, 1);
+HOST_BM_KM_4LV(Bench_Kmn_VecS,
+               CLIB_BENCH_GENDIM_X_S,
+               CLIB_BENCH_GENDIM_Y_S,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_S,
+               CLIB_BENCH_KM_ITER_A);
+HOST_BM_KM_4LV(Bench_Kmn_VecM,
+               CLIB_BENCH_GENDIM_X_M,
+               CLIB_BENCH_GENDIM_Y_M,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_M,
+               CLIB_BENCH_KM_ITER_B);
+HOST_BM_KM_4LV(Bench_Kmn_VecL,
+               CLIB_BENCH_GENDIM_X_L,
+               CLIB_BENCH_GENDIM_Y_L,
+               CLIB_BENCH_GENDIM_NOISE,
+               CLIB_BENCH_KM_CLUSTERS_L,
+               CLIB_BENCH_KM_ITER_C);
