@@ -3,6 +3,7 @@
 #include <thrust/device_vector.h>
 #include <vector>
 #include "gpuImageGen.h"
+#include <iostream>
 
 // for devices of compute capability 2.0 and higher
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
@@ -72,8 +73,8 @@ __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
     d_out[index*4]   = turbulenceP(d_noise, imageWidth, imageHeight, x, y, turbulence_size);
     d_out[index*4+1] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight, turbulence_size/2);
     d_out[index*4+2] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight*2, turbulence_size/2);
-    d_out[index*4+3] = 1.0f;
-    //d_out[index*4+3] = turbulenceP(d_noise, noiseWidth, noiseHeight, imageWidth-x, y, turbulence_size);
+    //d_out[index*4+3] = 1.0f;
+    d_out[index*4+3] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
 }
 
 __global__ void assignColors4(thrust::device_ptr<float> d_noise,
@@ -95,8 +96,8 @@ __global__ void assignColors4(thrust::device_ptr<float> d_noise,
     d_outR[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y, turbulence_size);
     d_outG[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight, turbulence_size/2);
     d_outB[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight*2, turbulence_size/2);
-    d_outA[index] = 1.0f;
-    //d_outA[index] = turbulenceP(d_noise, noiseWidth, noiseHeight, imageWidth-x, y, turbulence_size);
+    //d_outA[index] = 1.0f;
+    d_outA[index] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
 }
 
 ColorVector gpuImageGen::generate_parallel_CV(const size_t w,

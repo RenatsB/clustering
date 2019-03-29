@@ -473,13 +473,12 @@ void gpuKmeans::kmeans_parallel_4SV(const std::vector<float>* _inreds,
                                     std::vector<float>* _outgrns,
                                     std::vector<float>* _outblus,
                                     std::vector<float>* _outalps,
+                                    const size_t number_of_elements,
                                     size_t k,
                                     size_t number_of_iterations,
                                     const size_t numThreads,
                                     RandomFn<float>* rfunc)
 {
-    const size_t number_of_elements = _inreds->size();
-    //thrust::fill(h_source.begin(), h_source.end(), source.begin());
     thrust::device_vector<float> d_meansR(k);
     thrust::device_vector<float> d_meansG(k);
     thrust::device_vector<float> d_meansB(k);

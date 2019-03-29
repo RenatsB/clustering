@@ -28,12 +28,12 @@ int main(int argc, char* argv[])
     ImageGenFn gen;
     cpuKmeans km;
     RandomFn<float> rg;
-    uint x = 64;
-    uint y = 64;
-    uint noiseSize = 64;
-    uint numIter = 1;
+    uint x = 512;
+    uint y = 512;
+    uint noiseSize = 128;
+    uint numIter = 2;
     uint numClusters = 4;
-    uint numThreads = 64;
+    uint numThreads = 32;
 
     ColorVector source_serial_CV =gen.generate_serial_CV(x,y,noiseSize);
     ImageColors source_serial_IC =gen.generate_serial_IC(x,y,noiseSize);
@@ -157,6 +157,7 @@ int main(int argc, char* argv[])
                                    &filter_parallel_4SVg,
                                    &filter_parallel_4SVb,
                                    &filter_parallel_4SVa,
+                                   x*y,
                                    numClusters,
                                    numIter,
                                    numThreads,
@@ -173,7 +174,7 @@ int main(int argc, char* argv[])
                                    filter_parallel_4LVg.data(),
                                    filter_parallel_4LVb.data(),
                                    filter_parallel_4LVa.data(),
-                                   filter_parallel_4LVr.size(),
+                                   x*y,
                                    numClusters,
                                    numIter,
                                    numThreads,

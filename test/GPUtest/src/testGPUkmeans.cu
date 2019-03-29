@@ -101,6 +101,7 @@ TEST( GPUkmeans, 4VectorPointers )
                                    CLIB_TEST_ITEMS,
                                    CLIB_TEST_CLUSTERS,
                                    CLIB_TEST_ITER,
+                                   CLIB_TEST_THREADS,
                                    &rg);
     for(size_t i=0; i<CLIB_TEST_ITEMS; ++i)
     {
