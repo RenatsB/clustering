@@ -1,5 +1,6 @@
 #include "cpuKmeans.hpp"
 #include <random>
+#include <iostream>
 
 float cpuKmeans::square(float value) {
   return value * value;
@@ -236,78 +237,79 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
 std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
                           size_t k,
                           size_t number_of_iterations) {
-    size_t numberOfItems = data.size()/4;
-    rfunc.setNumericLimitsL(0, numberOfItems - 1);
+    const size_t dataSize = data.size()/4;
+    rfunc.setNumericLimitsL(0, dataSize - 1);
 
     std::vector<float> correctedImage(data.size());
     std::vector<float> means(k*4);
     // Pick centroids as random points from the dataset.
-    /*for (uint cluster=0; cluster<k; ++cluster) {
-      size_t num = rfunc.MT19937RandL();
-      means[cluster*4]   = data[num*4];
-      means[cluster*4+1] = data[num*4+1];
-      means[cluster*4+2] = data[num*4+2];
-      means[cluster*4+3] = data[num*4+3];
+    /*for (auto& cluster : means) {
+      cluster = data[rfunc.MT19937RandL()];
     }*/
+
 
 
     //Pick Centroids according to kmeans++ method by getting distances to all points
     size_t number = rfunc.MT19937RandL();
-    std::vector<bool> selectedIDs(numberOfItems,false);
+    std::vector<bool> selectedIDs(dataSize,false);
     selectedIDs.at(number)=true;
     size_t numSelected = 1;
-    std::vector<float> distances(numberOfItems);
-    std::vector<size_t> weights(numberOfItems,0);
-    //first mean is random
-    means.at(0) = data.at(number*4);
-    means.at(1) = data.at(number*4+1);
-    means.at(2) = data.at(number*4+2);
-    means.at(3) = data.at(number*4+3);
+    std::vector<float> distances(dataSize);
+    std::vector<size_t> weights(dataSize,0);
+    means[0] = data[number*4]; //first mean is random
+    means[1] = data[number*4+1];
+    means[2] = data[number*4+2];
+    means[3] = data[number*4+3];
     float totalDistance = 0.f;
     for(auto centroid=1; centroid<k; ++centroid)
     {
-        for(auto p=0; p<numberOfItems; ++p)
+        for(auto p=0; p<dataSize; ++p)
         {
             for(auto c=0; c<numSelected; ++c)
             {
-                distances.at(p)=linear_squared_Colour_l2_Distance(data[p*4],
-                                                                  data[p*4+1],
-                                                                  data[p*4+2],
-                                                                  data[p*4+3],
-                                                                  means[c*4],
-                                                                  means[c*4+1],
-                                                                  means[c*4+2],
-                                                                  means[c*4+2]);
+                distances.at(p)=linear_squared_Colour_l2_Distance(
+                            data.at(p*4),
+                            data.at(p*4+1),
+                            data.at(p*4+2),
+                            data.at(p*4+3),
+                            means.at(c*4),
+                            means.at(c*4+1),
+                            means.at(c*4+2),
+                            means.at(c*4+3));
                 totalDistance+=distances.at(p);
                 weights.at(p)+=(size_t)(distances.at(p)*1000.f);
             }
         }
         size_t randomIDx = rfunc.weightedRand(weights);
-        means[centroid]=data.at(randomIDx);
+        means[centroid*4]  =data.at(randomIDx*4);
+        means[centroid*4+1]=data.at(randomIDx*4+1);
+        means[centroid*4+2]=data.at(randomIDx*4+2);
+        means[centroid*4+3]=data.at(randomIDx*4+3);
         selectedIDs.at(randomIDx)=true;
         numSelected++;
         totalDistance = 0.f;
     }
+    //end of centoid picking
 
 
-    std::vector<size_t> assignments(numberOfItems);
+
+    std::vector<size_t> assignments(dataSize);
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
       // Find assignments.
-      for (size_t point = 0; point < numberOfItems; ++point) {
+      for (size_t point = 0; point < dataSize; ++point) {
         float best_distance = std::numeric_limits<float>::max();
         size_t best_cluster = 0;
         for (size_t cluster = 0; cluster < k; ++cluster) {
-          const float distance =
-              linear_squared_Colour_l2_Distance(data[point*4],
-                                                data[point*4+1],
-                                                data[point*4+2],
-                                                data[point*4+3],
-                                                means[cluster*4],
-                                                means[cluster*4+1],
-                                                means[cluster*4+2],
-                                                means[cluster*4+2]);
-          if (distance < best_distance)
-          {
+          const float distance = linear_squared_Colour_l2_Distance(
+                      data[point*4],
+                      data[point*4+1],
+                      data[point*4+2],
+                      data[point*4+3],
+                      means[cluster*4],
+                      means[cluster*4+1],
+                      means[cluster*4+2],
+                      means[cluster*4+3]);
+          if (distance < best_distance) {
             best_distance = distance;
             best_cluster = cluster;
           }
@@ -318,35 +320,33 @@ std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
       // Sum up and count points for each cluster.
       std::vector<float> new_means(k*4);
       std::vector<size_t> counts(k, 0);
-      for (size_t point = 0; point < numberOfItems; ++point)
-      {
-        new_means[assignments[point]*4]   += data[point*4];
-        new_means[assignments[point]*4+1] += data[point*4+1];
-        new_means[assignments[point]*4+2] += data[point*4+2];
-        new_means[assignments[point]*4+3] += data[point*4+3];
-        counts[assignments[point]] += 1;
+      for (size_t point = 0; point < dataSize; ++point) {
+        const auto cluster = assignments[point];
+        new_means[cluster*4]   += data[point*4];
+        new_means[cluster*4+1] += data[point*4+1];
+        new_means[cluster*4+2] += data[point*4+2];
+        new_means[cluster*4+3] += data[point*4+3];
+        counts[cluster] += 1;
       }
 
       // Divide sums by counts to get new centroids.
-      for (size_t cluster = 0; cluster < k; ++cluster)
-      {
+      for (size_t cluster = 0; cluster < k; ++cluster) {
         // Turn 0/0 into 0/1 to avoid zero division.
         const auto count = std::max<size_t>(1, counts[cluster]);
-        means[cluster*4]   = new_means[cluster*4]   / count;
+        means[cluster*4]   = new_means[cluster*4] / count;
         means[cluster*4+1] = new_means[cluster*4+1] / count;
         means[cluster*4+2] = new_means[cluster*4+2] / count;
         means[cluster*4+3] = new_means[cluster*4+3] / count;
       }
     }
 
-    for(uint i=0; i<numberOfItems; ++i)
+    for(uint i=0; i<dataSize; ++i)
     {
-        correctedImage[i*4]   = means[assignments[i]*4];
-        correctedImage[i*4+1] = means[assignments[i]*4+1];
-        correctedImage[i*4+2] = means[assignments[i]*4+2];
-        correctedImage[i*4+3] = means[assignments[i]*4+3];
+        correctedImage.at(i*4)   = means[assignments[i]*4];
+        correctedImage.at(i*4+1) = means[assignments[i]*4+1];
+        correctedImage.at(i*4+2) = means[assignments[i]*4+2];
+        correctedImage.at(i*4+3) = means[assignments[i]*4+3];
     }
-
     return correctedImage;
 }
 
