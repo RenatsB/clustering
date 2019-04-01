@@ -17,6 +17,11 @@ int gpuRandFn::randFloatsInternal(float *&devData,
                                   const size_t n,
                                   const size_t numThreads)
 {
+    //CURAND_RNG_PSEUDO_MT19937
+
+
+
+
     RandomFn<float> rg;
     rg.setNumericLimitsL(0, std::numeric_limits<size_t>::max());
     // The generator, used for random numbers

@@ -6,15 +6,18 @@ namespace gpuImageGen {
 ColorVector generate_parallel_CV(const size_t w,
                                  const size_t h,
                                  const size_t turbulence_size,
-                                 const size_t numThreads);
+                                 const size_t numThreads,
+                                 const bool randAplha=false);
 ImageColors generate_parallel_IC(const size_t w,
                                  const size_t h,
                                  const size_t turbulence_size,
-                                 const size_t numThreads);
+                                 const size_t numThreads,
+                                 const bool randAplha=false);
 std::vector<float> generate_parallel_LN(const size_t w,
                                         const size_t h,
                                         const size_t turbulence_size,
-                                        const size_t numThreads);
+                                        const size_t numThreads,
+                                        const bool randAplha=false);
 void generate_parallel_4SV(std::vector<float>* redChannel,
                            std::vector<float>* greenChannel,
                            std::vector<float>* blueChannel,
@@ -22,7 +25,8 @@ void generate_parallel_4SV(std::vector<float>* redChannel,
                            const size_t w,
                            const size_t h,
                            const size_t turbulence_size,
-                           const size_t numThreads);
+                           const size_t numThreads,
+                           const bool randAplha=false);
 void generate_parallel_4LV(float* redChannel,
                            float* greenChannel,
                            float* blueChannel,
@@ -30,7 +34,8 @@ void generate_parallel_4LV(float* redChannel,
                            const size_t w,
                            const size_t h,
                            const size_t turbulence_size,
-                           const size_t numThreads);
+                           const size_t numThreads,
+                           const bool randAplha=false);
 }
 
 

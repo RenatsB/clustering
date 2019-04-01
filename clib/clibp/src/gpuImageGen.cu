@@ -101,9 +101,10 @@ __global__ void assignColors4(thrust::device_ptr<float> d_noise,
 }
 
 ColorVector gpuImageGen::generate_parallel_CV(const size_t w,
-                   const size_t h,
-                   const size_t turbulence_size,
-                   const size_t numThreads)
+                                              const size_t h,
+                                              const size_t turbulence_size,
+                                              const size_t numThreads,
+                                              const bool randAplha)
 {
     int dataSize = w*h;
     ColorVector outData(dataSize);
@@ -138,9 +139,10 @@ ColorVector gpuImageGen::generate_parallel_CV(const size_t w,
 }
 
 ImageColors gpuImageGen::generate_parallel_IC(const size_t w,
-                   const size_t h,
-                   const size_t turbulence_size,
-                   const size_t numThreads)
+                                              const size_t h,
+                                              const size_t turbulence_size,
+                                              const size_t numThreads,
+                                              const bool randAplha)
 {
     int dataSize = w*h;
     ImageColors outData;
@@ -177,9 +179,10 @@ ImageColors gpuImageGen::generate_parallel_IC(const size_t w,
 }
 
 std::vector<float> gpuImageGen::generate_parallel_LN(const size_t w,
-                   const size_t h,
-                   const size_t turbulence_size,
-                   const size_t numThreads)
+                                                     const size_t h,
+                                                     const size_t turbulence_size,
+                                                     const size_t numThreads,
+                                                     const bool randAplha)
 {
     int dataSize = w*h;
     std::vector<float> outData(dataSize*4);
@@ -213,7 +216,8 @@ void gpuImageGen::generate_parallel_4SV(std::vector<float>* redChannel,
                                         const size_t w,
                                         const size_t h,
                                         const size_t turbulence_size,
-                                        const size_t numThreads)
+                                        const size_t numThreads,
+                                        const bool randAplha)
 {
     int dataSize = w*h;
     thrust::device_vector<float> d_noise(dataSize);
@@ -255,7 +259,8 @@ void gpuImageGen::generate_parallel_4LV(float* redChannel,
                                         const size_t w,
                                         const size_t h,
                                         const size_t turbulence_size,
-                                        const size_t numThreads)
+                                        const size_t numThreads,
+                                        const bool randAplha)
 {
     int dataSize = w*h;
     thrust::device_vector<float> d_noise(dataSize);

@@ -43,4 +43,4 @@ http://aresio.blogspot.com/2011/05/cuda-random-numbers-inside-kernels.html
 https://github.com/albelax/StableFluids/blob/master/SolverGpu/cudasrc/rand_gpu.cu
 https://nidclip.wordpress.com/2014/04/02/cuda-random-number-generation/
 https://en.wikipedia.org/wiki/K-means%2B%2B
-
+https://www.clear.rice.edu/comp422/resources/cuda/html/curand/device-api-overview.html#distributions
