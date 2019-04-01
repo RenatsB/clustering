@@ -28,12 +28,12 @@ int main(int argc, char* argv[])
     ImageGenFn gen;
     cpuKmeans km;
     RandomFn<float> rg;
-    uint x = 512;
-    uint y = 512;
-    uint noiseSize = 128;
-    uint numIter = 2;
-    uint numClusters = 4;
-    uint numThreads = 32;
+    size_t x = 512;
+    size_t y = 512;
+    size_t noiseSize = 128;
+    size_t numIter = 2;
+    size_t numClusters = 4;
+    size_t numThreads = 32;
 
     ColorVector source_serial_CV =gen.generate_serial_CV(x,y,noiseSize);
     ImageColors source_serial_IC =gen.generate_serial_IC(x,y,noiseSize);

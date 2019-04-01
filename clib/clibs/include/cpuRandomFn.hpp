@@ -57,10 +57,16 @@ public:
     {
         distroLong=std::uniform_int_distribution<size_t>(r_low,r_high);
     }
+    size_t weightedRand(std::vector<size_t>& w)
+    {
+        weightedDistr=std::discrete_distribution<size_t>(w.begin(), w.end());
+        return weightedDistr(m_MTgenerator);
+    }
 private:
     std::uniform_int_distribution<size_t> distroLong;
     std::uniform_int_distribution<int> distroI;
     std::uniform_real_distribution<T> distroU;
+    std::discrete_distribution<size_t> weightedDistr;
     std::default_random_engine m_generator;
     std::mt19937 m_MTgenerator;
     std::random_device seed;

@@ -2,7 +2,8 @@
 
 ColorVector ImageGenFn::generate_serial_CV(const uint w,
                                const uint h,
-                               const uint turbulence_size)
+                               const uint turbulence_size,
+                               const bool randomAlpha)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -21,8 +22,9 @@ ColorVector ImageGenFn::generate_serial_CV(const uint w,
             float pwr1 = turbulence(x, y, turbulence_size);
             float pwr2 = turbulence(x, y+h, turbulence_size/2);
             float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
-            //float pwr4 = 1.0f;
-            float pwr4 = turbulence(w-x, y, turbulence_size);
+            float pwr4 = 1.0f;
+            if(randomAlpha)
+                pwr4 = turbulence(w-x, y, turbulence_size);
             rawData.at(y*w+x).setData(pwr1,pwr2,pwr3,pwr4);
         }
     }
@@ -32,7 +34,8 @@ ColorVector ImageGenFn::generate_serial_CV(const uint w,
 
 ImageColors ImageGenFn::generate_serial_IC(const uint w,
                    const uint h,
-                   const uint turbulence_size)
+                   const uint turbulence_size,
+                   const bool randomAlpha)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -52,8 +55,9 @@ ImageColors ImageGenFn::generate_serial_IC(const uint w,
             float pwr1 = turbulence(x, y, turbulence_size);
             float pwr2 = turbulence(x, y+h, turbulence_size/2);
             float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
-            //float pwr4 = 1.0f;
-            float pwr4 = turbulence(w-x, y, turbulence_size);
+            float pwr4 = 1.0f;
+            if(randomAlpha)
+                pwr4 = turbulence(w-x, y, turbulence_size);
             data.setData(y*w+x, pwr1, pwr2, pwr3, pwr4);
         }
     }
@@ -63,7 +67,8 @@ ImageColors ImageGenFn::generate_serial_IC(const uint w,
 
 std::vector<float> ImageGenFn::generate_serial_LN(const uint w,
                                const uint h,
-                               const uint turbulence_size)
+                               const uint turbulence_size,
+                               const bool randomAlpha)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -82,9 +87,9 @@ std::vector<float> ImageGenFn::generate_serial_LN(const uint w,
             float pwr1 = turbulence(x, y, turbulence_size);
             float pwr2 = turbulence(x, y+h, turbulence_size/2);
             float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
-            //float pwr4 = 1.0f;
-            float pwr4 = turbulence(w-x, y, turbulence_size);
-
+            float pwr4 = 1.0f;
+            if(randomAlpha)
+                pwr4 = turbulence(w-x, y, turbulence_size);
             rawData.at((y*w+x)*4)=pwr1;
             rawData.at((y*w+x)*4+1)=pwr2;
             rawData.at((y*w+x)*4+2)=pwr3;
@@ -101,7 +106,8 @@ void ImageGenFn::generate_serial_4SV(const uint w,
                    std::vector<float>* redChannel,
                    std::vector<float>* greenChannel,
                    std::vector<float>* blueChannel,
-                   std::vector<float>* alphaChannel)
+                   std::vector<float>* alphaChannel,
+                   const bool randomAlpha)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -119,9 +125,9 @@ void ImageGenFn::generate_serial_4SV(const uint w,
             float pwr1 = turbulence(x, y, turbulence_size);
             float pwr2 = turbulence(x, y+h, turbulence_size/2);
             float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
-            //float pwr4 = 1.0f;
-            float pwr4 = turbulence(w-x, y, turbulence_size);
-
+            float pwr4 = 1.0f;
+            if(randomAlpha)
+                pwr4 = turbulence(w-x, y, turbulence_size);
             redChannel->at(y*w+x)=pwr1;
             greenChannel->at(y*w+x)=pwr2;
             blueChannel->at(y*w+x)=pwr3;
@@ -137,7 +143,8 @@ void ImageGenFn::generate_serial_4LV(const uint w,
                    float* redChannel,
                    float* greenChannel,
                    float* blueChannel,
-                   float* alphaChannel)
+                   float* alphaChannel,
+                   const bool randomAlpha)
 {
     m_noiseWidth=w;
     m_noiseHeight=h;
@@ -155,9 +162,9 @@ void ImageGenFn::generate_serial_4LV(const uint w,
             float pwr1 = turbulence(x, y, turbulence_size);
             float pwr2 = turbulence(x, y+h, turbulence_size/2);
             float pwr3 = turbulence(x, y+h*2, turbulence_size/2);
-            //float pwr4 = 1.0f;
-            float pwr4 = turbulence(w-x, y, turbulence_size);
-
+            float pwr4 = 1.0f;
+            if(randomAlpha)
+                pwr4 = turbulence(w-x, y, turbulence_size);
             redChannel[y*w+x]=pwr1;
             greenChannel[y*w+x]=pwr2;
             blueChannel[y*w+x]=pwr3;

@@ -9,27 +9,32 @@ class ImageGenFn
 public:
     ColorVector generate_serial_CV(const uint w,
                        const uint h,
-                       const uint turbulence_size);
+                       const uint turbulence_size,
+                       const bool randomAlpha=false);
     ImageColors generate_serial_IC(const uint w,
                        const uint h,
-                       const uint turbulence_size);
+                       const uint turbulence_size,
+                       const bool randomAlpha=false);
     std::vector<float> generate_serial_LN(const uint w,
                        const uint h,
-                       const uint turbulence_size);
+                       const uint turbulence_size,
+                       const bool randomAlpha=false);
     void generate_serial_4SV(const uint w,
                        const uint h,
                        const uint turbulence_size,
                        std::vector<float>* redChannel,
                        std::vector<float>* greenChannel,
                        std::vector<float>* blueChannel,
-                       std::vector<float>* alphaChannel);
+                       std::vector<float>* alphaChannel,
+                       const bool randomAlpha=false);
     void generate_serial_4LV(const uint w,
                        const uint h,
                        const uint turbulence_size,
                        float* redChannel,
                        float* greenChannel,
                        float* blueChannel,
-                       float* alphaChannel);
+                       float* alphaChannel,
+                       const bool randomAlpha=false);
 
 private:
     float smoothNoise(float x, float y);

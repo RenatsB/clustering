@@ -32,6 +32,10 @@ struct ImageColors
         m_a.resize(m_r.size());
         std::fill(m_a.begin(),m_a.end(),1.f);
     }
+    size_t getSize() const
+    {
+        return std::min(std::min(std::min(m_r.size(), m_g.size()),m_b.size()),m_a.size());
+    }
 };
 
 struct Color

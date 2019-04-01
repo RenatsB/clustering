@@ -24,12 +24,43 @@ ColorVector cpuKmeans::kmeans_serial_CV(const ColorVector& data,
     rfunc.setNumericLimitsL(0, data.size() - 1);
 
     ColorVector correctedImage(data.size());
-
-    // Pick centroids as random points from the dataset.
     ColorVector means(k);
-    for (auto& cluster : means) {
+    // Pick centroids as random points from the dataset.
+    /*for (auto& cluster : means) {
       cluster = data[rfunc.MT19937RandL()];
+    }*/
+
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    std::vector<bool> selectedIDs(data.size(),false);
+    selectedIDs.at(number)=true;
+    size_t numSelected = 1;
+    std::vector<float> distances(data.size());
+    std::vector<size_t> weights(data.size(),0);
+    means[0] = data[number]; //first mean is random
+    float totalDistance = 0.f;
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        for(auto p=0; p<data.size(); ++p)
+        {
+            for(auto c=0; c<numSelected; ++c)
+            {
+                distances.at(p)=squared_Colour_l2_Distance(data.at(p), means.at(c));
+                totalDistance+=distances.at(p);
+                weights.at(p)+=(size_t)(distances.at(p)*1000.f);
+            }
+        }
+        size_t randomIDx = rfunc.weightedRand(weights);
+        means[centroid]=data.at(randomIDx);
+        selectedIDs.at(randomIDx)=true;
+        numSelected++;
+        totalDistance = 0.f;
     }
+    //end of centoid picking
+
+
 
     std::vector<size_t> assignments(data.size());
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
@@ -86,23 +117,67 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
                                         size_t k,
                                         size_t number_of_iterations)
 {
-    size_t numberOfItems = data.m_r.size();
+    size_t numberOfItems = data.getSize();
     rfunc.setNumericLimitsL(0, numberOfItems - 1);
 
     ImageColors correctedImage;
     correctedImage.resize(numberOfItems);
-
-    // Pick centroids as random points from the dataset.
     ImageColors means;
     means.resize(k);
-    for (auto cluster=0; cluster<k; ++cluster) {
+    // Pick centroids as random points from the dataset.
+    /*for (auto cluster=0; cluster<k; ++cluster) {
       size_t num = rfunc.MT19937RandL();
       means.setData(cluster,
                     data.m_r.at(num),
                     data.m_g.at(num),
                     data.m_b.at(num),
                     data.m_a.at(num));
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    std::vector<bool> selectedIDs(numberOfItems,false);
+    selectedIDs.at(number)=true;
+    size_t numSelected = 1;
+    std::vector<float> distances(numberOfItems);
+    std::vector<size_t> weights(numberOfItems,0);
+    //first mean is random
+    means.m_r.at(0) = data.m_r.at(number);
+    means.m_g.at(0) = data.m_g.at(number);
+    means.m_b.at(0) = data.m_b.at(number);
+    means.m_a.at(0) = data.m_a.at(number);
+    float totalDistance = 0.f;
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        for(auto p=0; p<numberOfItems; ++p)
+        {
+            for(auto c=0; c<numSelected; ++c)
+            {
+                distances.at(p)=linear_squared_Colour_l2_Distance(
+                            data.m_r.at(p),
+                            data.m_g.at(p),
+                            data.m_b.at(p),
+                            data.m_a.at(p),
+                            means.m_r.at(c),
+                            means.m_g.at(c),
+                            means.m_b.at(c),
+                            means.m_a.at(c));
+                totalDistance+=distances.at(p);
+                weights.at(p)+=(size_t)(distances.at(p)*1000.f);
+            }
+        }
+        size_t randomIDx = rfunc.weightedRand(weights);
+        means.m_r.at(centroid)=data.m_r.at(randomIDx);
+        means.m_g.at(centroid)=data.m_g.at(randomIDx);
+        means.m_b.at(centroid)=data.m_b.at(randomIDx);
+        means.m_a.at(centroid)=data.m_a.at(randomIDx);
+        selectedIDs.at(randomIDx)=true;
+        numSelected++;
+        totalDistance = 0.f;
     }
+    //end of centoid picking
+
 
     std::vector<size_t> assignments(numberOfItems);
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
@@ -146,9 +221,6 @@ ImageColors cpuKmeans::kmeans_serial_IC(const ImageColors& data,
       }
     }
 
-    /*correctedImage.setData(&(means.m_r),
-                           &(means.m_g),
-                           &(means.m_b));*/
     for(uint i=0; i<numberOfItems; ++i)
     {
         correctedImage.m_r.at(i) = means.m_r.at(assignments[i]);
@@ -168,17 +240,55 @@ std::vector<float> cpuKmeans::kmeans_serial_LN(const std::vector<float>& data,
     rfunc.setNumericLimitsL(0, numberOfItems - 1);
 
     std::vector<float> correctedImage(data.size());
-
-    // Pick centroids as random points from the dataset.
     std::vector<float> means(k*4);
-
-    for (uint cluster=0; cluster<k; ++cluster) {
+    // Pick centroids as random points from the dataset.
+    /*for (uint cluster=0; cluster<k; ++cluster) {
       size_t num = rfunc.MT19937RandL();
       means[cluster*4]   = data[num*4];
       means[cluster*4+1] = data[num*4+1];
       means[cluster*4+2] = data[num*4+2];
       means[cluster*4+3] = data[num*4+3];
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    std::vector<bool> selectedIDs(numberOfItems,false);
+    selectedIDs.at(number)=true;
+    size_t numSelected = 1;
+    std::vector<float> distances(numberOfItems);
+    std::vector<size_t> weights(numberOfItems,0);
+    //first mean is random
+    means.at(0) = data.at(number*4);
+    means.at(1) = data.at(number*4+1);
+    means.at(2) = data.at(number*4+2);
+    means.at(3) = data.at(number*4+3);
+    float totalDistance = 0.f;
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        for(auto p=0; p<numberOfItems; ++p)
+        {
+            for(auto c=0; c<numSelected; ++c)
+            {
+                distances.at(p)=linear_squared_Colour_l2_Distance(data[p*4],
+                                                                  data[p*4+1],
+                                                                  data[p*4+2],
+                                                                  data[p*4+3],
+                                                                  means[c*4],
+                                                                  means[c*4+1],
+                                                                  means[c*4+2],
+                                                                  means[c*4+2]);
+                totalDistance+=distances.at(p);
+                weights.at(p)+=(size_t)(distances.at(p)*1000.f);
+            }
+        }
+        size_t randomIDx = rfunc.weightedRand(weights);
+        means[centroid]=data.at(randomIDx);
+        selectedIDs.at(randomIDx)=true;
+        numSelected++;
+        totalDistance = 0.f;
     }
+
 
     std::vector<size_t> assignments(numberOfItems);
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
@@ -253,20 +363,63 @@ void cpuKmeans::kmeans_serial_4SV(const std::vector<float>* _inreds,
                                   size_t number_of_iterations)
 {
     rfunc.setNumericLimitsL(0, num_items - 1);
-
-    // Pick centroids as random points from the dataset.
     std::vector<float> meansR(k);
     std::vector<float> meansG(k);
     std::vector<float> meansB(k);
     std::vector<float> meansA(k);
-
-    for (uint cluster=0; cluster<k; ++cluster) {
+    // Pick centroids as random points from the dataset.
+    /*for (uint cluster=0; cluster<k; ++cluster) {
       size_t num = rfunc.MT19937RandL();
       meansR.at(cluster) = _inreds->at(num);
       meansG.at(cluster) = _ingrns->at(num);
       meansB.at(cluster) = _inblus->at(num);
       meansA.at(cluster) = _inalps->at(num);
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    std::vector<bool> selectedIDs(num_items,false);
+    selectedIDs.at(number)=true;
+    size_t numSelected = 1;
+    std::vector<float> distances(num_items);
+    std::vector<size_t> weights(num_items,0);
+    //first mean is random
+    meansR.at(0) = _inreds->at(number);
+    meansG.at(0) = _ingrns->at(number);
+    meansB.at(0) = _inblus->at(number);
+    meansA.at(0) = _inalps->at(number);
+    float totalDistance = 0.f;
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        for(auto p=0; p<num_items; ++p)
+        {
+            for(auto c=0; c<numSelected; ++c)
+            {
+                distances.at(p)=linear_squared_Colour_l2_Distance(
+                            _inreds->at(p),
+                            _ingrns->at(p),
+                            _inblus->at(p),
+                            _inalps->at(p),
+                            meansR.at(c),
+                            meansG.at(c),
+                            meansB.at(c),
+                            meansA.at(c));
+                totalDistance+=distances.at(p);
+                weights.at(p)+=(size_t)(distances.at(p)*1000.f);
+            }
+        }
+        size_t randomIDx = rfunc.weightedRand(weights);
+        meansR.at(centroid)=_inreds->at(randomIDx);
+        meansG.at(centroid)=_ingrns->at(randomIDx);
+        meansB.at(centroid)=_inblus->at(randomIDx);
+        meansA.at(centroid)=_inalps->at(randomIDx);
+        selectedIDs.at(randomIDx)=true;
+        numSelected++;
+        totalDistance = 0.f;
     }
+    //end of centoid picking
+
 
     std::vector<size_t> assignments(num_items);
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
@@ -343,21 +496,64 @@ void cpuKmeans::kmeans_serial_4LV(const float* _inreds,
                                   size_t number_of_iterations)
 {
     rfunc.setNumericLimitsL(0, num_items - 1);
-
-    // Pick centroids as random points from the dataset.
     std::vector<float> meansR(k);
     std::vector<float> meansG(k);
     std::vector<float> meansB(k);
     std::vector<float> meansA(k);
-
-    for (uint cluster=0; cluster<k; ++cluster)
+    // Pick centroids as random points from the dataset.
+    /*for (uint cluster=0; cluster<k; ++cluster)
     {
       size_t num = rfunc.MT19937RandL();
       meansR[cluster] = _inreds[num];
       meansG[cluster] = _ingrns[num];
       meansB[cluster] = _inblus[num];
       meansA[cluster] = _inalps[num];
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    std::vector<bool> selectedIDs(num_items,false);
+    selectedIDs.at(number)=true;
+    size_t numSelected = 1;
+    std::vector<float> distances(num_items);
+    std::vector<size_t> weights(num_items,0);
+    //first mean is random
+    meansR.at(0) = _inreds[number];
+    meansG.at(0) = _ingrns[number];
+    meansB.at(0) = _inblus[number];
+    meansA.at(0) = _inalps[number];
+    float totalDistance = 0.f;
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        for(auto p=0; p<num_items; ++p)
+        {
+            for(auto c=0; c<numSelected; ++c)
+            {
+                distances.at(p)=linear_squared_Colour_l2_Distance(
+                            _inreds[p],
+                            _ingrns[p],
+                            _inblus[p],
+                            _inalps[p],
+                            meansR.at(c),
+                            meansG.at(c),
+                            meansB.at(c),
+                            meansA.at(c));
+                totalDistance+=distances.at(p);
+                weights.at(p)+=(size_t)(distances.at(p)*1000.f);
+            }
+        }
+        size_t randomIDx = rfunc.weightedRand(weights);
+        meansR.at(centroid)=_inreds[randomIDx];
+        meansG.at(centroid)=_ingrns[randomIDx];
+        meansB.at(centroid)=_inblus[randomIDx];
+        meansA.at(centroid)=_inalps[randomIDx];
+        selectedIDs.at(randomIDx)=true;
+        numSelected++;
+        totalDistance = 0.f;
     }
+    //end of centoid picking
+
 
     std::vector<size_t> assignments(num_items);
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration)
