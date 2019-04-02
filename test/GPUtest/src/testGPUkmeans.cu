@@ -17,8 +17,7 @@ TEST( GPUkmeans, ColorVectorBased )
     ColorVector flt1 = gpuKmeans::kmeans_parallel_CV(cv,
                                                      CLIB_TEST_CLUSTERS,
                                                      CLIB_TEST_ITER,
-                                                     CLIB_TEST_THREADS,
-                                                     &rg);
+                                                     CLIB_TEST_THREADS);
     for(auto c=0; c<CLIB_TEST_ITEMS; ++c)
     {
         EXPECT_TRUE(clibTutils::testRange(flt1.at(c).m_r, 0.f, 1.f, 0.001f));
@@ -37,10 +36,9 @@ TEST( GPUkmeans, ImageColorsBased)
                                                        CLIB_TEST_NOISE,
                                                        CLIB_TEST_THREADS);
     ImageColors flt1 = gpuKmeans::kmeans_parallel_IC(ic,
-                                                            CLIB_TEST_CLUSTERS,
-                                                            CLIB_TEST_ITER,
-                                                            CLIB_TEST_THREADS,
-                                                            &rg);
+                                                     CLIB_TEST_CLUSTERS,
+                                                     CLIB_TEST_ITER,
+                                                     CLIB_TEST_THREADS);
     for(auto c=0; c<CLIB_TEST_ITEMS; ++c)
     {
         EXPECT_TRUE(clibTutils::testRange(flt1.m_r.at(c), 0.f, 1.f, 0.001f));
@@ -68,8 +66,7 @@ TEST( GPUkmeans, linearBased)
     std::vector<float> flt1 = gpuKmeans::kmeans_parallel_LN(ln,
                                                             CLIB_TEST_CLUSTERS,
                                                             CLIB_TEST_ITER,
-                                                            CLIB_TEST_THREADS,
-                                                            &rg);
+                                                            CLIB_TEST_THREADS);
     for(auto c=0; c<CLIB_TEST_ITEMS; ++c)
     {
         EXPECT_TRUE(clibTutils::testRange(flt1.at(c*4), 0.f, 1.f, 0.001f));
@@ -101,8 +98,7 @@ TEST( GPUkmeans, 4VectorPointers )
                                    CLIB_TEST_ITEMS,
                                    CLIB_TEST_CLUSTERS,
                                    CLIB_TEST_ITER,
-                                   CLIB_TEST_THREADS,
-                                   &rg);
+                                   CLIB_TEST_THREADS);
     for(size_t i=0; i<CLIB_TEST_ITEMS; ++i)
     {
         EXPECT_TRUE(clibTutils::testRange(flt1_rv.at(i), 0.f, 1.f, 0.001f));
@@ -141,8 +137,7 @@ TEST( GPUkmeans, 4FloatPointers )
                                    CLIB_TEST_ITEMS,
                                    CLIB_TEST_CLUSTERS,
                                    CLIB_TEST_ITER,
-                                   CLIB_TEST_THREADS,
-                                   &rg);
+                                   CLIB_TEST_THREADS);
     for(size_t i=0; i<CLIB_TEST_ITEMS; ++i)
     {
         EXPECT_TRUE(clibTutils::testRange(flt1_rv.at(i), 0.f, 1.f, 0.001f));

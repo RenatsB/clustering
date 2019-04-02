@@ -6,18 +6,15 @@ namespace gpuKmeans {
 ColorVector kmeans_parallel_CV(const ColorVector &source,
                                size_t k,
                                size_t number_of_iterations,
-                               const size_t numThreads,
-                               RandomFn<float>* rfunc=nullptr);
+                               const size_t numThreads);
 ImageColors kmeans_parallel_IC(const ImageColors &source,
                                size_t k,
                                size_t number_of_iterations,
-                               const size_t numThreads,
-                               RandomFn<float>* rfunc=nullptr);
+                               const size_t numThreads);
 std::vector<float> kmeans_parallel_LN(const std::vector<float> &source,
                                       size_t k,
                                       size_t number_of_iterations,
-                                      const size_t numThreads,
-                                      RandomFn<float>* rfunc=nullptr);
+                                      const size_t numThreads);
 void  kmeans_parallel_4SV(const std::vector<float>* _inreds,
                           const std::vector<float>* _ingrns,
                           const std::vector<float>* _inblus,
@@ -29,8 +26,7 @@ void  kmeans_parallel_4SV(const std::vector<float>* _inreds,
                           const size_t number_of_elements,
                           size_t k,
                           size_t number_of_iterations,
-                          const size_t numThreads,
-                          RandomFn<float>* rfunc=nullptr);
+                          const size_t numThreads);
 void  kmeans_parallel_4LV(const float* _inreds,
                           const float* _ingrns,
                           const float* _inblus,
@@ -42,8 +38,7 @@ void  kmeans_parallel_4LV(const float* _inreds,
                           const size_t number_of_elements,
                           size_t k,
                           size_t number_of_iterations,
-                          const size_t numThreads,
-                          RandomFn<float>* rfunc=nullptr);
+                          const size_t numThreads);
 }
 
 

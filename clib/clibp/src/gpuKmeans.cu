@@ -246,6 +246,66 @@ __global__ void writeNewColors_parallel_LN(thrust::device_ptr<float> means,
     newOut[index*4+3] = means[assignment[index]*4+3];
 }
 
+__global__ void calculateDistancesToCentroids_4F(thrust::device_ptr<float4> d_source,
+                                                 const size_t data_size,
+                                                 thrust::device_ptr<float4> d_means,
+                                                 const size_t current,
+                                                 thrust::device_ptr<float> d_dist,
+                                                 thrust::device_ptr<size_t> d_weights)
+{
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= data_size) return;
+    for(auto c=0; c<current; ++c)
+    {
+        d_dist[index]=sqL2Dist_device_CL(d_source[index], d_means[c]);
+        d_weights[index]=d_weights[index]+(size_t)(d_dist[index]*1000.f);
+    }
+}
+
+__global__ void calculateDistancesToCentroids_LN(thrust::device_ptr<float> d_source,
+                                                 const size_t data_size,
+                                                 thrust::device_ptr<float> d_means,
+                                                 const size_t current,
+                                                 thrust::device_ptr<float> d_dist,
+                                                 thrust::device_ptr<size_t> d_weights)
+{
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= data_size) return;
+    for(auto c=0; c<current; ++c)
+    {
+        d_dist[index]=sqL2Dist_device_LN(d_source[index*4],d_source[index*4+1],
+                                         d_source[index*4+2],d_source[index*4+3],
+                                         d_means[c*4],d_means[c*4+1],
+                                         d_means[c*4+2],d_means[c*4+3]);
+        d_weights[index]=d_weights[index]+(size_t)(d_dist[index]*1000.f);
+    }
+}
+
+__global__ void calculateDistancesToCentroids_4V(thrust::device_ptr<float> d_sourceR,
+                                                 thrust::device_ptr<float> d_sourceG,
+                                                 thrust::device_ptr<float> d_sourceB,
+                                                 thrust::device_ptr<float> d_sourceA,
+                                                 const size_t data_size,
+                                                 thrust::device_ptr<float> d_meansR,
+                                                 thrust::device_ptr<float> d_meansG,
+                                                 thrust::device_ptr<float> d_meansB,
+                                                 thrust::device_ptr<float> d_meansA,
+                                                 const size_t current,
+                                                 thrust::device_ptr<float> d_dist,
+                                                 thrust::device_ptr<size_t> d_weights)
+{
+    const int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= data_size) return;
+    for(auto c=0; c<current; ++c)
+    {
+        d_dist[index]=sqL2Dist_device_LN(d_sourceR[index],d_sourceG[index],
+                                         d_sourceB[index],d_sourceA[index],
+                                         d_meansR[c],d_meansG[c],
+                                         d_meansB[c],d_meansA[c]);
+        d_weights[index]=d_weights[index]+(size_t)(d_dist[index]*1000.f);
+    }
+}
+
 ///=================================================================================
 ///----------------------------|  END UTILITY  |------------------------------------
 ///=================================================================================
@@ -253,22 +313,25 @@ __global__ void writeNewColors_parallel_LN(thrust::device_ptr<float> means,
 ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
                            size_t k,
                            size_t number_of_iterations,
-                           const size_t numThreads,
-                           RandomFn<float>* rfunc)
+                           const size_t numThreads)
 {
-    thrust::host_vector<float4> h_source(source.size());
-    for(uint x=0; x<source.size(); ++x)
-    {
-        h_source[x].x=source.at(x).m_r;
-        h_source[x].y=source.at(x).m_g;
-        h_source[x].z=source.at(x).m_b;
-        h_source[x].w=source.at(x).m_a;
-    }
+    RandomFn<float> rfunc;
     const size_t number_of_elements = source.size();
-    //thrust::fill(h_source.begin(), h_source.end(), source.begin());
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
+    thrust::host_vector<float4> h_source(number_of_elements);
+    for(auto i=0; i<number_of_elements; ++i)
+    {
+        h_source[i].x = source.at(i).m_r;
+        h_source[i].y = source.at(i).m_g;
+        h_source[i].z = source.at(i).m_b;
+        h_source[i].w = source.at(i).m_a;
+    }
+    thrust::device_vector<float4> d_source(source.size());
+    thrust::copy(h_source.begin(), h_source.end(), d_source.begin());
     thrust::device_vector<float4> d_means(k);
-    rfunc->setNumericLimitsL(0, number_of_elements - 1);
-    for(uint cluster=0; cluster<k; ++cluster)
+    rfunc.setNumericLimitsL(0, number_of_elements - 1);
+    // Pick centroids as random points from the dataset.
+    /*for(uint cluster=0; cluster<k; ++cluster)
     {
         float4 assignment;
         Color c = source[rfunc->MT19937RandL()];
@@ -277,18 +340,39 @@ ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
         assignment.z = c.m_b;
         assignment.w = c.m_a;
         d_means[cluster] = assignment;
-    }
+    }*/
 
-    thrust::device_vector<float4> d_source(source.size());
-    thrust::copy(h_source.begin(), h_source.end(), d_source.begin());
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    d_means[0] = d_source[number]; //first mean is random
+    thrust::device_vector<float> d_distances(number_of_elements, 0.f);
+    thrust::device_vector<size_t> d_weights(number_of_elements, 0);
+    //thrust::device_vector<float> d_totalDistance(k, 0.f);
+    std::vector<size_t> tWeights(number_of_elements);
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        calculateDistancesToCentroids_4F<<<blocks, numThreads>>>(d_source.data(),
+                                                                 number_of_elements,
+                                                                 d_means.data(),
+                                                                 centroid,
+                                                                 d_distances.data(),
+                                                                 d_weights.data());
+        cudaDeviceSynchronize();
+        thrust::copy(d_weights.begin(),
+                     d_weights.end(),
+                     tWeights.begin());
+        size_t randomIDx = rfunc.weightedRand(tWeights);
+        d_means[centroid]=d_source[randomIDx];
+        thrust::fill(d_distances.begin(), d_distances.end(), 0.f);
+    }
+    //end of centoid picking
+
     thrust::device_vector<int> d_assignments(source.size()); //for cluster assignments
     thrust::device_vector<float4> d_filtered(source.size()); //to copy back and return
     thrust::host_vector<float4> h_filtered(source.size());
 
     thrust::device_vector<float4> d_sums(k);
     thrust::device_vector<int> d_counts(k, 0);
-
-    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sums.begin(), d_sums.end(), float4{0.0,0.0,0.0,0.0});
@@ -329,10 +413,11 @@ ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
 ImageColors gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
                            size_t k,
                            size_t number_of_iterations,
-                           const size_t numThreads,
-                           RandomFn<float>* rfunc)
+                           const size_t numThreads)
 {
+    RandomFn<float> rfunc;
     const size_t number_of_elements = source.m_r.size();
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
     thrust::host_vector<float4> h_source(number_of_elements);
     for(uint x=0; x<number_of_elements; ++x)
     {
@@ -341,29 +426,52 @@ ImageColors gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
         h_source[x].z=source.m_b.at(x);
         h_source[x].w=source.m_a.at(x);
     }
+    thrust::device_vector<float4> d_source(number_of_elements);
+    thrust::copy(h_source.begin(), h_source.end(), d_source.begin());
     thrust::device_vector<float4> d_means(k);
-    rfunc->setNumericLimitsL(0, number_of_elements - 1);
-    for(uint cluster=0; cluster<k; ++cluster)
+    rfunc.setNumericLimitsL(0, number_of_elements - 1);
+    /*for(uint cluster=0; cluster<k; ++cluster)
     {
-        size_t num = rfunc->MT19937RandL();
+        size_t num = rfunc.MT19937RandL();
         float4 assignment;
         assignment.x = source.m_r.at(num);
         assignment.y = source.m_g.at(num);
         assignment.z = source.m_b.at(num);
         assignment.w = source.m_a.at(num);
         d_means[cluster] = assignment;
-    }
+    }*/
 
-    thrust::device_vector<float4> d_source(number_of_elements);
-    thrust::copy(h_source.begin(), h_source.end(), d_source.begin());
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    d_means[0] = d_source[number]; //first mean is random
+    thrust::device_vector<float> d_distances(number_of_elements, 0.f);
+    thrust::device_vector<size_t> d_weights(number_of_elements, 0);
+    std::vector<size_t> tWeights(number_of_elements);
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        calculateDistancesToCentroids_4F<<<blocks, numThreads>>>(d_source.data(),
+                                                                 number_of_elements,
+                                                                 d_means.data(),
+                                                                 centroid,
+                                                                 d_distances.data(),
+                                                                 d_weights.data());
+        cudaDeviceSynchronize();
+        thrust::copy(d_weights.begin(),
+                     d_weights.end(),
+                     tWeights.begin());
+        size_t randomIDx = rfunc.weightedRand(tWeights);
+        d_means[centroid]=d_source[randomIDx];
+        thrust::fill(d_distances.begin(), d_distances.end(), 0.f);
+    }
+    //end of centoid picking
+
     thrust::device_vector<int> d_assignments(number_of_elements); //for cluster assignments
     thrust::device_vector<float4> d_filtered(number_of_elements); //to copy back and return
     thrust::host_vector<float4> h_filtered(number_of_elements);
 
     thrust::device_vector<float4> d_sums(k);
     thrust::device_vector<int> d_counts(k, 0);
-
-    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sums.begin(), d_sums.end(), float4{0.0,0.0,0.0,0.0});
@@ -406,31 +514,62 @@ ImageColors gpuKmeans::kmeans_parallel_IC(const ImageColors &source,
 std::vector<float> gpuKmeans::kmeans_parallel_LN(const std::vector<float> &source,
                                   size_t k,
                                   size_t number_of_iterations,
-                                  const size_t numThreads,
-                                  RandomFn<float>* rfunc)
+                                  const size_t numThreads)
 {
+    RandomFn<float> rfunc;
     const size_t number_of_elements = source.size()/4;
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
+    thrust::device_vector<float> d_source(source.size());
+    thrust::copy(source.begin(), source.end(), d_source.begin());
     thrust::device_vector<float> d_means(k*4);
-    rfunc->setNumericLimitsL(0, number_of_elements - 1);
-    for(uint cluster=0; cluster<k; ++cluster)
+    rfunc.setNumericLimitsL(0, number_of_elements - 1);
+    /*for(uint cluster=0; cluster<k; ++cluster)
     {
-        size_t cID = rfunc->MT19937RandL();
+        size_t cID = rfunc.MT19937RandL();
         d_means[cluster*4]   = source[cID*4];
         d_means[cluster*4+1] = source[cID*4+1];
         d_means[cluster*4+2] = source[cID*4+2];
         d_means[cluster*4+3] = source[cID*4+3];
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    d_means[0] = d_source[number*4]; //first mean is random
+    d_means[1] = d_source[number*4+1];
+    d_means[2] = d_source[number*4+2];
+    d_means[3] = d_source[number*4+3];
+    thrust::device_vector<float> d_distances(number_of_elements, 0.f);
+    thrust::device_vector<size_t> d_weights(number_of_elements, 0);
+    std::vector<size_t> tWeights(number_of_elements);
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        calculateDistancesToCentroids_LN<<<blocks, numThreads>>>(d_source.data(),
+                                                                 number_of_elements,
+                                                                 d_means.data(),
+                                                                 centroid,
+                                                                 d_distances.data(),
+                                                                 d_weights.data());
+        cudaDeviceSynchronize();
+        thrust::copy(d_weights.begin(),
+                     d_weights.end(),
+                     tWeights.begin());
+        size_t randomIDx = rfunc.weightedRand(tWeights);
+        d_means[centroid*4]=d_source[randomIDx*4];
+        d_means[centroid*4+1]=d_source[randomIDx*4+1];
+        d_means[centroid*4+2]=d_source[randomIDx*4+2];
+        d_means[centroid*4+3]=d_source[randomIDx*4+3];
+        thrust::fill(d_distances.begin(), d_distances.end(), 0.f);
     }
 
-    thrust::device_vector<float> d_source(source.size());
-    thrust::copy(source.begin(), source.end(), d_source.begin());
+    //end of centoid picking
+
     thrust::device_vector<int> d_assignments(source.size()/4); //for cluster assignments
     thrust::device_vector<float> d_filtered(source.size()); //to copy back and return
     thrust::host_vector<float> h_filtered(source.size());
 
     thrust::device_vector<float> d_sums(k*4);
     thrust::device_vector<int> d_counts(k, 0);
-
-    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sums.begin(), d_sums.end(), 0.f);
@@ -476,23 +615,10 @@ void gpuKmeans::kmeans_parallel_4SV(const std::vector<float>* _inreds,
                                     const size_t number_of_elements,
                                     size_t k,
                                     size_t number_of_iterations,
-                                    const size_t numThreads,
-                                    RandomFn<float>* rfunc)
+                                    const size_t numThreads)
 {
-    thrust::device_vector<float> d_meansR(k);
-    thrust::device_vector<float> d_meansG(k);
-    thrust::device_vector<float> d_meansB(k);
-    thrust::device_vector<float> d_meansA(k);
-    rfunc->setNumericLimitsL(0, number_of_elements - 1);
-    for(auto cluster=0; cluster<k; ++cluster)
-    {
-        size_t num = rfunc->MT19937RandL();
-        d_meansR[cluster] = _inreds->at(num);
-        d_meansG[cluster] = _ingrns->at(num);
-        d_meansB[cluster] = _inblus->at(num);
-        d_meansA[cluster] = _inalps->at(num);
-    }
-
+    RandomFn<float> rfunc;
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
     thrust::device_vector<float> d_sourceR(number_of_elements);
     thrust::device_vector<float> d_sourceG(number_of_elements);
     thrust::device_vector<float> d_sourceB(number_of_elements);
@@ -501,6 +627,58 @@ void gpuKmeans::kmeans_parallel_4SV(const std::vector<float>* _inreds,
     thrust::copy(_ingrns->begin(), _ingrns->end(), d_sourceG.begin());
     thrust::copy(_inblus->begin(), _inblus->end(), d_sourceB.begin());
     thrust::copy(_inalps->begin(), _inalps->end(), d_sourceA.begin());
+    thrust::device_vector<float> d_meansR(k);
+    thrust::device_vector<float> d_meansG(k);
+    thrust::device_vector<float> d_meansB(k);
+    thrust::device_vector<float> d_meansA(k);
+    rfunc.setNumericLimitsL(0, number_of_elements - 1);
+    /*for(auto cluster=0; cluster<k; ++cluster)
+    {
+        size_t num = rfunc.MT19937RandL();
+        d_meansR[cluster] = _inreds->at(num);
+        d_meansG[cluster] = _ingrns->at(num);
+        d_meansB[cluster] = _inblus->at(num);
+        d_meansA[cluster] = _inalps->at(num);
+    }*/
+
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    d_meansR[0] = d_sourceR[number]; //first mean is random
+    d_meansG[0] = d_sourceG[number];
+    d_meansB[0] = d_sourceB[number];
+    d_meansA[0] = d_sourceA[number];
+    thrust::device_vector<float> d_distances(number_of_elements, 0.f);
+    thrust::device_vector<size_t> d_weights(number_of_elements, 0);
+    //thrust::device_vector<float> d_totalDistance(k, 0.f);
+    std::vector<size_t> tWeights(number_of_elements);
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        calculateDistancesToCentroids_4V<<<blocks, numThreads>>>(d_sourceR.data(),
+                                                                 d_sourceG.data(),
+                                                                 d_sourceB.data(),
+                                                                 d_sourceA.data(),
+                                                                 number_of_elements,
+                                                                 d_meansR.data(),
+                                                                 d_meansG.data(),
+                                                                 d_meansB.data(),
+                                                                 d_meansA.data(),
+                                                                 centroid,
+                                                                 d_distances.data(),
+                                                                 d_weights.data());
+        cudaDeviceSynchronize();
+        thrust::copy(d_weights.begin(),
+                     d_weights.end(),
+                     tWeights.begin());
+        size_t randomIDx = rfunc.weightedRand(tWeights);
+        d_meansR[centroid]=d_sourceR[randomIDx];
+        d_meansG[centroid]=d_sourceG[randomIDx];
+        d_meansB[centroid]=d_sourceB[randomIDx];
+        d_meansA[centroid]=d_sourceA[randomIDx];
+        thrust::fill(d_distances.begin(), d_distances.end(), 0.f);
+    }
+    //end of centoid picking
+
 
     thrust::device_vector<int> d_assignments(number_of_elements);
     thrust::device_vector<float> d_filteredR(number_of_elements);
@@ -513,8 +691,6 @@ void gpuKmeans::kmeans_parallel_4SV(const std::vector<float>* _inreds,
     thrust::device_vector<float> d_sumsB(k);
     thrust::device_vector<float> d_sumsA(k);
     thrust::device_vector<int> d_counts(k, 0);
-
-    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sumsR.begin(), d_sumsR.end(), float{0.0f});
@@ -583,24 +759,10 @@ void gpuKmeans::kmeans_parallel_4LV(const float* _inreds,
                                     const size_t number_of_elements,
                                     size_t k,
                                     size_t number_of_iterations,
-                                    const size_t numThreads,
-                                    RandomFn<float>* rfunc)
+                                    const size_t numThreads)
 {
-    //thrust::fill(h_source.begin(), h_source.end(), source.begin());
-    thrust::device_vector<float> d_meansR(k);
-    thrust::device_vector<float> d_meansG(k);
-    thrust::device_vector<float> d_meansB(k);
-    thrust::device_vector<float> d_meansA(k);
-    rfunc->setNumericLimitsL(0, number_of_elements - 1);
-    for(auto cluster=0; cluster<k; ++cluster)
-    {
-        size_t num = rfunc->MT19937RandL();
-        d_meansR[cluster] = _inreds[num];
-        d_meansG[cluster] = _ingrns[num];
-        d_meansB[cluster] = _inblus[num];
-        d_meansA[cluster] = _inalps[num];
-    }
-
+    RandomFn<float> rfunc;
+    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
     thrust::device_vector<float> d_sourceR(number_of_elements);
     thrust::device_vector<float> d_sourceG(number_of_elements);
     thrust::device_vector<float> d_sourceB(number_of_elements);
@@ -609,6 +771,57 @@ void gpuKmeans::kmeans_parallel_4LV(const float* _inreds,
     thrust::copy(_ingrns, _ingrns+number_of_elements, d_sourceG.begin());
     thrust::copy(_inblus, _inblus+number_of_elements, d_sourceB.begin());
     thrust::copy(_inalps, _inalps+number_of_elements, d_sourceA.begin());
+    thrust::device_vector<float> d_meansR(k);
+    thrust::device_vector<float> d_meansG(k);
+    thrust::device_vector<float> d_meansB(k);
+    thrust::device_vector<float> d_meansA(k);
+    rfunc.setNumericLimitsL(0, number_of_elements - 1);
+    /*for(auto cluster=0; cluster<k; ++cluster)
+    {
+        size_t num = rfunc.MT19937RandL();
+        d_meansR[cluster] = _inreds[num];
+        d_meansG[cluster] = _ingrns[num];
+        d_meansB[cluster] = _inblus[num];
+        d_meansA[cluster] = _inalps[num];
+    }*/
+
+    //Pick Centroids according to kmeans++ method by getting distances to all points
+    size_t number = rfunc.MT19937RandL();
+    d_meansR[0] = d_sourceR[number]; //first mean is random
+    d_meansG[0] = d_sourceG[number];
+    d_meansB[0] = d_sourceB[number];
+    d_meansA[0] = d_sourceA[number];
+    thrust::device_vector<float> d_distances(number_of_elements, 0.f);
+    thrust::device_vector<size_t> d_weights(number_of_elements, 0);
+    //thrust::device_vector<float> d_totalDistance(k, 0.f);
+    std::vector<size_t> tWeights(number_of_elements);
+    for(auto centroid=1; centroid<k; ++centroid)
+    {
+        calculateDistancesToCentroids_4V<<<blocks, numThreads>>>(d_sourceR.data(),
+                                                                 d_sourceG.data(),
+                                                                 d_sourceB.data(),
+                                                                 d_sourceA.data(),
+                                                                 number_of_elements,
+                                                                 d_meansR.data(),
+                                                                 d_meansG.data(),
+                                                                 d_meansB.data(),
+                                                                 d_meansA.data(),
+                                                                 centroid,
+                                                                 d_distances.data(),
+                                                                 d_weights.data());
+        cudaDeviceSynchronize();
+        thrust::copy(d_weights.begin(),
+                     d_weights.end(),
+                     tWeights.begin());
+        size_t randomIDx = rfunc.weightedRand(tWeights);
+        d_meansR[centroid]=d_sourceR[randomIDx];
+        d_meansG[centroid]=d_sourceG[randomIDx];
+        d_meansB[centroid]=d_sourceB[randomIDx];
+        d_meansA[centroid]=d_sourceA[randomIDx];
+        thrust::fill(d_distances.begin(), d_distances.end(), 0.f);
+    }
+    //end of centoid picking
+
 
     thrust::device_vector<int> d_assignments(number_of_elements);
     thrust::device_vector<float> d_filteredR(number_of_elements);
@@ -621,8 +834,6 @@ void gpuKmeans::kmeans_parallel_4LV(const float* _inreds,
     thrust::device_vector<float> d_sumsB(k);
     thrust::device_vector<float> d_sumsA(k);
     thrust::device_vector<int> d_counts(k, 0);
-
-    const int blocks = (number_of_elements + numThreads - 1) / numThreads;
 
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sumsR.begin(), d_sumsR.end(), float{0.0f});

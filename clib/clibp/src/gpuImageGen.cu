@@ -58,11 +58,12 @@ __device__ float turbulenceP(const thrust::device_ptr<float> d_noise,
 }
 
 __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
-                             const size_t data_size,
-                             const size_t imageWidth,
-                             const size_t imageHeight,
-                             const float turbulence_size,
-                             thrust::device_ptr<float> d_out)
+                              const size_t data_size,
+                              const size_t imageWidth,
+                              const size_t imageHeight,
+                              const float turbulence_size,
+                              thrust::device_ptr<float> d_out,
+                              const bool randAlpha)
 {
     const int index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= data_size) return;
@@ -73,8 +74,9 @@ __global__ void assignColorsP(thrust::device_ptr<float> d_noise,
     d_out[index*4]   = turbulenceP(d_noise, imageWidth, imageHeight, x, y, turbulence_size);
     d_out[index*4+1] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight, turbulence_size/2);
     d_out[index*4+2] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight*2, turbulence_size/2);
-    //d_out[index*4+3] = 1.0f;
-    d_out[index*4+3] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
+    d_out[index*4+3] = 1.0f;
+    if(randAlpha)
+        d_out[index*4+3] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
 }
 
 __global__ void assignColors4(thrust::device_ptr<float> d_noise,
@@ -85,7 +87,8 @@ __global__ void assignColors4(thrust::device_ptr<float> d_noise,
                               thrust::device_ptr<float> d_outR,
                               thrust::device_ptr<float> d_outG,
                               thrust::device_ptr<float> d_outB,
-                              thrust::device_ptr<float> d_outA)
+                              thrust::device_ptr<float> d_outA,
+                              const bool randAlpha)
 {
     const int index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= data_size) return;
@@ -96,15 +99,16 @@ __global__ void assignColors4(thrust::device_ptr<float> d_noise,
     d_outR[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y, turbulence_size);
     d_outG[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight, turbulence_size/2);
     d_outB[index] = turbulenceP(d_noise, imageWidth, imageHeight, x, y+imageHeight*2, turbulence_size/2);
-    //d_outA[index] = 1.0f;
-    d_outA[index] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
+    d_outA[index] = 1.0f;
+    if(randAlpha)
+        d_outA[index] = turbulenceP(d_noise, imageWidth, imageHeight, imageWidth-x, y, turbulence_size);
 }
 
 ColorVector gpuImageGen::generate_parallel_CV(const size_t w,
                                               const size_t h,
                                               const size_t turbulence_size,
                                               const size_t numThreads,
-                                              const bool randAplha)
+                                              const bool randAlpha)
 {
     int dataSize = w*h;
     ColorVector outData(dataSize);
@@ -124,7 +128,8 @@ ColorVector gpuImageGen::generate_parallel_CV(const size_t w,
                                           w,
                                           h,
                                           turbulence_size,
-                                          d_colors.data());
+                                          d_colors.data(),
+                                          randAlpha);
     //end of map generation
     cudaDeviceSynchronize();
     thrust::copy(d_colors.begin(), d_colors.end(), h_transfer.begin());
@@ -142,7 +147,7 @@ ImageColors gpuImageGen::generate_parallel_IC(const size_t w,
                                               const size_t h,
                                               const size_t turbulence_size,
                                               const size_t numThreads,
-                                              const bool randAplha)
+                                              const bool randAlpha)
 {
     int dataSize = w*h;
     ImageColors outData;
@@ -168,7 +173,8 @@ ImageColors gpuImageGen::generate_parallel_IC(const size_t w,
                                           d_colorsR.data(),
                                           d_colorsG.data(),
                                           d_colorsB.data(),
-                                          d_colorsA.data());
+                                          d_colorsA.data(),
+                                          randAlpha);
     //end of map generation
     cudaDeviceSynchronize();
     thrust::copy(d_colorsR.begin(), d_colorsR.end(), outData.m_r.begin());
@@ -182,7 +188,7 @@ std::vector<float> gpuImageGen::generate_parallel_LN(const size_t w,
                                                      const size_t h,
                                                      const size_t turbulence_size,
                                                      const size_t numThreads,
-                                                     const bool randAplha)
+                                                     const bool randAlpha)
 {
     int dataSize = w*h;
     std::vector<float> outData(dataSize*4);
@@ -202,7 +208,8 @@ std::vector<float> gpuImageGen::generate_parallel_LN(const size_t w,
                                           w,
                                           h,
                                           turbulence_size,
-                                          d_colors.data());
+                                          d_colors.data(),
+                                          randAlpha);
     //end of map generation
     cudaDeviceSynchronize();
     thrust::copy(d_colors.begin(), d_colors.end(), outData.begin());
@@ -217,7 +224,7 @@ void gpuImageGen::generate_parallel_4SV(std::vector<float>* redChannel,
                                         const size_t h,
                                         const size_t turbulence_size,
                                         const size_t numThreads,
-                                        const bool randAplha)
+                                        const bool randAlpha)
 {
     int dataSize = w*h;
     thrust::device_vector<float> d_noise(dataSize);
@@ -242,7 +249,8 @@ void gpuImageGen::generate_parallel_4SV(std::vector<float>* redChannel,
                                           d_colRed.data(),
                                           d_colGrn.data(),
                                           d_colBlu.data(),
-                                          d_colAlp.data());
+                                          d_colAlp.data(),
+                                          randAlpha);
     //end of map generation
     cudaDeviceSynchronize();
     thrust::copy(d_colRed.begin(), d_colRed.end(), redChannel->begin());
@@ -260,7 +268,7 @@ void gpuImageGen::generate_parallel_4LV(float* redChannel,
                                         const size_t h,
                                         const size_t turbulence_size,
                                         const size_t numThreads,
-                                        const bool randAplha)
+                                        const bool randAlpha)
 {
     int dataSize = w*h;
     thrust::device_vector<float> d_noise(dataSize);
@@ -285,7 +293,8 @@ void gpuImageGen::generate_parallel_4LV(float* redChannel,
                                           d_colRed.data(),
                                           d_colGrn.data(),
                                           d_colBlu.data(),
-                                          d_colAlp.data());
+                                          d_colAlp.data(),
+                                          randAlpha);
     //end of map generation
     cudaDeviceSynchronize();
     thrust::copy(d_colRed.begin(), d_colRed.end(), redChannel);

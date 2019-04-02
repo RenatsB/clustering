@@ -1,0 +1,1717 @@
+CPU (Run on Intel® Xeon(R) CPU E5-1650 v3 (12 X 3800 MHz CPUs))
+TESTING RESOLUTION
+
+2019-04-02 15:55:20
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.01, 0.14, 0.34
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 1024
+#define CLIB_BENCH_GENDIM_X_L 2048
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 1024
+#define CLIB_BENCH_GENDIM_Y_L 2048
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 1024
+#define CLIB_BENCH_KM_DIMX_L 2048
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 1024
+#define CLIB_BENCH_KM_DIMY_L 2048
+
+#define CLIB_BENCH_KM_CLUSTERS_S 2
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS    2487302 ns      2487203 ns          268
+Bench_Gen_ColorVectorM    9377862 ns      9377492 ns           72
+Bench_Gen_ColorVectorL   37287088 ns     37285823 ns           18
+Bench_Gen_ImageColorsS    2327986 ns      2327909 ns          288
+Bench_Gen_ImageColorsM    9420001 ns      9419688 ns           75
+Bench_Gen_ImageColorsL   38374223 ns     38372973 ns           18
+Bench_Gen_LinearS         2366184 ns      2366105 ns          293
+Bench_Gen_LinearM         9496479 ns      9496166 ns           74
+Bench_Gen_LinearL        37828052 ns     37826801 ns           19
+Bench_Gen_StdVecS         2354011 ns      2353934 ns          302
+Bench_Gen_StdVecM         9435276 ns      9434906 ns           74
+Bench_Gen_StdVecL        37722451 ns     37721210 ns           19
+Bench_Gen_VecS            2350079 ns      2350002 ns          301
+Bench_Gen_VecM            9519280 ns      9518967 ns           76
+Bench_Gen_VecL           37726222 ns     37724756 ns           19
+Bench_Kmn_ColorVectorS     983107 ns       983074 ns          724
+Bench_Kmn_ColorVectorM    3980728 ns      3980599 ns          178
+Bench_Kmn_ColorVectorL   15848975 ns     15848448 ns           44
+Bench_Kmn_ImageColorsS     538065 ns       538044 ns         1313
+Bench_Kmn_ImageColorsM    2175633 ns      2175561 ns          328
+Bench_Kmn_ImageColorsL    8588029 ns      8587746 ns           82
+Bench_Kmn_LinearS          493160 ns       493144 ns         1487
+Bench_Kmn_LinearM         1976202 ns      1976092 ns          357
+Bench_Kmn_LinearL         7906019 ns      7905756 ns           91
+Bench_Kmn_StdVecS          515791 ns       515774 ns         1348
+Bench_Kmn_StdVecM         2102951 ns      2102881 ns          333
+Bench_Kmn_StdVecL         8335486 ns      8335148 ns           81
+Bench_Kmn_VecS             449517 ns       449503 ns         1540
+Bench_Kmn_VecM            1822067 ns      1822006 ns          389
+Bench_Kmn_VecL            7221147 ns      7220906 ns           95
+Bench_Ran_Simple            72333 ns        72330 ns         9326
+Bench_Ran_Uniform           43435 ns        43433 ns        15814
+Bench_Ran_MT                29280 ns        29279 ns        23067
+
+2019-04-02 16:00:13
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.20, 0.23, 0.32
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 1024
+#define CLIB_BENCH_GENDIM_X_L 2048
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 1024
+#define CLIB_BENCH_GENDIM_Y_L 2048
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 1024
+#define CLIB_BENCH_KM_DIMX_L 2048
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 1024
+#define CLIB_BENCH_KM_DIMY_L 2048
+
+#define CLIB_BENCH_KM_CLUSTERS_S 2
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  185589539 ns    185580237 ns            3
+Bench_Gen_ColorVectorM  713586454 ns    713535983 ns            1
+Bench_Gen_ColorVectorL 2800836149 ns   2800660952 ns            1
+Bench_Gen_ImageColorsS  175971954 ns    175958998 ns            4
+Bench_Gen_ImageColorsM  687578428 ns    687555541 ns            1
+Bench_Gen_ImageColorsL 2818756469 ns   2818605175 ns            1
+Bench_Gen_LinearS       177102407 ns    177090507 ns            4
+Bench_Gen_LinearM       710358008 ns    710308702 ns            1
+Bench_Gen_LinearL      2797689726 ns   2797513610 ns            1
+Bench_Gen_StdVecS       172939501 ns    172927584 ns            4
+Bench_Gen_StdVecM       698391665 ns    698368124 ns            1
+Bench_Gen_StdVecL      2791384367 ns   2791210082 ns            1
+Bench_Gen_VecS          174367884 ns    174355863 ns            4
+Bench_Gen_VecM          694306075 ns    694257665 ns            1
+Bench_Gen_VecL         2775423768 ns   2775273586 ns            1
+Bench_Kmn_ColorVectorS   19733015 ns     19731481 ns           36
+Bench_Kmn_ColorVectorM  263079806 ns    263061554 ns            3
+Bench_Kmn_ColorVectorL 3587023087 ns   3586866213 ns            1
+Bench_Kmn_ImageColorsS   12489849 ns     12489176 ns           57
+Bench_Kmn_ImageColorsM  146978132 ns    146973190 ns            5
+Bench_Kmn_ImageColorsL 1899132739 ns   1899044046 ns            1
+Bench_Kmn_LinearS        10337422 ns     10336731 ns           67
+Bench_Kmn_LinearM       132292567 ns    132287062 ns            5
+Bench_Kmn_LinearL      1745534452 ns   1745460782 ns            1
+Bench_Kmn_StdVecS        11839438 ns     11838757 ns           57
+Bench_Kmn_StdVecM       142852626 ns    142847777 ns            5
+Bench_Kmn_StdVecL      1847298698 ns   1847217699 ns            1
+Bench_Kmn_VecS           10149188 ns     10148851 ns           70
+Bench_Kmn_VecM          126581159 ns    126576930 ns            5
+Bench_Kmn_VecL         1595780262 ns   1595711133 ns            1
+Bench_Ran_Simple            73186 ns        73183 ns         9396
+Bench_Ran_Uniform           43824 ns        43822 ns        16145
+Bench_Ran_MT                29728 ns        29727 ns        23697
+
+2019-04-02 16:03:42
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.32, 0.33, 0.35
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 4096
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 4096
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 32
+#define CLIB_BENCH_KM_DIMX_M 32
+#define CLIB_BENCH_KM_DIMX_L 4096
+
+#define CLIB_BENCH_KM_DIMY_S 32
+#define CLIB_BENCH_KM_DIMY_M 32
+#define CLIB_BENCH_KM_DIMY_L 4096
+
+#define CLIB_BENCH_KM_CLUSTERS_S 2
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS     707267 ns       707236 ns          952
+Bench_Gen_ColorVectorM     687236 ns       687210 ns         1025
+Bench_Gen_ColorVectorL 11111424605 ns   11111020400 ns            1
+Bench_Gen_ImageColorsS     682583 ns       682555 ns         1047
+Bench_Gen_ImageColorsM     676904 ns       676881 ns         1047
+Bench_Gen_ImageColorsL 11133045301 ns   11132642173 ns            1
+Bench_Gen_LinearS          677395 ns       677373 ns         1048
+Bench_Gen_LinearM          670546 ns       670514 ns         1008
+Bench_Gen_LinearL      11135260252 ns   11134857362 ns            1
+Bench_Gen_StdVecS          670620 ns       670588 ns         1005
+Bench_Gen_StdVecM          678647 ns       678624 ns         1044
+Bench_Gen_StdVecL      11118564876 ns   11118166511 ns            1
+Bench_Gen_VecS             676559 ns       676532 ns         1050
+Bench_Gen_VecM             676349 ns       676326 ns         1046
+Bench_Gen_VecL         11097306305 ns   11096897624 ns            1
+Bench_Kmn_ColorVectorS      75242 ns        75240 ns         9003
+Bench_Kmn_ColorVectorM     243397 ns       243389 ns         2902
+Bench_Kmn_ColorVectorL 14319712298 ns   14319129947 ns            1
+Bench_Kmn_ImageColorsS      48220 ns        48218 ns        14475
+Bench_Kmn_ImageColorsM     133793 ns       133788 ns         5213
+Bench_Kmn_ImageColorsL 7464113880 ns   7463804627 ns            1
+Bench_Kmn_LinearS           40448 ns        40447 ns        17594
+Bench_Kmn_LinearM          119419 ns       119415 ns         5933
+Bench_Kmn_LinearL      6917079404 ns   6916795963 ns            1
+Bench_Kmn_StdVecS           46532 ns        46530 ns        15154
+Bench_Kmn_StdVecM          127808 ns       127803 ns         5557
+Bench_Kmn_StdVecL      7614536439 ns   7614199831 ns            1
+Bench_Kmn_VecS              39392 ns        39390 ns        18108
+Bench_Kmn_VecM             112199 ns       112195 ns         6301
+Bench_Kmn_VecL         6281346246 ns   6281084024 ns            1
+Bench_Ran_Simple            73251 ns        73248 ns         9709
+Bench_Ran_Uniform           43604 ns        43603 ns        16217
+Bench_Ran_MT                29559 ns        29558 ns        23503
+
+END OF TESTING RESOLUTION
+
+TESTING CLUSTERS
+2019-04-02 16:11:46
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.33, 0.34, 0.37
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 2
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  186262905 ns    186256879 ns            3
+Bench_Gen_ColorVectorM  178192893 ns    178187002 ns            4
+Bench_Gen_ColorVectorL  177431878 ns    177426010 ns            4
+Bench_Gen_ImageColorsS  174433207 ns    174424965 ns            4
+Bench_Gen_ImageColorsM  172515082 ns    172508249 ns            4
+Bench_Gen_ImageColorsL  173874530 ns    173868800 ns            4
+Bench_Gen_LinearS       174306353 ns    174298818 ns            4
+Bench_Gen_LinearM       174635722 ns    174629059 ns            4
+Bench_Gen_LinearL       174510490 ns    174502627 ns            4
+Bench_Gen_StdVecS       174924402 ns    174918647 ns            4
+Bench_Gen_StdVecM       174260625 ns    174254953 ns            4
+Bench_Gen_StdVecL       172357241 ns    172351560 ns            4
+Bench_Gen_VecS          171156075 ns    171149267 ns            4
+Bench_Gen_VecM          172857986 ns    172848302 ns            4
+Bench_Gen_VecL          175685605 ns    175678887 ns            4
+Bench_Kmn_ColorVectorS   19635930 ns     19634999 ns           34
+Bench_Kmn_ColorVectorM   62611444 ns     62608894 ns           11
+Bench_Kmn_ColorVectorL  219361620 ns    219354339 ns            3
+Bench_Kmn_ImageColorsS   12347840 ns     12347287 ns           56
+Bench_Kmn_ImageColorsM   34306062 ns     34304623 ns           21
+Bench_Kmn_ImageColorsL  111541171 ns    111536559 ns            6
+Bench_Kmn_LinearS        10453091 ns     10452649 ns           65
+Bench_Kmn_LinearM        30893086 ns     30891554 ns           23
+Bench_Kmn_LinearL       102523569 ns    102519366 ns            7
+Bench_Kmn_StdVecS        11753263 ns     11752734 ns           55
+Bench_Kmn_StdVecM        33289492 ns     33288108 ns           21
+Bench_Kmn_StdVecL       110601509 ns    110596605 ns            6
+Bench_Kmn_VecS           10053938 ns     10053470 ns           64
+Bench_Kmn_VecM           29025598 ns     29024192 ns           24
+Bench_Kmn_VecL           94325380 ns     94321422 ns            7
+Bench_Ran_Simple            72987 ns        72984 ns         9708
+Bench_Ran_Uniform           43771 ns        43769 ns        16072
+Bench_Ran_MT                29725 ns        29724 ns        23983
+
+2019-04-02 16:13:36
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.88, 0.48, 0.42
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 16
+#define CLIB_BENCH_KM_CLUSTERS_M 32
+#define CLIB_BENCH_KM_CLUSTERS_L 64
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  186729004 ns    186721400 ns            3
+Bench_Gen_ColorVectorM  176806282 ns    176800337 ns            4
+Bench_Gen_ColorVectorL  176305803 ns    176298706 ns            4
+Bench_Gen_ImageColorsS  175814761 ns    175808952 ns            4
+Bench_Gen_ImageColorsM  174207269 ns    174201602 ns            4
+Bench_Gen_ImageColorsL  172077942 ns    172072116 ns            4
+Bench_Gen_LinearS       176593797 ns    176587173 ns            4
+Bench_Gen_LinearM       175592809 ns    175586971 ns            4
+Bench_Gen_LinearL       175590242 ns    175584403 ns            4
+Bench_Gen_StdVecS       174291980 ns    174285445 ns            4
+Bench_Gen_StdVecM       177544732 ns    177538874 ns            4
+Bench_Gen_StdVecL       176255408 ns    176248474 ns            4
+Bench_Gen_VecS          175494718 ns    175488942 ns            4
+Bench_Gen_VecM          172468982 ns    172463277 ns            4
+Bench_Gen_VecL          172309175 ns    172303512 ns            4
+Bench_Kmn_ColorVectorS  811846472 ns    811814317 ns            1
+Bench_Kmn_ColorVectorM 3106162695 ns   3106056195 ns            1
+Bench_Kmn_ColorVectorL 12097185606 ns   12096751397 ns            1
+Bench_Kmn_ImageColorsS  404614062 ns    404600367 ns            2
+Bench_Kmn_ImageColorsM 1506339260 ns   1506287803 ns            1
+Bench_Kmn_ImageColorsL 5761425575 ns   5761216476 ns            1
+Bench_Kmn_LinearS       371923083 ns    371910514 ns            2
+Bench_Kmn_LinearM      1384789466 ns   1384742133 ns            1
+Bench_Kmn_LinearL      5311135681 ns   5310949563 ns            1
+Bench_Kmn_StdVecS       400500314 ns    400487049 ns            2
+Bench_Kmn_StdVecM      1501733227 ns   1501677833 ns            1
+Bench_Kmn_StdVecL      5684399681 ns   5684196874 ns            1
+Bench_Kmn_VecS          345472869 ns    345460929 ns            2
+Bench_Kmn_VecM         1290151889 ns   1290101792 ns            1
+Bench_Kmn_VecL         4834929925 ns   4834759501 ns            1
+Bench_Ran_Simple            72706 ns        72703 ns         9334
+Bench_Ran_Uniform           43298 ns        43296 ns        15891
+Bench_Ran_MT                29369 ns        29368 ns        23083
+
+2019-04-02 16:15:29
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.71, 0.57, 0.46
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 1
+#define CLIB_BENCH_KM_CLUSTERS_M 1
+#define CLIB_BENCH_KM_CLUSTERS_L 128
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  185143021 ns    184554625 ns            4
+Bench_Gen_ColorVectorM  174623724 ns    174106350 ns            4
+Bench_Gen_ColorVectorL  188947357 ns    188402150 ns            4
+Bench_Gen_ImageColorsS  173540278 ns    173251333 ns            4
+Bench_Gen_ImageColorsM  177003080 ns    176664486 ns            4
+Bench_Gen_ImageColorsL  176918758 ns    176601603 ns            4
+Bench_Gen_LinearS       180214499 ns    179544665 ns            4
+Bench_Gen_LinearM       177966539 ns    177086868 ns            4
+Bench_Gen_LinearL       176673104 ns    176667268 ns            4
+Bench_Gen_StdVecS       176098269 ns    176091465 ns            4
+Bench_Gen_StdVecM       172612836 ns    172607111 ns            4
+Bench_Gen_StdVecL       171426102 ns    171420311 ns            4
+Bench_Gen_VecS          172449774 ns    172444011 ns            4
+Bench_Gen_VecM          174306224 ns    174300426 ns            4
+Bench_Gen_VecL          174335820 ns    174330114 ns            4
+Bench_Kmn_ColorVectorS    8811048 ns      8810748 ns           78
+Bench_Kmn_ColorVectorM    8918136 ns      8917839 ns           78
+Bench_Kmn_ColorVectorL 47990417812 ns   47988715646 ns            1
+Bench_Kmn_ImageColorsS    7618651 ns      7618398 ns           95
+Bench_Kmn_ImageColorsM    7453163 ns      7452911 ns           88
+Bench_Kmn_ImageColorsL 22501319049 ns   22500520916 ns            1
+Bench_Kmn_LinearS         6004019 ns      5986127 ns          109
+Bench_Kmn_LinearM         6109834 ns      6095749 ns          115
+Bench_Kmn_LinearL      20766113039 ns   20742908888 ns            1
+Bench_Kmn_StdVecS         5317510 ns      5306232 ns          132
+Bench_Kmn_StdVecM         5299978 ns      5289656 ns          132
+Bench_Kmn_StdVecL      22313690631 ns   22285804729 ns            1
+Bench_Kmn_VecS            4653782 ns      4653554 ns          121
+Bench_Kmn_VecM            4310624 ns      4310429 ns          161
+Bench_Kmn_VecL         18777500694 ns   18776826887 ns            1
+Bench_Ran_Simple            72206 ns        72203 ns         9722
+Bench_Ran_Uniform           43592 ns        43591 ns        16107
+Bench_Ran_MT                29815 ns        29814 ns        23862
+END OF TESTING CLUSTERS
+
+TESTING ITERATIONS
+2019-04-02 16:19:39
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.50, 0.63, 0.52
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 2
+#define CLIB_BENCH_KM_ITER_C 3
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  185732694 ns    185725136 ns            3
+Bench_Gen_ColorVectorM  177163501 ns    177157766 ns            4
+Bench_Gen_ColorVectorL  177041408 ns    177035578 ns            4
+Bench_Gen_ImageColorsS  177271686 ns    177264845 ns            4
+Bench_Gen_ImageColorsM  177658694 ns    177652850 ns            4
+Bench_Gen_ImageColorsL  174870081 ns    174864237 ns            4
+Bench_Gen_LinearS       173165940 ns    173158466 ns            4
+Bench_Gen_LinearM       171999214 ns    171991475 ns            4
+Bench_Gen_LinearL       174042418 ns    174035088 ns            4
+Bench_Gen_StdVecS       174625376 ns    174618026 ns            4
+Bench_Gen_StdVecM       174670444 ns    174664565 ns            4
+Bench_Gen_StdVecL       174547623 ns    174541801 ns            4
+Bench_Gen_VecS          173712135 ns    173705392 ns            4
+Bench_Gen_VecM          171833970 ns    171828266 ns            4
+Bench_Gen_VecL          170554773 ns    170548898 ns            4
+Bench_Kmn_ColorVectorS  217778195 ns    217770852 ns            3
+Bench_Kmn_ColorVectorM  260312977 ns    260301228 ns            3
+Bench_Kmn_ColorVectorL  299263665 ns    299251372 ns            2
+Bench_Kmn_ImageColorsS  109751176 ns    109746596 ns            6
+Bench_Kmn_ImageColorsM  131785577 ns    131779045 ns            5
+Bench_Kmn_ImageColorsL  158172457 ns    158167134 ns            4
+Bench_Kmn_LinearS       103355057 ns    103351604 ns            7
+Bench_Kmn_LinearM       120970383 ns    120965773 ns            6
+Bench_Kmn_LinearL       137366900 ns    137359296 ns            5
+Bench_Kmn_StdVecS       109022867 ns    109018405 ns            6
+Bench_Kmn_StdVecM       129911878 ns    129906736 ns            5
+Bench_Kmn_StdVecL       153293950 ns    153287761 ns            5
+Bench_Kmn_VecS           93935169 ns     93931949 ns            7
+Bench_Kmn_VecM          111358868 ns    111354358 ns            6
+Bench_Kmn_VecL          128340718 ns    128333148 ns            5
+Bench_Ran_Simple            73195 ns        73192 ns         9371
+Bench_Ran_Uniform           43630 ns        43628 ns        16163
+Bench_Ran_MT                29577 ns        29576 ns        24055
+
+2019-04-02 16:21:07
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.41, 0.59, 0.52
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 4
+#define CLIB_BENCH_KM_ITER_B 5
+#define CLIB_BENCH_KM_ITER_C 6
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  185469125 ns    185460008 ns            3
+Bench_Gen_ColorVectorM  176331435 ns    176309336 ns            4
+Bench_Gen_ColorVectorL  172728415 ns    172717487 ns            4
+Bench_Gen_ImageColorsS  173774288 ns    173756337 ns            4
+Bench_Gen_ImageColorsM  175384287 ns    175375734 ns            4
+Bench_Gen_ImageColorsL  174439332 ns    174425560 ns            4
+Bench_Gen_LinearS       176671257 ns    176660469 ns            4
+Bench_Gen_LinearM       175217459 ns    175209002 ns            4
+Bench_Gen_LinearL       177194667 ns    177187102 ns            4
+Bench_Gen_StdVecS       174460115 ns    174447958 ns            4
+Bench_Gen_StdVecM       174877119 ns    174853038 ns            4
+Bench_Gen_StdVecL       174626830 ns    174615987 ns            4
+Bench_Gen_VecS          175972108 ns    175958349 ns            4
+Bench_Gen_VecM          177528044 ns    177519852 ns            4
+Bench_Gen_VecL          175303463 ns    175290183 ns            4
+Bench_Kmn_ColorVectorS  344514430 ns    344472337 ns            2
+Bench_Kmn_ColorVectorM  391291021 ns    391274464 ns            2
+Bench_Kmn_ColorVectorL  436055339 ns    436014214 ns            2
+Bench_Kmn_ImageColorsS  182951754 ns    182939816 ns            4
+Bench_Kmn_ImageColorsM  203081953 ns    203070668 ns            3
+Bench_Kmn_ImageColorsL  221894244 ns    221875268 ns            3
+Bench_Kmn_LinearS       154857231 ns    154845929 ns            4
+Bench_Kmn_LinearM       174348876 ns    174329244 ns            4
+Bench_Kmn_LinearL       192580109 ns    192562531 ns            4
+Bench_Kmn_StdVecS       173785756 ns    173776246 ns            4
+Bench_Kmn_StdVecM       190656114 ns    190637961 ns            4
+Bench_Kmn_StdVecL       215231294 ns    215221581 ns            3
+Bench_Kmn_VecS          147916075 ns    147907059 ns            5
+Bench_Kmn_VecM          164843041 ns    164828295 ns            4
+Bench_Kmn_VecL          178849530 ns    178838182 ns            4
+Bench_Ran_Simple            73406 ns        73400 ns         9693
+Bench_Ran_Uniform           43462 ns        43459 ns        15855
+Bench_Ran_MT                29682 ns        29680 ns        23120
+
+
+2019-04-02 16:22:37
+Running clib_CPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.43, 0.58, 0.52
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 512
+#define CLIB_BENCH_GENDIM_X_L 512
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 512
+#define CLIB_BENCH_GENDIM_Y_L 512
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 7
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------
+Benchmark                       Time             CPU   Iterations
+------------------------------------------------------------------
+Bench_Gen_ColorVectorS  191937859 ns    191921448 ns            4
+Bench_Gen_ColorVectorM  182836101 ns    182828227 ns            4
+Bench_Gen_ColorVectorL  173967873 ns    173961138 ns            4
+Bench_Gen_ImageColorsS  172509282 ns    172500878 ns            4
+Bench_Gen_ImageColorsM  174200594 ns    174194774 ns            4
+Bench_Gen_ImageColorsL  175783462 ns    175776747 ns            4
+Bench_Gen_LinearS       174862170 ns    174854783 ns            4
+Bench_Gen_LinearM       175176575 ns    175170753 ns            4
+Bench_Gen_LinearL       174739281 ns    174732539 ns            4
+Bench_Gen_StdVecS       173286409 ns    173279986 ns            4
+Bench_Gen_StdVecM       172129967 ns    172124050 ns            4
+Bench_Gen_StdVecL       173672792 ns    173667078 ns            4
+Bench_Gen_VecS          173619056 ns    173613350 ns            4
+Bench_Gen_VecM          174396251 ns    174389426 ns            4
+Bench_Gen_VecL          174134403 ns    174128719 ns            4
+Bench_Kmn_ColorVectorS  219431845 ns    219422795 ns            3
+Bench_Kmn_ColorVectorM  216757823 ns    216746214 ns            3
+Bench_Kmn_ColorVectorL  470628968 ns    470610867 ns            2
+Bench_Kmn_ImageColorsS  110074886 ns    110070083 ns            6
+Bench_Kmn_ImageColorsM  109345199 ns    109339649 ns            6
+Bench_Kmn_ImageColorsL  246077568 ns    246069360 ns            3
+Bench_Kmn_LinearS       102732183 ns    102728727 ns            7
+Bench_Kmn_LinearM       103055741 ns    103051502 ns            7
+Bench_Kmn_LinearL       209169171 ns    209160139 ns            3
+Bench_Kmn_StdVecS       108744784 ns    108740136 ns            6
+Bench_Kmn_StdVecM       108309799 ns    108305239 ns            6
+Bench_Kmn_StdVecL       235323603 ns    235314045 ns            3
+Bench_Kmn_VecS           93865643 ns     93862513 ns            7
+Bench_Kmn_VecM           94111822 ns     94107805 ns            7
+Bench_Kmn_VecL          197307906 ns    197298472 ns            4
+Bench_Ran_Simple            73183 ns        73180 ns         9656
+Bench_Ran_Uniform           43282 ns        43280 ns        16012
+Bench_Ran_MT                29551 ns        29550 ns        23176
+
+END OF TESTING ITERATIONS
+============================================
+GPU (Run on NVIDIA Quadro M4000/PCIe/SSE2 (1664 CUDA Cores))
+TESTING RESOLUTION
+2019-04-02 16:26:48
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.40, 0.41, 0.46
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 64
+#define CLIB_BENCH_GENDIM_X_M 128
+#define CLIB_BENCH_GENDIM_X_L 256
+
+#define CLIB_BENCH_GENDIM_Y_S 64
+#define CLIB_BENCH_GENDIM_Y_M 128
+#define CLIB_BENCH_GENDIM_Y_L 256
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 7
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10271668 ns     10251184 ns           68
+Bench_GenGPU_ColorVectorM       9913189 ns      9898797 ns           70
+Bench_GenGPU_ColorVectorL      10520920 ns     10506573 ns           67
+Bench_GenGPU_ImageColorsS       9915805 ns      9907604 ns           71
+Bench_GenGPU_ImageColorsM       9922267 ns      9915012 ns           71
+Bench_GenGPU_ImageColorsL       9955779 ns      9950223 ns           70
+Bench_GenGPU_LinearS           10111076 ns     10104761 ns           69
+Bench_GenGPU_LinearM            9893485 ns      9887081 ns           71
+Bench_GenGPU_LinearL            9972611 ns      9964269 ns           71
+Bench_GenGPU_StdVecS            9846068 ns      9839355 ns           71
+Bench_GenGPU_StdVecM            9845776 ns      9840349 ns           71
+Bench_GenGPU_StdVecL            9880280 ns      9871931 ns           71
+Bench_GenGPU_VecS               9856661 ns      9847583 ns           71
+Bench_GenGPU_VecM               9860576 ns      9852049 ns           71
+Bench_GenGPU_VecL               9893145 ns      9886060 ns           71
+Bench_GenGPU_VecDirS            9837225 ns      9830717 ns           71
+Bench_GenGPU_VecDirM            9830422 ns      9822782 ns           71
+Bench_GenGPU_VecDirL            9879763 ns      9873687 ns           71
+Bench_KMeansGPU_ColorVectorS    1564789 ns      1561119 ns          451
+Bench_KMeansGPU_ColorVectorM    2731214 ns      2725501 ns          258
+Bench_KMeansGPU_ColorVectorL   14903263 ns     14887994 ns           47
+Bench_KMeansGPU_ImageColorsS    1560316 ns      1555328 ns          456
+Bench_KMeansGPU_ImageColorsM    2743061 ns      2740142 ns          258
+Bench_KMeansGPU_ImageColorsL   14887992 ns     14878445 ns           48
+Bench_KMeansGPU_LinearS         1677957 ns      1671272 ns          420
+Bench_KMeansGPU_LinearM         2921372 ns      2917802 ns          242
+Bench_KMeansGPU_LinearL        15235751 ns     15229527 ns           46
+Bench_KMeansGPU_StdVecS         1762275 ns      1756816 ns          405
+Bench_KMeansGPU_StdVecM         2806275 ns      2799463 ns          254
+Bench_KMeansGPU_StdVecL        11374216 ns     11364855 ns           62
+Bench_KMeansGPU_VecS            1756860 ns      1752297 ns          401
+Bench_KMeansGPU_VecM            2806224 ns      2803996 ns          247
+Bench_KMeansGPU_VecL           11353622 ns     11344994 ns           60
+Bench_Ran_Device                9293484 ns      9288494 ns           76
+
+2019-04-02 16:30:11
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.40, 0.39, 0.44
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 512
+#define CLIB_BENCH_GENDIM_X_M 1024
+#define CLIB_BENCH_GENDIM_X_L 2048
+
+#define CLIB_BENCH_GENDIM_Y_S 512
+#define CLIB_BENCH_GENDIM_Y_M 1024
+#define CLIB_BENCH_GENDIM_Y_L 2048
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 7
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      14842337 ns     14818831 ns           46
+Bench_GenGPU_ColorVectorM      26239427 ns     26211940 ns           26
+Bench_GenGPU_ColorVectorL      67246120 ns     67158296 ns           10
+Bench_GenGPU_ImageColorsS      13045935 ns     13031437 ns           54
+Bench_GenGPU_ImageColorsM      20465672 ns     20459419 ns           34
+Bench_GenGPU_ImageColorsL      53459280 ns     53450464 ns           13
+Bench_GenGPU_LinearS           12107443 ns     12098467 ns           58
+Bench_GenGPU_LinearM           19475886 ns     19464854 ns           35
+Bench_GenGPU_LinearL           46203544 ns     46194258 ns           15
+Bench_GenGPU_StdVecS           12492273 ns     12478470 ns           56
+Bench_GenGPU_StdVecM           19413114 ns     19232157 ns           36
+Bench_GenGPU_StdVecL           45263698 ns     45249635 ns           15
+Bench_GenGPU_VecS              12430578 ns     12421032 ns           56
+Bench_GenGPU_VecM              19037521 ns     19019034 ns           36
+Bench_GenGPU_VecL              45187276 ns     45185386 ns           15
+Bench_GenGPU_VecDirS           12458562 ns     12442877 ns           55
+Bench_GenGPU_VecDirM           19040196 ns     19030160 ns           36
+Bench_GenGPU_VecDirL           45178620 ns     45170948 ns           15
+Bench_KMeansGPU_ColorVectorS   27081439 ns     27077575 ns           25
+Bench_KMeansGPU_ColorVectorM  123686467 ns    123677390 ns            5
+Bench_KMeansGPU_ColorVectorL  815000539 ns    814967141 ns            1
+Bench_KMeansGPU_ImageColorsS   26574552 ns     26548926 ns           26
+Bench_KMeansGPU_ImageColorsM  123823637 ns    123818040 ns            6
+Bench_KMeansGPU_ImageColorsL  815967221 ns    815934834 ns            1
+Bench_KMeansGPU_LinearS        28446936 ns     28432142 ns           25
+Bench_KMeansGPU_LinearM       128103845 ns    128091289 ns            6
+Bench_KMeansGPU_LinearL       824436733 ns    824408486 ns            1
+Bench_KMeansGPU_StdVecS        24529783 ns     24508707 ns           29
+Bench_KMeansGPU_StdVecM       107004977 ns    106974991 ns            7
+Bench_KMeansGPU_StdVecL       589334872 ns    589160144 ns            1
+Bench_KMeansGPU_VecS           24028055 ns     24001456 ns           28
+Bench_KMeansGPU_VecM          105741002 ns    105721557 ns            6
+Bench_KMeansGPU_VecL          595622808 ns    595602256 ns            1
+Bench_Ran_Device                9322158 ns      9316513 ns           76
+
+2019-04-02 16:33:11
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.17, 0.31, 0.41
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 4096
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 4096
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 7
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10273028 ns     10250132 ns           68
+Bench_GenGPU_ColorVectorM      10194008 ns     10180700 ns           68
+Bench_GenGPU_ColorVectorL     232184746 ns    232139197 ns            3
+Bench_GenGPU_ImageColorsS       9866377 ns      9861184 ns           67
+Bench_GenGPU_ImageColorsM       9869215 ns      9860368 ns           71
+Bench_GenGPU_ImageColorsL     161835129 ns    161795754 ns            4
+Bench_GenGPU_LinearS           10132811 ns     10121857 ns           69
+Bench_GenGPU_LinearM           10128132 ns     10117803 ns           69
+Bench_GenGPU_LinearL          151273018 ns    151218224 ns            5
+Bench_GenGPU_StdVecS            9900396 ns      9894457 ns           67
+Bench_GenGPU_StdVecM            9910234 ns      9903356 ns           71
+Bench_GenGPU_StdVecL          145327713 ns    145290065 ns            5
+Bench_GenGPU_VecS               9845502 ns      9837407 ns           69
+Bench_GenGPU_VecM               9843896 ns      9839070 ns           71
+Bench_GenGPU_VecL             145214374 ns    145189338 ns            5
+Bench_GenGPU_VecDirS            9902980 ns      9896985 ns           69
+Bench_GenGPU_VecDirM            9899054 ns      9892620 ns           71
+Bench_GenGPU_VecDirL          145465518 ns    145459385 ns            5
+Bench_KMeansGPU_ColorVectorS    1277822 ns      1273372 ns          555
+Bench_KMeansGPU_ColorVectorM    1274292 ns      1269605 ns          555
+Bench_KMeansGPU_ColorVectorL 3164255664 ns   3163933284 ns            1
+Bench_KMeansGPU_ImageColorsS    1273028 ns      1269225 ns          551
+Bench_KMeansGPU_ImageColorsM    1274363 ns      1269605 ns          557
+Bench_KMeansGPU_ImageColorsL 3149886023 ns   3149676494 ns            1
+Bench_KMeansGPU_LinearS         1373784 ns      1369999 ns          518
+Bench_KMeansGPU_LinearM         1371461 ns      1366674 ns          517
+Bench_KMeansGPU_LinearL      3259520253 ns   3259311426 ns            1
+Bench_KMeansGPU_StdVecS         1496217 ns      1491050 ns          456
+Bench_KMeansGPU_StdVecM         1502470 ns      1497986 ns          454
+Bench_KMeansGPU_StdVecL      2303114587 ns   2302975980 ns            1
+Bench_KMeansGPU_VecS            1516529 ns      1511641 ns          469
+Bench_KMeansGPU_VecM            1515484 ns      1510102 ns          467
+Bench_KMeansGPU_VecL         2310223209 ns   2310055785 ns            1
+Bench_Ran_Device                9262919 ns      9261116 ns           68
+
+END OF TESTING RESOLUTION
+
+TESTING CLUSTERS
+2019-04-02 16:35:19
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.29, 0.33, 0.40
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 2
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10255348 ns     10241498 ns           68
+Bench_GenGPU_ColorVectorM      10199441 ns     10186057 ns           69
+Bench_GenGPU_ColorVectorL      10193440 ns     10181313 ns           68
+Bench_GenGPU_ImageColorsS       9920684 ns      9910760 ns           71
+Bench_GenGPU_ImageColorsM       9914288 ns      9905498 ns           71
+Bench_GenGPU_ImageColorsL       9899594 ns      9893241 ns           71
+Bench_GenGPU_LinearS           10159625 ns     10153171 ns           69
+Bench_GenGPU_LinearM           10162241 ns     10156038 ns           69
+Bench_GenGPU_LinearL           10187181 ns     10180586 ns           69
+Bench_GenGPU_StdVecS            9915897 ns      9904852 ns           71
+Bench_GenGPU_StdVecM            9903069 ns      9897643 ns           71
+Bench_GenGPU_StdVecL            9885771 ns      9879793 ns           71
+Bench_GenGPU_VecS               9901194 ns      9891981 ns           70
+Bench_GenGPU_VecM               9900636 ns      9894100 ns           70
+Bench_GenGPU_VecL               9905240 ns      9896827 ns           71
+Bench_GenGPU_VecDirS            9904142 ns      9899000 ns           71
+Bench_GenGPU_VecDirM            9888789 ns      9880554 ns           71
+Bench_GenGPU_VecDirL            9890268 ns      9885183 ns           70
+Bench_KMeansGPU_ColorVectorS    1043953 ns      1039301 ns          674
+Bench_KMeansGPU_ColorVectorM    1119792 ns      1115409 ns          630
+Bench_KMeansGPU_ColorVectorL    1277731 ns      1273470 ns          555
+Bench_KMeansGPU_ImageColorsS    1044601 ns      1040074 ns          680
+Bench_KMeansGPU_ImageColorsM    1119326 ns      1114182 ns          633
+Bench_KMeansGPU_ImageColorsL    1270450 ns      1265700 ns          556
+Bench_KMeansGPU_LinearS         1047072 ns      1042907 ns          653
+Bench_KMeansGPU_LinearM         1155018 ns      1150544 ns          595
+Bench_KMeansGPU_LinearL         1372314 ns      1368759 ns          512
+Bench_KMeansGPU_StdVecS         1205337 ns      1200017 ns          589
+Bench_KMeansGPU_StdVecM         1301848 ns      1297884 ns          546
+Bench_KMeansGPU_StdVecL         1513046 ns      1508385 ns          464
+Bench_KMeansGPU_VecS            1205524 ns      1200282 ns          589
+Bench_KMeansGPU_VecM            1297337 ns      1294644 ns          543
+Bench_KMeansGPU_VecL            1505462 ns      1499852 ns          464
+Bench_Ran_Device                9255257 ns      9254450 ns           75
+
+2019-04-02 16:36:45
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.76, 0.48, 0.45
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 16
+#define CLIB_BENCH_KM_CLUSTERS_M 32
+#define CLIB_BENCH_KM_CLUSTERS_L 64
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10234577 ns     10211975 ns           67
+Bench_GenGPU_ColorVectorM      10204116 ns     10188833 ns           69
+Bench_GenGPU_ColorVectorL      10200583 ns     10186957 ns           69
+Bench_GenGPU_ImageColorsS       9930608 ns      9917824 ns           70
+Bench_GenGPU_ImageColorsM       9902933 ns      9896985 ns           71
+Bench_GenGPU_ImageColorsL       9908473 ns      9904166 ns           71
+Bench_GenGPU_LinearS           10167878 ns     10160869 ns           69
+Bench_GenGPU_LinearM           10171762 ns     10166767 ns           68
+Bench_GenGPU_LinearL           10183272 ns     10175328 ns           69
+Bench_GenGPU_StdVecS            9905858 ns      9897553 ns           71
+Bench_GenGPU_StdVecM            9913947 ns      9904995 ns           71
+Bench_GenGPU_StdVecL           10081987 ns     10000606 ns           71
+Bench_GenGPU_VecS               9883483 ns      9875305 ns           71
+Bench_GenGPU_VecM               9892033 ns      9884801 ns           71
+Bench_GenGPU_VecL               9892513 ns      9883867 ns           71
+Bench_GenGPU_VecDirS            9895648 ns      9886186 ns           71
+Bench_GenGPU_VecDirM            9874819 ns      9872139 ns           71
+Bench_GenGPU_VecDirL            9889770 ns      9882198 ns           71
+Bench_KMeansGPU_ColorVectorS    1588785 ns      1584667 ns          434
+Bench_KMeansGPU_ColorVectorM    2417770 ns      2413900 ns          287
+Bench_KMeansGPU_ColorVectorL    4641586 ns      4636035 ns          150
+Bench_KMeansGPU_ImageColorsS    1584627 ns      1580310 ns          437
+Bench_KMeansGPU_ImageColorsM    2400834 ns      2397870 ns          288
+Bench_KMeansGPU_ImageColorsL    4654520 ns      4651235 ns          151
+Bench_KMeansGPU_LinearS         1802506 ns      1798019 ns          390
+Bench_KMeansGPU_LinearM         2856152 ns      2851765 ns          247
+Bench_KMeansGPU_LinearL         5570234 ns      5562503 ns          123
+Bench_KMeansGPU_StdVecS         1940214 ns      1935571 ns          356
+Bench_KMeansGPU_StdVecM         3030384 ns      3025208 ns          230
+Bench_KMeansGPU_StdVecL         5851444 ns      5847028 ns          116
+Bench_KMeansGPU_VecS            1943275 ns      1938374 ns          354
+Bench_KMeansGPU_VecM            3019882 ns      3014317 ns          229
+Bench_KMeansGPU_VecL            5902463 ns      5896756 ns          117
+Bench_Ran_Device                9249573 ns      9248407 ns           75
+
+2019-04-02 16:38:36
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.43, 0.45, 0.44
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 4
+#define CLIB_BENCH_KM_CLUSTERS_M 4
+#define CLIB_BENCH_KM_CLUSTERS_L 128
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 1
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10254420 ns     10237544 ns           68
+Bench_GenGPU_ColorVectorM      10201096 ns     10185649 ns           69
+Bench_GenGPU_ColorVectorL      10208888 ns     10189558 ns           69
+Bench_GenGPU_ImageColorsS       9922698 ns      9911432 ns           71
+Bench_GenGPU_ImageColorsM       9909733 ns      9905033 ns           71
+Bench_GenGPU_ImageColorsL       9883071 ns      9877865 ns           71
+Bench_GenGPU_LinearS           10177010 ns     10171150 ns           69
+Bench_GenGPU_LinearM           10193706 ns     10185793 ns           69
+Bench_GenGPU_LinearL           10184643 ns     10177782 ns           69
+Bench_GenGPU_StdVecS            9904985 ns      9897187 ns           71
+Bench_GenGPU_StdVecM            9886985 ns      9879844 ns           71
+Bench_GenGPU_StdVecL            9903363 ns      9893723 ns           70
+Bench_GenGPU_VecS               9902316 ns      9894388 ns           71
+Bench_GenGPU_VecM               9912186 ns      9904131 ns           71
+Bench_GenGPU_VecL               9909697 ns      9902688 ns           71
+Bench_GenGPU_VecDirS            9888658 ns      9882834 ns           71
+Bench_GenGPU_VecDirM            9895970 ns      9885644 ns           70
+Bench_GenGPU_VecDirL            9917345 ns      9910522 ns           71
+Bench_KMeansGPU_ColorVectorS    1118287 ns      1113851 ns          629
+Bench_KMeansGPU_ColorVectorM    1198686 ns      1193847 ns          630
+Bench_KMeansGPU_ColorVectorL   11707383 ns     11704723 ns           59
+Bench_KMeansGPU_ImageColorsS    1119497 ns      1114688 ns          634
+Bench_KMeansGPU_ImageColorsM    1110727 ns      1105885 ns          634
+Bench_KMeansGPU_ImageColorsL   11534358 ns     11527178 ns           60
+Bench_KMeansGPU_LinearS         1157015 ns      1152608 ns          599
+Bench_KMeansGPU_LinearM         1160240 ns      1155740 ns          611
+Bench_KMeansGPU_LinearL        13603557 ns     13601623 ns           51
+Bench_KMeansGPU_StdVecS         1305996 ns      1300925 ns          545
+Bench_KMeansGPU_StdVecM         1310529 ns      1305568 ns          543
+Bench_KMeansGPU_StdVecL        15146393 ns     15082668 ns           48
+Bench_KMeansGPU_VecS            1280579 ns      1275820 ns          552
+Bench_KMeansGPU_VecM            1274355 ns      1269458 ns          544
+Bench_KMeansGPU_VecL           14293241 ns     14288696 ns           48
+Bench_Ran_Device                9263698 ns      9261557 ns           76
+
+END OF TESTING CLUSTERS
+
+TESTING ITERATIONS
+2019-04-02 16:40:21
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.67, 0.55, 0.48
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 2
+#define CLIB_BENCH_KM_ITER_C 3
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10268161 ns     10247112 ns           68
+Bench_GenGPU_ColorVectorM      10210400 ns     10200693 ns           68
+Bench_GenGPU_ColorVectorL      10508605 ns     10447276 ns           69
+Bench_GenGPU_ImageColorsS       9976621 ns      9972436 ns           70
+Bench_GenGPU_ImageColorsM       9926084 ns      9922499 ns           71
+Bench_GenGPU_ImageColorsL       9919579 ns      9910606 ns           71
+Bench_GenGPU_LinearS           10157105 ns     10148264 ns           68
+Bench_GenGPU_LinearM           10192350 ns     10184566 ns           69
+Bench_GenGPU_LinearL           10221073 ns     10209426 ns           69
+Bench_GenGPU_StdVecS            9955757 ns      9943674 ns           71
+Bench_GenGPU_StdVecM            9920792 ns      9915857 ns           71
+Bench_GenGPU_StdVecL            9904265 ns      9894188 ns           70
+Bench_GenGPU_VecS               9919252 ns      9914640 ns           70
+Bench_GenGPU_VecM               9946197 ns      9931542 ns           71
+Bench_GenGPU_VecL               9927159 ns      9921466 ns           71
+Bench_GenGPU_VecDirS            9932693 ns      9924688 ns           71
+Bench_GenGPU_VecDirM            9911152 ns      9902064 ns           71
+Bench_GenGPU_VecDirL            9910583 ns      9904392 ns           70
+Bench_KMeansGPU_ColorVectorS    1267787 ns      1263721 ns          554
+Bench_KMeansGPU_ColorVectorM    1316082 ns      1312734 ns          540
+Bench_KMeansGPU_ColorVectorL    1363391 ns      1358549 ns          529
+Bench_KMeansGPU_ImageColorsS    1274963 ns      1269880 ns          558
+Bench_KMeansGPU_ImageColorsM    1320420 ns      1318063 ns          544
+Bench_KMeansGPU_ImageColorsL    1358049 ns      1353737 ns          524
+Bench_KMeansGPU_LinearS         1364104 ns      1359711 ns          522
+Bench_KMeansGPU_LinearM         1394049 ns      1389038 ns          493
+Bench_KMeansGPU_LinearL         1433798 ns      1430104 ns          462
+Bench_KMeansGPU_StdVecS         1508451 ns      1503713 ns          454
+Bench_KMeansGPU_StdVecM         1565839 ns      1561824 ns          456
+Bench_KMeansGPU_StdVecL         1614244 ns      1609641 ns          443
+Bench_KMeansGPU_VecS            1519326 ns      1514804 ns          474
+Bench_KMeansGPU_VecM            1564593 ns      1560533 ns          458
+Bench_KMeansGPU_VecL            1619138 ns      1614698 ns          445
+Bench_Ran_Device                9284811 ns      9281564 ns           75
+
+2019-04-02 16:42:58
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.98, 0.80, 0.59
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 4
+#define CLIB_BENCH_KM_ITER_B 5
+#define CLIB_BENCH_KM_ITER_C 6
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10288932 ns     10275254 ns           68
+Bench_GenGPU_ColorVectorM      10201521 ns     10189431 ns           68
+Bench_GenGPU_ColorVectorL      10215781 ns     10198397 ns           68
+Bench_GenGPU_ImageColorsS       9922631 ns      9917428 ns           70
+Bench_GenGPU_ImageColorsM       9919774 ns      9915202 ns           70
+Bench_GenGPU_ImageColorsL      10001729 ns      9962740 ns           70
+Bench_GenGPU_LinearS           10268135 ns     10261714 ns           67
+Bench_GenGPU_LinearM           10178589 ns     10167351 ns           69
+Bench_GenGPU_LinearL           10179037 ns     10172707 ns           69
+Bench_GenGPU_StdVecS            9941805 ns      9926999 ns           71
+Bench_GenGPU_StdVecM            9892606 ns      9887848 ns           71
+Bench_GenGPU_StdVecL            9908539 ns      9903232 ns           71
+Bench_GenGPU_VecS               9886486 ns      9882636 ns           71
+Bench_GenGPU_VecM               9895941 ns      9892805 ns           70
+Bench_GenGPU_VecL               9900985 ns      9898330 ns           71
+Bench_GenGPU_VecDirS            9898940 ns      9896007 ns           71
+Bench_GenGPU_VecDirM            9899987 ns      9896966 ns           71
+Bench_GenGPU_VecDirL            9903518 ns      9900276 ns           71
+Bench_KMeansGPU_ColorVectorS    1370694 ns      1368337 ns          501
+Bench_KMeansGPU_ColorVectorM    1415059 ns      1413062 ns          484
+Bench_KMeansGPU_ColorVectorL    1466328 ns      1463317 ns          482
+Bench_KMeansGPU_ImageColorsS    1381434 ns      1379045 ns          509
+Bench_KMeansGPU_ImageColorsM    1422477 ns      1419659 ns          499
+Bench_KMeansGPU_ImageColorsL    1465503 ns      1462894 ns          480
+Bench_KMeansGPU_LinearS         1483333 ns      1480784 ns          476
+Bench_KMeansGPU_LinearM         1528805 ns      1525477 ns          463
+Bench_KMeansGPU_LinearL         1564875 ns      1562201 ns          452
+Bench_KMeansGPU_StdVecS         1632027 ns      1629168 ns          429
+Bench_KMeansGPU_StdVecM         1679123 ns      1676570 ns          412
+Bench_KMeansGPU_StdVecL         1713262 ns      1710350 ns          398
+Bench_KMeansGPU_VecS            1629198 ns      1626729 ns          422
+Bench_KMeansGPU_VecM            1678056 ns      1674568 ns          415
+Bench_KMeansGPU_VecL            1730326 ns      1727382 ns          407
+Bench_Ran_Device                9268698 ns      9266050 ns           75
+
+2019-04-02 16:44:24
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.94, 0.86, 0.63
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 32
+#define CLIB_BENCH_GENDIM_X_M 32
+#define CLIB_BENCH_GENDIM_X_L 32
+
+#define CLIB_BENCH_GENDIM_Y_S 32
+#define CLIB_BENCH_GENDIM_Y_M 32
+#define CLIB_BENCH_GENDIM_Y_L 32
+
+#define CLIB_BENCH_GENDIM_NOISE 128
+
+#define CLIB_BENCH_KM_DIMX_S 512
+#define CLIB_BENCH_KM_DIMX_M 512
+#define CLIB_BENCH_KM_DIMX_L 512
+
+#define CLIB_BENCH_KM_DIMY_S 512
+#define CLIB_BENCH_KM_DIMY_M 512
+#define CLIB_BENCH_KM_DIMY_L 512
+
+#define CLIB_BENCH_KM_CLUSTERS_S 8
+#define CLIB_BENCH_KM_CLUSTERS_M 8
+#define CLIB_BENCH_KM_CLUSTERS_L 8
+
+#define CLIB_BENCH_KM_ITER_A 1
+#define CLIB_BENCH_KM_ITER_B 1
+#define CLIB_BENCH_KM_ITER_C 7
+
+#define CLIB_BENCH_GENP_THREADS_S 64
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 64
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS      10253407 ns     10233747 ns           68
+Bench_GenGPU_ColorVectorM      10185948 ns     10173976 ns           69
+Bench_GenGPU_ColorVectorL      10165447 ns     10150564 ns           69
+Bench_GenGPU_ImageColorsS       9890741 ns      9883255 ns           71
+Bench_GenGPU_ImageColorsM       9892102 ns      9884374 ns           71
+Bench_GenGPU_ImageColorsL       9887419 ns      9882387 ns           71
+Bench_GenGPU_LinearS           10160281 ns     10155130 ns           69
+Bench_GenGPU_LinearM           10153636 ns     10147528 ns           69
+Bench_GenGPU_LinearL           10145922 ns     10137158 ns           69
+Bench_GenGPU_StdVecS            9887078 ns      9878720 ns           71
+Bench_GenGPU_StdVecM            9893155 ns      9885602 ns           71
+Bench_GenGPU_StdVecL            9900190 ns      9891191 ns           71
+Bench_GenGPU_VecS               9890410 ns      9885836 ns           71
+Bench_GenGPU_VecM               9879122 ns      9869663 ns           71
+Bench_GenGPU_VecL               9888613 ns      9881285 ns           71
+Bench_GenGPU_VecDirS            9894292 ns      9889442 ns           71
+Bench_GenGPU_VecDirM            9898287 ns      9889175 ns           71
+Bench_GenGPU_VecDirL            9885438 ns      9877904 ns           71
+Bench_KMeansGPU_ColorVectorS    1296621 ns      1292430 ns          565
+Bench_KMeansGPU_ColorVectorM    1333627 ns      1327942 ns          502
+Bench_KMeansGPU_ColorVectorL    1493770 ns      1489212 ns          457
+Bench_KMeansGPU_ImageColorsS    1460437 ns      1448302 ns          555
+Bench_KMeansGPU_ImageColorsM    1463549 ns      1429016 ns          484
+Bench_KMeansGPU_ImageColorsL    1549292 ns      1544801 ns          437
+Bench_KMeansGPU_LinearS         1352155 ns      1347497 ns          524
+Bench_KMeansGPU_LinearM         1349357 ns      1344753 ns          521
+Bench_KMeansGPU_LinearL         1759371 ns      1753807 ns          441
+Bench_KMeansGPU_StdVecS         1535439 ns      1530689 ns          446
+Bench_KMeansGPU_StdVecM         1501576 ns      1497289 ns          476
+Bench_KMeansGPU_StdVecL         1774070 ns      1768574 ns          398
+Bench_KMeansGPU_VecS            1490168 ns      1485934 ns          477
+Bench_KMeansGPU_VecM            1487305 ns      1481637 ns          471
+Bench_KMeansGPU_VecL            1770616 ns      1765867 ns          390
+Bench_Ran_Device                9254375 ns      9248990 ns           75
+
+END OF TESTING ITERATIONS
+=============================================
+GPU (Run on NVIDIA Quadro M4000/PCIe/SSE2 (1664 CUDA Cores))
+TESTING THREADS
+2019-04-02 16:47:15
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 1.04, 0.98, 0.72
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 4096
+#define CLIB_BENCH_GENDIM_X_M 4096
+#define CLIB_BENCH_GENDIM_X_L 4096
+
+#define CLIB_BENCH_GENDIM_Y_S 4096
+#define CLIB_BENCH_GENDIM_Y_M 4096
+#define CLIB_BENCH_GENDIM_Y_L 4096
+
+#define CLIB_BENCH_GENDIM_NOISE 4096
+
+#define CLIB_BENCH_KM_DIMX_S 4096
+#define CLIB_BENCH_KM_DIMX_M 4096
+#define CLIB_BENCH_KM_DIMX_L 4096
+
+#define CLIB_BENCH_KM_DIMY_S 4096
+#define CLIB_BENCH_KM_DIMY_M 4096
+#define CLIB_BENCH_KM_DIMY_L 4096
+
+#define CLIB_BENCH_KM_CLUSTERS_S 12
+#define CLIB_BENCH_KM_CLUSTERS_M 12
+#define CLIB_BENCH_KM_CLUSTERS_L 12
+
+#define CLIB_BENCH_KM_ITER_A 6
+#define CLIB_BENCH_KM_ITER_B 6
+#define CLIB_BENCH_KM_ITER_C 6
+
+#define CLIB_BENCH_GENP_THREADS_S 32
+#define CLIB_BENCH_GENP_THREADS_M 64
+#define CLIB_BENCH_GENP_THREADS_L 128
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS     293631820 ns    293604508 ns            2
+Bench_GenGPU_ColorVectorM     284088057 ns    284070625 ns            2
+Bench_GenGPU_ColorVectorL     283020626 ns    282957848 ns            2
+Bench_GenGPU_ImageColorsS     212956708 ns    212948139 ns            3
+Bench_GenGPU_ImageColorsM     212087262 ns    212080259 ns            3
+Bench_GenGPU_ImageColorsL     212145016 ns    212138072 ns            3
+Bench_GenGPU_LinearS          207517488 ns    207480701 ns            3
+Bench_GenGPU_LinearM          201373423 ns    201352299 ns            3
+Bench_GenGPU_LinearL          200928510 ns    200919577 ns            3
+Bench_GenGPU_StdVecS          195124481 ns    195104035 ns            4
+Bench_GenGPU_StdVecM          194037101 ns    194024701 ns            4
+Bench_GenGPU_StdVecL          194347457 ns    194333212 ns            4
+Bench_GenGPU_VecS             195329620 ns    195321602 ns            4
+Bench_GenGPU_VecM             194241753 ns    194233126 ns            4
+Bench_GenGPU_VecL             194358406 ns    194351595 ns            4
+Bench_GenGPU_VecDirS          195475953 ns    195446738 ns            4
+Bench_GenGPU_VecDirM          194485190 ns    194478290 ns            4
+Bench_GenGPU_VecDirL          193794716 ns    193661609 ns            4
+Bench_KMeansGPU_ColorVectorS 3715035674 ns   3714893645 ns            1
+Bench_KMeansGPU_ColorVectorM 3672022245 ns   3669462644 ns            1
+Bench_KMeansGPU_ColorVectorL 3632018101 ns   3631821829 ns            1
+Bench_KMeansGPU_ImageColorsS 3720302791 ns   3720168787 ns            1
+Bench_KMeansGPU_ImageColorsM 3703922926 ns   3703789813 ns            1
+Bench_KMeansGPU_ImageColorsL 3640306605 ns   3640164767 ns            1
+Bench_KMeansGPU_LinearS      4000159072 ns   3997921086 ns            1
+Bench_KMeansGPU_LinearM      3965885921 ns   3958222081 ns            1
+Bench_KMeansGPU_LinearL      3987187050 ns   3979605075 ns            1
+Bench_KMeansGPU_StdVecS      2937053370 ns   2931328082 ns            1
+Bench_KMeansGPU_StdVecM      2921555700 ns   2915857903 ns            1
+Bench_KMeansGPU_StdVecL      2919945757 ns   2913921017 ns            1
+Bench_KMeansGPU_VecS         2919949661 ns   2914573034 ns            1
+Bench_KMeansGPU_VecM         2945185206 ns   2939532625 ns            1
+Bench_KMeansGPU_VecL         2938801122 ns   2932915958 ns            1
+Bench_Ran_Device                9371644 ns      9367943 ns           68
+
+2019-04-02 16:49:32
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 1.77, 1.26, 0.86
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 4096
+#define CLIB_BENCH_GENDIM_X_M 4096
+#define CLIB_BENCH_GENDIM_X_L 4096
+
+#define CLIB_BENCH_GENDIM_Y_S 4096
+#define CLIB_BENCH_GENDIM_Y_M 4096
+#define CLIB_BENCH_GENDIM_Y_L 4096
+
+#define CLIB_BENCH_GENDIM_NOISE 4096
+
+#define CLIB_BENCH_KM_DIMX_S 4096
+#define CLIB_BENCH_KM_DIMX_M 4096
+#define CLIB_BENCH_KM_DIMX_L 4096
+
+#define CLIB_BENCH_KM_DIMY_S 4096
+#define CLIB_BENCH_KM_DIMY_M 4096
+#define CLIB_BENCH_KM_DIMY_L 4096
+
+#define CLIB_BENCH_KM_CLUSTERS_S 12
+#define CLIB_BENCH_KM_CLUSTERS_M 12
+#define CLIB_BENCH_KM_CLUSTERS_L 12
+
+#define CLIB_BENCH_KM_ITER_A 6
+#define CLIB_BENCH_KM_ITER_B 6
+#define CLIB_BENCH_KM_ITER_C 6
+
+#define CLIB_BENCH_GENP_THREADS_S 256
+#define CLIB_BENCH_GENP_THREADS_M 512
+#define CLIB_BENCH_GENP_THREADS_L 1024
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS     301875502 ns    301852104 ns            2
+Bench_GenGPU_ColorVectorM     287293214 ns    287241419 ns            2
+Bench_GenGPU_ColorVectorL     291406137 ns    291349245 ns            2
+Bench_GenGPU_ImageColorsS     212057365 ns    212050351 ns            3
+Bench_GenGPU_ImageColorsM     212420526 ns    212411879 ns            3
+Bench_GenGPU_ImageColorsL     216105160 ns    216094000 ns            3
+Bench_GenGPU_LinearS          202296038 ns    202284096 ns            3
+Bench_GenGPU_LinearM          202684400 ns    202630276 ns            3
+Bench_GenGPU_LinearL          205888252 ns    205879067 ns            3
+Bench_GenGPU_StdVecS          194324838 ns    194295822 ns            4
+Bench_GenGPU_StdVecM          194855167 ns    194816695 ns            4
+Bench_GenGPU_StdVecL          198723764 ns    198689891 ns            4
+Bench_GenGPU_VecS             194449375 ns    194420792 ns            4
+Bench_GenGPU_VecM             195044284 ns    194990296 ns            4
+Bench_GenGPU_VecL             198850053 ns    198840709 ns            4
+Bench_GenGPU_VecDirS          194690129 ns    194682198 ns            4
+Bench_GenGPU_VecDirM          194891926 ns    194860301 ns            4
+Bench_GenGPU_VecDirL          198102442 ns    198073858 ns            4
+Bench_KMeansGPU_ColorVectorS 3674557240 ns   3674400723 ns            1
+Bench_KMeansGPU_ColorVectorM 3681077208 ns   3680918219 ns            1
+Bench_KMeansGPU_ColorVectorL 3631966205 ns   3631703158 ns            1
+Bench_KMeansGPU_ImageColorsS 3684602006 ns   3684465365 ns            1
+Bench_KMeansGPU_ImageColorsM 3726112878 ns   3725976220 ns            1
+Bench_KMeansGPU_ImageColorsL 3670757670 ns   3670611798 ns            1
+Bench_KMeansGPU_LinearS      3886832167 ns   3886646899 ns            1
+Bench_KMeansGPU_LinearM      3961209954 ns   3961038089 ns            1
+Bench_KMeansGPU_LinearL      3917372656 ns   3917203020 ns            1
+Bench_KMeansGPU_StdVecS      2908284161 ns   2908159177 ns            1
+Bench_KMeansGPU_StdVecM      2939221482 ns   2939088699 ns            1
+Bench_KMeansGPU_StdVecL      2925514088 ns   2925396477 ns            1
+Bench_KMeansGPU_VecS         2923426107 ns   2923319993 ns            1
+Bench_KMeansGPU_VecM         2941713727 ns   2941612067 ns            1
+Bench_KMeansGPU_VecL         2932516945 ns   2932364370 ns            1
+Bench_Ran_Device                9299580 ns      9296653 ns           69
+
+
+2019-04-02 16:55:18
+Running clib_GPU_benchmarks.out
+Run on (12 X 3800 MHz CPU s)
+CPU Caches:
+  L1 Data 32K (x6)
+  L1 Instruction 32K (x6)
+  L2 Unified 256K (x6)
+  L3 Unified 15360K (x1)
+Load Average: 0.64, 0.96, 0.87
+***WARNING*** CPU scaling is enabled, the benchmark real time measurements may be noisy and will incur extra overhead.
+#define CLIB_BENCH_RANDNUM 10000
+#define CLIB_BENCH_RANDLOW 0.f
+#define CLIB_BENCH_RANDHI 1.f
+
+#define CLIB_BENCH_GENDIM_X_S 4096
+#define CLIB_BENCH_GENDIM_X_M 4096
+#define CLIB_BENCH_GENDIM_X_L 4096
+
+#define CLIB_BENCH_GENDIM_Y_S 4096
+#define CLIB_BENCH_GENDIM_Y_M 4096
+#define CLIB_BENCH_GENDIM_Y_L 4096
+
+#define CLIB_BENCH_GENDIM_NOISE 4096
+
+#define CLIB_BENCH_KM_DIMX_S 4096
+#define CLIB_BENCH_KM_DIMX_M 4096
+#define CLIB_BENCH_KM_DIMX_L 4096
+
+#define CLIB_BENCH_KM_DIMY_S 4096
+#define CLIB_BENCH_KM_DIMY_M 4096
+#define CLIB_BENCH_KM_DIMY_L 4096
+
+#define CLIB_BENCH_KM_CLUSTERS_S 12
+#define CLIB_BENCH_KM_CLUSTERS_M 12
+#define CLIB_BENCH_KM_CLUSTERS_L 12
+
+#define CLIB_BENCH_KM_ITER_A 6
+#define CLIB_BENCH_KM_ITER_B 6
+#define CLIB_BENCH_KM_ITER_C 6
+
+#define CLIB_BENCH_GENP_THREADS_S 384
+#define CLIB_BENCH_GENP_THREADS_M 768
+#define CLIB_BENCH_GENP_THREADS_L 896
+------------------------------------------------------------------------
+Benchmark                             Time             CPU   Iterations
+------------------------------------------------------------------------
+Bench_GenGPU_ColorVectorS     299365092 ns    299266870 ns            2
+Bench_GenGPU_ColorVectorM     297622372 ns    297547746 ns            2
+Bench_GenGPU_ColorVectorL     290751869 ns    290719486 ns            2
+Bench_GenGPU_ImageColorsS     210196761 ns    210173742 ns            3
+Bench_GenGPU_ImageColorsM     224342246 ns    224326568 ns            3
+Bench_GenGPU_ImageColorsL     223820691 ns    223675507 ns            3
+Bench_GenGPU_LinearS          200864051 ns    200815342 ns            3
+Bench_GenGPU_LinearM          212844240 ns    212837235 ns            3
+Bench_GenGPU_LinearL          206650908 ns    206642438 ns            3
+Bench_GenGPU_StdVecS          192871044 ns    192855871 ns            4
+Bench_GenGPU_StdVecM          205617855 ns    205607917 ns            4
+Bench_GenGPU_StdVecL          200021614 ns    200014595 ns            4
+Bench_GenGPU_VecS             192694356 ns    192673106 ns            4
+Bench_GenGPU_VecM             206262735 ns    206229454 ns            4
+Bench_GenGPU_VecL             199605591 ns    199573038 ns            4
+Bench_GenGPU_VecDirS          191782187 ns    191774532 ns            4
+Bench_GenGPU_VecDirM          205348929 ns    205286908 ns            4
+Bench_GenGPU_VecDirL          199203877 ns    199186471 ns            4
+Bench_KMeansGPU_ColorVectorS 3691794748 ns   3691652893 ns            1
+Bench_KMeansGPU_ColorVectorM 3669448181 ns   3669220793 ns            1
+Bench_KMeansGPU_ColorVectorL 3728943437 ns   3728775746 ns            1
+Bench_KMeansGPU_ImageColorsS 3686081855 ns   3685864207 ns            1
+Bench_KMeansGPU_ImageColorsM 3692248461 ns   3692117097 ns            1
+Bench_KMeansGPU_ImageColorsL 3684043271 ns   3683894924 ns            1
+Bench_KMeansGPU_LinearS      3884109385 ns   3883959320 ns            1
+Bench_KMeansGPU_LinearM      3997728483 ns   3997584917 ns            1
+Bench_KMeansGPU_LinearL      3965404641 ns   3965262010 ns            1
+Bench_KMeansGPU_StdVecS      2964877467 ns   2964769487 ns            1
+Bench_KMeansGPU_StdVecM      2932512633 ns   2932404157 ns            1
+Bench_KMeansGPU_StdVecL      2924427252 ns   2924186700 ns            1
+Bench_KMeansGPU_VecS         2924629719 ns   2924522343 ns            1
+Bench_KMeansGPU_VecM         2942062184 ns   2941951472 ns            1
+Bench_KMeansGPU_VecL         2931320812 ns   2931214149 ns            1
+Bench_Ran_Device                9315393 ns      9309560 ns           69
+
+END OF TESTING THREADS

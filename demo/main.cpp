@@ -35,6 +35,8 @@ int main(int argc, char* argv[])
     size_t numClusters = 4;
     size_t numThreads = 32;
 
+    std::cout<<"Generating images, filtering. Please wait..."<<std::endl;
+
     ColorVector source_serial_CV =gen.generate_serial_CV(x,y,noiseSize);
     ImageColors source_serial_IC =gen.generate_serial_IC(x,y,noiseSize);
     std::vector<float> source_serial_LN = gen.generate_serial_LN(x,y,noiseSize);
@@ -134,17 +136,17 @@ int main(int argc, char* argv[])
             gpuKmeans::kmeans_parallel_CV(source_serial_CV,
                                           numClusters,
                                           numIter,
-                                          numThreads,&rg);
+                                          numThreads);
     ImageColors filter_parallel_IC =
             gpuKmeans::kmeans_parallel_IC(source_serial_IC,
                                           numClusters,
                                           numIter,
-                                          numThreads,&rg);
+                                          numThreads);
     std::vector<float> filter_parallel_LN =
             gpuKmeans::kmeans_parallel_LN(source_serial_LN,
                                           numClusters,
                                           numIter,
-                                          numThreads,&rg);
+                                          numThreads);
     std::vector<float> filter_parallel_4SVr(x*y);
     std::vector<float> filter_parallel_4SVg(x*y);
     std::vector<float> filter_parallel_4SVb(x*y);
@@ -160,8 +162,7 @@ int main(int argc, char* argv[])
                                    x*y,
                                    numClusters,
                                    numIter,
-                                   numThreads,
-                                   &rg);
+                                   numThreads);
     std::vector<float> filter_parallel_4LVr(x*y);
     std::vector<float> filter_parallel_4LVg(x*y);
     std::vector<float> filter_parallel_4LVb(x*y);
@@ -177,8 +178,7 @@ int main(int argc, char* argv[])
                                    x*y,
                                    numClusters,
                                    numIter,
-                                   numThreads,
-                                   &rg);
+                                   numThreads);
 
     outputImageData("generator_serial", x, y, x*y, source_serial_CV, source_serial_IC, source_serial_LN,
                     source_serial_4SVr,source_serial_4SVg,source_serial_4SVb,source_serial_4SVa,
