@@ -1,24 +1,39 @@
-Run on Intel® Xeon(R) CPU E5-1650 v3 (12 X 3800 MHz CPUs),,,,,,,,Run on NVIDIA Quadro M4000/PCIe/SSE2 (1664 CUDA Cores),,,,,,,
-CPU C++ Resolution-Based Image Generation Benchmarks,"Time per dimensions (noise resolution = 128, Alpha randomization off)",,,,,,,GPU CUDA Resolution-Based Image Generation Benchmarks,"Time per dimensions (noise resolution = 128, Alpha randomization off)",,,,,,
-Type,64x64,128x128,256x256,512x512,1024x1024,2048x2048,4096x4096,Type,64x64,128x128,256x256,512x512,1024x1024,2048x2048,4096x4096
-ColorVector,2462685,9507476,38426450,,,,,ColorVector,,,,,,,
-ImageColors,2380629,9420934,37519207,,,,,ImageColors,,,,,,,
-Linear,2372140,9391611,37721425,,,,,Linear,,,,,,,
-4 vector pointers,2339454,9426649,37387001,,,,,4 vector pointers,,,,,,,
-4 float pointers,2340310,9378020,37664657,,,,,4 float pointers,,,,,,,
-,,,,,,,,,,,,,,,
-CPU C++ Cluster-Based Clustering Benchmarks,"Time per number of clusters (noise resolution = 128, Alpha randomization off, Number of clustering iterations = 1)",,,,,,,GPU CUDA Cluster-Based Clustering Benchmarks,"Time per number of clusters (noise resolution = 128, Alpha randomization off)",,,,,,
-Type,2,4,8,16,32,64,128,Type,2,4,8,16,32,64,128
-ColorVector,,,,,,,,ColorVector,,,,,,,
-ImageColors,,,,,,,,ImageColors,,,,,,,
-Linear,,,,,,,,Linear,,,,,,,
-4 vector pointers,,,,,,,,4 vector pointers,,,,,,,
-4 float pointers,,,,,,,,4 float pointers,,,,,,,
-,,,,,,,,,,,,,,,
-CPU C++ Iteration-Based Clustering Benchmarks,"Time per number of iterations (noise resolution = 128, Alpha randomization off, Resolution = 512x512, Number of clusters = 8)",,,,,,,GPU CUDA Iteration-Based Clustering Benchmarks,"Time per number of iterations (noise resolution = 128, Alpha randomization off)",,,,,,
-Type,1,2,3,4,5,6,7,Type,1,2,3,4,5,6,7
-ColorVector,,,,,,,,ColorVector,,,,,,,
-ImageColors,,,,,,,,ImageColors,,,,,,,
-Linear,,,,,,,,Linear,,,,,,,
-4 vector pointers,,,,,,,,4 vector pointers,,,,,,,
-4 float pointers,,,,,,,,4 float pointers,,,,,,,
+Run on Intel® Xeon(R) CPU E5-1650 v3 (12 X 3800 MHz CPUs),,,,,,,,Run on NVIDIA Quadro M4000/PCIe/SSE2 (1664 CUDA Cores),,,,,,,,
+CPU C++ Resolution-Based Image Generation Benchmarks,"Time per dimensions (noise resolution = 128, Alpha randomization off), ns",,,,,,,GPU CUDA Resolution-Based Image Generation Benchmarks,,"Time per dimensions (noise resolution = 128, Alpha randomization off, numthreads = 64)",,,,,,
+Type,64x64,128x128,256x256,512x512,1024x1024,2048x2048,4096x4096,Type,,64x64,128x128,256x256,512x512,1024x1024,2048x2048,4096x4096
+ColorVector,2487302,9377862,37287088,185589539,713586454,2800836149,11111424605,ColorVector,,10271668,9913189,10520920,14842337,26239427,67246120,232184746
+ImageColors,2327986,9420001,38374223,175971954,687578428,2818756469,11133045301,ImageColors,,9915805,9922267,9955779,13045935,20465672,53459280,161835129
+Linear,2366184,9496479,37828052,177102407,710358008,2797689726,11135260252,Linear,,10111076,9893485,9972611,12107443,19475886,46203544,151273018
+4 vector pointers,2354011,9435276,37722451,172939501,698391665,2791384367,11118564876,4 vector pointers,,9846068,9845776,9880280,12492273,19413114,45263698,145327713
+4 float pointers,2350079,9519280,37726222,174367884,694306075,2775423768,11097306305,4 float pointers,,9856661,9860576,9893145,12430578,19037521,45187276,145214374
+,,,,,,,,,,,,,,,,
+CPU C++ Cluster-Based Clustering Benchmarks,"Time per number of clusters (noise resolution = 128, Alpha randomization off, Resolution = 512x512, Number of clustering iterations = 1)",,,,,,,GPU CUDA Cluster-Based Clustering Benchmarks,,"Time per number of clusters (Resolution = 512x512, noise resolution = 128, Alpha randomization off, number of iterations = 1, numthreads = 64)",,,,,,
+Type,2,4,8,16,32,64,128,Type,,2,4,8,16,32,64,128
+ColorVector,19635930,62611444,219361620,811846472,3106162695,12097185606,47990417812,ColorVector,,1043953,1119792,1277731,1588785,2417770,4641586,11707383
+ImageColors,12347840,34306062,111541171,404614062,1506339260,5761425575,22501319049,ImageColors,,1044601,1119326,1270450,1584627,2400834,4654520,11534358
+Linear,10453091,30893086,102523569,371923083,1384789466,5311135681,20766113039,Linear,,1047072,1155018,1372314,1802506,2856152,5570234,13603557
+4 vector pointers,11753263,33289492,110601509,400500314,1501733227,5684399681,22313690631,4 vector pointers,,1205337,1301848,1513046,1940214,3030384,5851444,15146393
+4 float pointers,10053938,29025598,94325380,345472869,1290151889,4834929925,18777500694,4 float pointers,,1205524,1297337,1505462,1943275,3019882,5902463,14293241
+,,,,,,,,,,,,,,,,
+CPU C++ Iteration-Based Clustering Benchmarks,"Time per number of iterations (noise resolution = 128, Alpha randomization off, Resolution = 512x512, Number of clusters = 8)",,,,,,,GPU CUDA Iteration-Based Clustering Benchmarks,,"Time per number of iterations (Resolution = 512x512, noise resolution = 128, Alpha randomization off, numclusters = 8, numthreads = 64)",,,,,,
+Type,1,2,3,4,5,6,7,Type,,1,2,3,4,5,6,7
+ColorVector,217778195,260312977,299263665,344514430,391291021,436055339,470628968,ColorVector,,1267787,1316082,1363391,1370694,1415059,1466328,1493770
+ImageColors,109751176,131785577,158172457,182951754,203081953,221894244,246077568,ImageColors,,1274963,1320420,1358049,1381434,1422477,1465503,1549292
+Linear,103355057,120970383,137366900,154857231,174348876,192580109,209169171,Linear,,1364104,1394049,1433798,1483333,1528805,1564875,1759371
+4 vector pointers,109022867,129911878,153293950,173785756,190656114,215231294,235323603,4 vector pointers,,1508451,1565839,1614244,1632027,1679123,1713262,1774070
+4 float pointers,93935169,111358868,128340718,147916075,164843041,178849530,197307906,4 float pointers,,1519326,1564593,1619138,1629198,1678056,1730326,1770616
+,,,,,,,,,,,,,,,,
+GPU Stress-testing and thread-based checks,,,,,,,,,,,,,,,,
+Run on NVIDIA Quadro M4000/PCIe/SSE2 (1664 CUDA Cores),,,,,,,,,,,,,,,,
+,"Time per number of threads (Resolution = 4k, noise resolution = 4k, numclusters = 12, numiterations = 6)",,,,,,,,,,,,,,,
+Type,32,64,128,256,384,512,768,896,1024,,,,,,,
+Gen_ColorVector,293631820,284088057,283020626,301875502,299365092,287293214,297622372,290751869,291406137,,,,,,,
+Gen_ImageColors,212956708,212087262,212145016,212057365,210196761,212420526,224342246,223820691,216105160,,,,,,,
+Gen_Linear,207517488,201373423,200928510,202296038,200864051,202684400,212844240,206650908,205888252,,,,,,,
+Gen_4 vector pointers,195124481,194037101,194347457,194324838,192871044,194855167,205617855,200021614,198723764,,,,,,,
+Gen_4 float pointers,195329620,194241753,194358406,194449375,192694356,195044284,206262735,199605591,198850053,,,,,,,
+Kmc_ColorVector,3715035674,3672022245,3632018101,3674557240,3691794748,3681077208,3669448181,3728943437,3631966205,,,,,,,
+Kmc_ImageColors,3720302791,3703922926,3640306605,3684602006,3686081855,3726112878,3692248461,3684043271,3670757670,,,,,,,
+Kmc_Linear,4000159072,3965885921,3987187050,3886832167,3884109385,3961209954,3997728483,3965404641,3917372656,,,,,,,
+Kmc_4 vector pointers,2937053370,2921555700,2919945757,2908284161,2964877467,2939221482,2932512633,2924427252,2925514088,,,,,,,
+Kmc_4 float pointers,2919949661,2945185206,2938801122,2923426107,2924629719,2941713727,2942062184,2931320812,2932516945,,,,,,,
