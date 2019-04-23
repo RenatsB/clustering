@@ -37,7 +37,7 @@ std::vector<float> kmeans_serial_LN(const std::vector<float>& data,
                                     size_t k,
                                     size_t number_of_iterations);
 //-----------------------------------------------------------------------------------------------------
-/// @brief Clustering method using ColorVector data type
+/// @brief Clustering method using 4 float vectors
 /// @param [in]_inreds Source image red channel
 /// @param [in]_ingrns Source image green channel
 /// @param [in]_inblus Source image blue channel
@@ -62,15 +62,15 @@ void kmeans_serial_4SV(const std::vector<float>* _inreds,
                        size_t k,
                        size_t number_of_iterations);
 //-----------------------------------------------------------------------------------------------------
-/// @brief Clustering method using ColorVector data type
-/// @param [in]_inreds Source image red channel
-/// @param [in]_ingrns Source image green channel
-/// @param [in]_inblus Source image blue channel
-/// @param [in]_inalps Source image alpha channel
-/// @param [out]_outreds filtered image red output channel
-/// @param [out]_outgrns filtered image green output channel
-/// @param [out]_outblus filtered image blue output channel
-/// @param [out]_outalps filtered image alpha output channel
+/// @brief Clustering method using 4 float vectors, accessing elements through [] operator
+/// @param [in]_inreds Pointer to source image red channel
+/// @param [in]_ingrns Pointer to source image green channel
+/// @param [in]_inblus Pointer to source image blue channel
+/// @param [in]_inalps Pointer to source image alpha channel
+/// @param [out]_outreds Pointer to filtered image red output channel
+/// @param [out]_outgrns Pointer to filtered image green output channel
+/// @param [out]_outblus Pointer to filtered image blue output channel
+/// @param [out]_outalps Pointer to filtered image alpha output channel
 /// @param [in]num_items number of pixels to process (= input and output vector sizes)
 /// @param [in]k number of clusters
 /// @param [in]number_of_iterations number of clustering iterations to perform
