@@ -130,13 +130,13 @@ Although serial implementation is based on a class tructure, GPU version is simp
 Moving the methods from serial to parallel provided different speed-ups. Although not the fastest, I decided to store data that was commonly used in global memory which was enough for the required problem.
 
 Since Kernels are launched asynchronously, to avoid mutexes, I decided to make cluster picking semi-serial and quickly run through pixels in parallel.
-This could be done with global/constant memory, but because each step depends on all previous steps, I would need to queue threads anyway, which could potentially lead to overheads.
+This could be done with shared memory, but because each step depends on all previous steps, I would need to queue threads anyway, which could potentially lead to overheads.
 
 I tried using curand for the parallel implementation, but it proved overly complex and did not have an option for weighted (probability) based distribution, so I had to find a workaround.
 
 The parallel implementation of the algorithm is definitely faster than the serial version, however both of them are far from being perfect.
 
-The algotithm could be improved, adding a data-oriented approach, optimising for intrinsics. The 4 vector versions are a step in that direction, but I decided not to bother with intrinsics at this time.
+The algotithm could be improved, adding a data-oriented approach, optimising for intrinsics. The 4 vector versions are a step in that direction, but I decided not to bother with intrinsics at this time. Additionally, shared memory and proper GPU occupancy should be empolyed to spped up the algorithm. Something else to think about would be avoiding atomics as they can also slow down the program.
 
 ---
 ## **Results**

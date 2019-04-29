@@ -2,10 +2,14 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include "gpuKmeans.h"
+#include "helper_math.h"
 
 #if defined(__CUDA_ARCH__) && (__CUDA_ARCH__ < 200)
    #define printf(f, ...) ((void)(f, __VA_ARGS__),0)
 #endif
+
+
+
 
 __device__ float sq_device(float ref)
 {
@@ -32,10 +36,9 @@ __device__ float sqL2Dist_device_LN(float FR,
 }
 
 // In the assignment step, each point (thread) computes its distance to each
-// cluster centroid and adds its x and y values to the sum of its closest
+// cluster centroid and adds its value to the sum of its closest
 // centroid, as well as incrementing that centroid's count of assigned points.
 
-//const float4* __restrict__ data this is waaaaaaay faster
 __global__ void assignClusters_parallel_CL(thrust::device_ptr<float4> data,
                                 size_t data_size,
                                 const thrust::device_ptr<float4> means,
@@ -44,8 +47,19 @@ __global__ void assignClusters_parallel_CL(thrust::device_ptr<float4> data,
                                 thrust::device_ptr<int> counts,
                                 thrust::device_ptr<int> d_assign)
 {
+    //extern __shared__ float4 shared_means[];
+
     const int index = blockIdx.x * blockDim.x + threadIdx.x;
     if (index >= data_size) return;
+
+    // Let the first k threads copy over the cluster means.
+    /*if (threadIdx.x < k) {
+      // Using a flat array
+      shared_means[threadIdx.x] = means[threadIdx.x];
+
+    }*/
+    //thrust::copy(thrust::raw_pointer_cast(means), thrust::raw_pointer_cast(means+k), &shared_means[0]);
+    //__syncthreads();
 
     // Make global loads once.
     const float4 current = data[index];
@@ -69,6 +83,8 @@ __global__ void assignClusters_parallel_CL(thrust::device_ptr<float4> data,
     atomicAdd(thrust::raw_pointer_cast(counts + best_cluster), 1);
     d_assign[index]=best_cluster;
 }
+
+
 
 __global__ void assignClusters_parallel_4F(thrust::device_ptr<float> inRed,
                                  thrust::device_ptr<float> inGrn,
@@ -203,6 +219,113 @@ __global__ void computeNewMeans_parallel_LN(thrust::device_ptr<float> means,
     means[cluster*4+2] = new_sum[cluster*4+2]/count;
     means[cluster*4+3] = new_sum[cluster*4+3]/count;
 }
+
+//===================================================
+//tried using shared memory for mean calculation and color assignment
+/*
+__global__ void fineReduce_parallel_CL(const thrust::device_ptr<float4> data,
+                                       const size_t data_size,
+                                       const thrust::device_ptr<float4> means,
+                                       const thrust::device_ptr<int> d_assign,
+                                       const thrust::device_ptr<float4> new_sums,
+                                       const size_t k,
+                                       const thrust::device_ptr<int> counts) {
+  extern __shared__ uint8_t shared_memory[];
+  float4* shared_means = (float4*)(shared_memory);
+  int* shared_counts = (int*)(shared_means+k);
+
+  const int local_index = threadIdx.x;
+  const int global_index = blockIdx.x * blockDim.x + threadIdx.x;
+  if (global_index >= data_size) return;
+
+  // Load the mean values into shared memory.
+  if (local_index < k) {
+    shared_means[local_index] = means[local_index];
+  }
+
+  __syncthreads();
+
+  // Assignment step.
+
+  // Load once here.
+  const float4 value = data[global_index];
+
+  float best_distance = FLT_MAX;
+  int best_cluster = -1;
+  for (int cluster = 0; cluster < k; ++cluster) {
+    const float distance = sqL2Dist_device_CL(value, shared_means[cluster]);
+    if (distance < best_distance) {
+      best_distance = distance;
+      best_cluster = cluster;
+    }
+  }
+  d_assign[global_index]=best_cluster;
+  __syncthreads();
+
+  // Reduction step.
+
+    const int count = local_index;
+    //const float4 zeroF4(0.f,0.f,0.f,0.f);
+
+    for (int cluster = 0; cluster < k; ++cluster) {
+      // Zeros if this point (thread) is not assigned to the cluster, else the
+      // values of the point.
+      shared_means[local_index] = (best_cluster == cluster) ? value : float4{0.f,0.f,0.f,0.f};
+      shared_counts[count] = (best_cluster == cluster) ? 1 : 0;
+      __syncthreads();
+
+      // Tree-reduction for this cluster.
+      for (int stride = blockDim.x / 2; stride > 0; stride /= 2) {
+        if (local_index < stride) {
+          shared_means[local_index] += shared_means[local_index + stride];
+          shared_counts[count] += shared_counts[count + stride];
+        }
+        __syncthreads();
+      }
+
+      // Now shared_data[0] holds the sum for x.
+
+      if (local_index == 0) {
+        const int cluster_index = blockIdx.x * k + cluster;
+        new_sums[cluster_index] = shared_means[local_index];
+        counts[cluster_index] = shared_counts[count];
+      }
+      __syncthreads();
+    }
+  }
+
+
+__global__ void coarseReduce_parallel_CL(const thrust::device_ptr<float4> means,
+                                         const thrust::device_ptr<float4> new_sums,
+                                         const size_t k,
+                                         const thrust::device_ptr<int> counts) {
+    extern __shared__ float4 shared_means[];
+
+  const int index = threadIdx.x;
+  //const int y_offset = blockDim.x;
+  if(index < k){
+  // Load into shared memory for more efficient reduction.
+  shared_means[index] = new_sums[index];
+  }
+  __syncthreads();
+  for (int stride = blockDim.x / 2; stride >= k; stride /= 2) {
+    if (index < stride) {
+      shared_means[index] += shared_means[index + stride];
+    }
+    __syncthreads();
+  }
+
+  // The first k threads can recompute their clusters' means now.
+  if (index < k) {
+    const int count = max(1, counts[index]);
+    means[index] = new_sums[index] / count;
+    new_sums[index] = float4{0.f};
+    counts[index] = 0;
+  }
+}
+*/
+//tried using shared memory for mean calculation and color assignment
+//===================================================
 
 __global__ void writeNewColors_parallel_CL(thrust::device_ptr<float4> means,
                                       size_t data_size,
@@ -374,6 +497,8 @@ ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
     thrust::device_vector<float4> d_sums(k);
     thrust::device_vector<int> d_counts(k, 0);
 
+    //const int shared_data1 = (sizeof(int)+sizeof(float4))*numThreads;
+    //const int shared_data2 = sizeof(float4)*k*blocks;
     for (size_t iteration = 0; iteration < number_of_iterations; ++iteration) {
         thrust::fill(d_sums.begin(), d_sums.end(), float4{0.0,0.0,0.0,0.0});
         thrust::fill(d_counts.begin(), d_counts.end(), 0);
@@ -385,11 +510,25 @@ ColorVector gpuKmeans::kmeans_parallel_CV(const ColorVector &source,
                                              k,
                                              d_counts.data(),
                                              d_assignments.data());
+        /*fineReduce_parallel_CL<<<blocks, numThreads, shared_data1>>>(
+                                                         d_source.data(),
+                                                         number_of_elements,
+                                                         d_means.data(),
+                                                         d_assignments.data(),
+                                                         d_sums.data(),
+                                                         k,
+                                                         d_counts.data());*/
         cudaDeviceSynchronize();
 
         computeNewMeans_parallel_CL<<<1, k>>>(d_means.data(),
                                     d_sums.data(),
                                     d_counts.data());
+        /*const int num = k*blocks;
+        coarseReduce_parallel_CL<<<1, num, shared_data2>>>(
+                                                        d_means.data(),
+                                                        d_sums.data(),
+                                                        k,
+                                                        d_counts.data());*/
         cudaDeviceSynchronize();
     }
     writeNewColors_parallel_CL<<<blocks, numThreads>>>(d_means.data(),
